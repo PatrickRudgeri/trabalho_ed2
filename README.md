@@ -1,4 +1,4 @@
-# Trabalho de Estruturas de Dados II - UFJF
+# Trabalho de Estrutura de Dados II - UFJF
 
 ## Objetivos:
 
