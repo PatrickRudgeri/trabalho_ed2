@@ -23,7 +23,7 @@ int main() {
     nomeDataset = csv.padronizarCsv(nomeDataset);
 
     // obtendo os parâmetros de entrada
-    txtArgs.lerParametrosEntrada("../io/entrada.txt");
+    txtArgs.lerEntrada("../io/entrada.txt");
     x = txtArgs.getXarg();
     n = txtArgs.getNargs();
 
