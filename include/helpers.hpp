@@ -13,8 +13,7 @@
 #ifndef TRABALHO_ED2_HELPERS_H
 #define TRABALHO_ED2_HELPERS_H
 
-//using namespace std; //fixme retirar daqui depois
-
+/*
 void processarLinha(const std::string &linha, Registro *registro) {
     std::stringstream ss(linha); // converte a string para o tipo std::stringstream e salva em ss
     std::string *campos_temp = new std::string[10],
@@ -77,6 +76,7 @@ void read_csv(std::string filename, int n) {
 
 
 }
+*/
 /*
 void carregaArquivoPorBlocos(std::string name, int tamBloco) {
     char *dados = new char[tamBloco];
