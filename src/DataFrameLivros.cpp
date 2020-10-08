@@ -11,17 +11,17 @@ DataFrameLivros::~DataFrameLivros() {
 }
 
 //TODO
-void DataFrameLivros::lerCsv(std::string nome_arquivo, int num_linhas, bool aleatorio, int seed) {
+void DataFrameLivros::lerCsv(std::string nomeArquivo, int numLinhas, bool aleatorio, int seed) {
     Csv csv = Csv(); //Prencher um objeto DataFrameLivros com os dados retirados de Csv
     //...
 }
 
 //TODO
-void DataFrameLivros::ordenar(string chave, string algoritmo_ord, bool imprime_metricas) {
+void DataFrameLivros::ordenar(string chave, string algoritmoOrd, bool imprimeMetricas) {
     //...
 }
 
 //TODO
-void DataFrameLivros::escreverCsv(string nome_arquivo) {
+void DataFrameLivros::escreverCsv(string nomeArquivo) {
 
 };

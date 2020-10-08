@@ -7,13 +7,13 @@
 class Registro {
 public:
     Registro(){};
-//    Registro(std::string *registro_array); //retirar?
+//    Registro(std::string *stringArray); //retirar?
 
     ~Registro(){};
 
 //    float get();
 
-    void setTodosAtributosStr(std::string *string_array);
+    void setTodosAtributosStr(std::string *stringArray);
 
     void setEdicao(std::string basicString);
 

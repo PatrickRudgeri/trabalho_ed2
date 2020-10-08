@@ -10,7 +10,7 @@ Csv::~Csv() {
 
 }
 
-void Csv::lerCsv(string nome_arquivo, int num_linhas, bool aleatorio) {
+void Csv::lerCsv(string nomeArquivo, int numLinhas, bool aleatorio) {
 
 }
 

@@ -10,12 +10,12 @@ public:
 
     ~Csv();
 
-    void lerCsv(std::string nome_arquivo, int num_linhas = -1, bool aleatorio = false);
+    void lerCsv(std::string nomeArquivo, int numLinhas = -1, bool aleatorio = false);
 
     std::string padronizarCsv(std::string nomeArquivo);
 
 private:
-    std::string nome_arquivo;
+    std::string nomeArquivo;
 };
 
 

@@ -11,11 +11,11 @@ public:
 
     ~DataFrameLivros();
 
-    void lerCsv(std::string nome_arquivo, int num_linhas = -1, bool aleatorio = false, int seed = 42);
+    void lerCsv(std::string nomeArquivo, int numLinhas = -1, bool aleatorio = false, int seed = 42);
 
-    void escreverCsv(std::string nome_arquivo);
+    void escreverCsv(std::string nomeArquivo);
 
-    void ordenar(std::string chave, std::string algoritmo_ord, bool imprime_metricas = false);
+    void ordenar(std::string chave, std::string algoritmoOrd, bool imprimeMetricas = false);
 
 private:
     Registro *registros;

@@ -3,17 +3,17 @@
 
 using namespace std;
 
-void Registro::setTodosAtributosStr(std::string *registro_array) {
-    setAutores(registro_array[0]);
-//    setRankBestsellers(registro_array[1]);
-//    setCategorias(registro_array[2]);
-    setEdicao(registro_array[3]);
-//    setId(registro_array[4]);
-    setIsbn10(registro_array[5]);
-    setIsbn13(registro_array[6]);
-    setAvaliacaoMedia(registro_array[7]);
-    setQtAvaliacoes(registro_array[8]);
-    setTitulo(registro_array[9]);
+void Registro::setTodosAtributosStr(std::string *stringArray) {
+    setAutores(stringArray[0]);
+//    setRankBestsellers(stringArray[1]);
+//    setCategorias(stringArray[2]);
+    setEdicao(stringArray[3]);
+//    setId(stringArray[4]);
+    setIsbn10(stringArray[5]);
+    setIsbn13(stringArray[6]);
+    setAvaliacaoMedia(stringArray[7]);
+    setQtAvaliacoes(stringArray[8]);
+    setTitulo(stringArray[9]);
 }
 
 void Registro::setEdicao(std::string edicao) {
