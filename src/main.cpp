@@ -1,28 +1,31 @@
 #include <iostream>
 #include <chrono>
-#include <map>
+
 using namespace std;
 
 #include "../include/DataFrameLivros.hpp"
 #include "../include/Registro.hpp"
 #include "../include/helpers.hpp"
 #include "../include/Csv.hpp"
+#include "../include/Txt.h"
 
 int main() {
     Csv csv;
+    Txt txtArgs;
+    int x, *n;
     DataFrameLivros dfLivros;
     string nomeDataset, nomeCsvNovo, path;
 
-    //FIXME: transformar para caminho relativo
-    path = "/home/patrick/CLionProjects/trabalho_ed2/dataset/";
+    path = "../dataset/";
     nomeDataset = path + "dataset_simp_sem_descricao.csv";
 
     //corrige erros, salva em um novo csv e retorna o nome
     nomeDataset = csv.padronizarCsv(nomeDataset);
 
-    // x e n serão lidos de "entrada.txt"
-    int x = 5;
-    int n[] = {1000, 5000, 10000, 50000, 100000};
+    // obtendo os parâmetros de entrada
+    txtArgs.lerParametrosEntrada("../io/entrada.txt");
+    x = txtArgs.getXarg();
+    n = txtArgs.getNargs();
 
     for (int i=0; i < x; i++) {
         // lê o csv e salva n[i] registros aleatórios
@@ -34,11 +37,9 @@ int main() {
         //exemplo com outro algoritmo de ordenação
         dfLivros.ordenar("titulo", "insertion", true);
     }
-    /*
-    fstream arq(NOME_DATASET);
-    carregaArquivoPorBlocos(NOME_DATASET, 1001);
 
-    read_csv(NOME_DATASET, 1000);
-     */
+//    carregaArquivoPorBlocos(NOME_DATASET, 1001);
+
+//    read_csv(nomeDataset, 1000);
     return 0;
 }

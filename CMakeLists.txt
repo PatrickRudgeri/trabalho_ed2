@@ -7,6 +7,6 @@ add_executable(trabalho_ed2
         src/main.cpp
         include/helpers.hpp
         src/Csv.cpp include/Csv.hpp
-        src/DataFrameLivros.cpp include/DataFrameLivros.hpp
+#        src/DataFrameLivros.cpp include/DataFrameLivros.hpp
         src/Registro.cpp include/Registro.hpp
-        )
+        src/Txt.cpp include/Txt.h)
