@@ -1,5 +1,5 @@
-# dataset
-/dataset/*.csv
+# dataset original
+/dataset/dataset_simp_sem_descricao.csv
 
 # Prerequisites
 *.d
