@@ -1,10 +1,9 @@
-#include <iostream>
-#include "Csv.hpp"
-#include "Registro.hpp"
-
 #ifndef TRABALHO_ED2_MATRIZ_HPP
 #define TRABALHO_ED2_MATRIZ_HPP
 
+#include <iostream>
+#include "Csv.hpp"
+#include "Registro.hpp"
 
 class DataFrameLivros {
 public:
@@ -20,8 +19,6 @@ public:
 
 private:
     Registro *registros;
-
-    bool verifica(int i, int j);
 };
 
 
