@@ -14,8 +14,6 @@ public:
 
     std::string padronizarCsv(std::string nomeArquivo);
 
-    friend std::ostream &operator<<(std::ostream &os, const Csv &csv);
-
 private:
     std::string nome_arquivo;
 };
