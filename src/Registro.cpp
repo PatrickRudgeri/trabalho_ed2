@@ -1,14 +1,14 @@
 #include "../include/Registro.hpp"
-
+#include "../include/helpers.hpp"
 
 using namespace std;
 
-void Registro::setTodosAtributosStr(std::string *stringArray) {
+void Registro::setTodosAtributosStr(string *stringArray) {
     setAutores(stringArray[0]);
-//    setRankBestsellers(stringArray[1]);
-//    setCategorias(stringArray[2]);
+    setRankBestsellers(stringArray[1]);
+    setCategorias(stringArray[2]);
     setEdicao(stringArray[3]);
-//    setId(stringArray[4]);
+    setId(stringArray[4]);
     setIsbn10(stringArray[5]);
     setIsbn13(stringArray[6]);
     setAvaliacaoMedia(stringArray[7]);
@@ -16,36 +16,56 @@ void Registro::setTodosAtributosStr(std::string *stringArray) {
     setTitulo(stringArray[9]);
 }
 
-void Registro::setEdicao(std::string edicao) {
-    this->edicao = edicao;
-}
-
-void Registro::setIsbn10(std::string isbn10) {
-    this->isbn10 = isbn10;
-}
-
-void Registro::setIsbn13(std::string isbn13) {
-    this->isbn13 = isbn13;
-}
-
-void Registro::setAvaliacaoMedia(std::string avalMedia) {
-    this->avaliacaoMedia = avalMedia;
-}
-
-void Registro::setQtAvaliacoes(std::string qtAvaliacoes) {
-    this->qtAvaliacoes = qtAvaliacoes;
-}
-
-void Registro::setTitulo(std::string titulo) {
-    this->titulo = titulo;
-}
-
-void Registro::setAutores(std::string autoresStr) {
-    string *autoresStrArray = nullptr;
+void Registro::setAutores(string autoresStr) {
     string stripStr = autoresStr.substr(1, autoresStr.length() - 1);
-//    splitString(stripStr, autoresStrArray);
+    autores_ = splitString(stripStr);
 }
 
 void Registro::setAutores(int *autores) {
-    this->autores = autores;
+    autores_ = autores;
+}
+
+void Registro::setRankBestsellers(std::string rankBestsellersStr) {
+    rankBestsellers_ = rankBestsellersStr;
+}
+
+void Registro::setCategorias(std::string categorias) {
+    string stripStr = categorias.substr(1, categorias.length() - 1);
+    categorias_ = splitString(stripStr);
+}
+
+void Registro::setCategorias(int *categorias) {
+    categorias_ = categorias;
+}
+
+void Registro::setEdicao(string edicao) {
+    edicao_ = edicao;
+}
+
+void Registro::setId(string idStr) {
+    id_ = stoll(idStr);
+}
+
+void Registro::setId(long long id) {
+    id_ = id;
+}
+
+void Registro::setIsbn10(string isbn10) {
+    isbn10_ = isbn10;
+}
+
+void Registro::setIsbn13(string isbn13) {
+    isbn13_ = isbn13;
+}
+
+void Registro::setAvaliacaoMedia(string avalMedia) {
+    avaliacaoMedia_ = avalMedia;
+}
+
+void Registro::setQtAvaliacoes(string qtAvaliacoes) {
+    qtAvaliacoes_ = qtAvaliacoes;
+}
+
+void Registro::setTitulo(string titulo) {
+    titulo_ = titulo;
 }

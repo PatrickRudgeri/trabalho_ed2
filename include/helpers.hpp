@@ -31,15 +31,15 @@ void processarLinha(const std::string &linha, Registro *registro) {
     //lendo ultimo campo (pode conter vírgulas e aspas internas)
     getline(ss, campo);
 
-    //FIXME: linha 55408 e outras possuem erro (quebrou a linha dentro do titulo, ignorar?)
+    //FIXME: linha 55408 e outras possuem erro (quebrou a linha dentro do titulo_, ignorar?)
 
     //O csv original está com erro de quebra de linha ou vazia em algumas linhas, então, temporariamente
     // adicionei essa condicional para *não* cortar o lado direito (p/ tirar aspas) da std::string quando
     // a linha tiver esse erro
 
 
-    if (campo.rfind('"') > 2) { // se posuir o fechamento das aspas (titulo completo)
-        campo = campo.substr(2, campo.length() - 4);//retira as aspas iniciais e finais do titulo
+    if (campo.rfind('"') > 2) { // se posuir o fechamento das aspas (titulo_ completo)
+        campo = campo.substr(2, campo.length() - 4);//retira as aspas iniciais e finais do titulo_
     } else {
         campo = campo.substr(2, campo.length());
     }
@@ -51,7 +51,7 @@ void processarLinha(const std::string &linha, Registro *registro) {
 //TODO: Utilizar essa função para "limpar" e corrigir erros do dataset, salvar em um tsv (tab)?
 void read_csv(std::string filename, int n) {
     std::string linha;
-    std::vector <Registro> registros;
+    std::vector <Registro> registros_;
     std::ifstream arquivo(filename);
 
     srand(time(0));
@@ -69,7 +69,7 @@ void read_csv(std::string filename, int n) {
         if (std::regex_match(linha, std::regex("\".+\"?[[:space:]]*"))) { //se a linha não estiver com erro
 
 //            processarLinha(linha, &registro);
-//            registros.push_back(registro);
+//            registros_.push_back(registro);
         }
         linhas++;
     }
@@ -95,16 +95,16 @@ void carregaArquivoPorBlocos(std::string name, int tamBloco) {
     delete[] dados;
 }
 */
-void splitString(std::string str, std::string *strArray){
+int  *splitString(std::string str, char delim=','){
     std::stringstream ss(str);
     std::string item;
-    std::vector<std::string> itens;
+    std::vector<int> *itens = new std::vector<int>;
     while(true){
         if (ss.eof()) break;
-        getline(ss, item, ',');
-        itens.push_back(item);
+        getline(ss, item, delim);
+        itens->push_back(stoi(item));
     }
-    strArray = itens.data();
+    return itens->data();
 }
 
 /*
