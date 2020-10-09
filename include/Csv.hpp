@@ -1,21 +1,26 @@
-#include <iostream>
-
 #ifndef TRABALHO_ED2_CSV_H
 #define TRABALHO_ED2_CSV_H
 
+#include <iostream>
+#include "Registro.hpp"
 
 class Csv {
 public:
-    explicit Csv();
 
-    ~Csv();
+    Csv();
 
-    void lerCsv(std::string nomeArquivo, int numLinhas = -1, bool aleatorio = false);
+    Csv(Registro *registros);
 
-    std::string padronizarCsv(std::string nomeArquivo);
+    void lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio = false, int seed = -1);
+
+    std::string padronizarCsv(std::string nomeArquivoOriginal);
+
 
 private:
-    std::string nomeArquivo;
+    std::string nomeArquivo_;
+    Registro *registros_{};
+
+    static void processarLinha(const std::string &linha, Registro *registro);
 };
 
 
