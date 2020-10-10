@@ -36,7 +36,7 @@ int main() {
         cout << "n= "<< n[i] << endl;
 
          // lê o csv e salva n[i] registros_ aleatórios
-         dfLivros.lerCsv(nomeDatasetTeste, n[i], true, true);  //fixme: trocar para ler dataset original
+         dfLivros.lerCsv(nomeDatasetTeste, n[i], true, seed);  //fixme: trocar para ler dataset original
 
          // Faz as ordenações, retorna o vetor ordenado e imprime métricas
          dfLivros.ordenar("titulo", AlgOrdenacao::quicksort, true);
