@@ -64,7 +64,7 @@ void Csv::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, int s
 
         if (linha.empty()) continue;
 
-        cout << qtLinhas << ", posRand=" << posRandom << ": ";  //fixme: retirar esse debug
+        cout << qtLinhas << " : ";  //fixme: retirar esse debug
         processarLinha(linha, &registros_[qtLinhas]);
         qtLinhas++;
     }
