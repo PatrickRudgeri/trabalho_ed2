@@ -1,45 +1,51 @@
 #include <iostream>
-#include <chrono>
+#include "../include/DataFrameLivros.hpp"
+#include "../include/Txt.hpp"
 
 using namespace std;
 
-#include "../include/DataFrameLivros.hpp"
-#include "../include/Registro.hpp"
-#include "../include/helpers.hpp"
-#include "../include/Csv.hpp"
-#include "../include/Txt.h"
-
 int main() {
-    Csv csv;
     Txt txtArgs;
-    int x, *n;
+    int x, *n, seed;
     DataFrameLivros dfLivros;
-    string nomeDataset, nomeCsvNovo, path;
+    string nomeDataset,
+            nomeDatasetTeste,
+            nomeDatasetOriginal,
+            path;
 
     path = "../dataset/";
-    nomeDataset = path + "dataset_simp_sem_descricao.csv";
+    nomeDataset = "dataset_simp_sem_descricao.csv";
+
+    nomeDatasetOriginal = path + nomeDataset;
+    nomeDatasetTeste = path + "std_" + nomeDataset;
 
     //corrige erros, salva em um novo csv e retorna o nome
-    nomeDataset = csv.padronizarCsv(nomeDataset);
+//    nomeDataset = csv.padronizarCsv(nomeDataset); // TODO: mover para Csv::lerCsv
 
     // obtendo os parâmetros de entrada
     txtArgs.lerEntrada("../io/entrada.txt");
     x = txtArgs.getXarg();
     n = txtArgs.getNargs();
 
+    //utilizar o codigo comentado abaixo quando tudo já estiver funcional
     for (int i=0; i < x; i++) {
-        // lê o csv e salva n[i] registros aleatórios
-        dfLivros.lerCsv(nomeDataset, n[i], true);
+//        seed = i; //utilize esse para dar sempre os mesmos resultados
+        seed = time(nullptr); //utilize esse para sempre dar resultados diferentes
 
-        // Faz as ordenações, retorna o vetor ordenado e imprime métricas
-        dfLivros.ordenar("titulo", "quick", true);
+        cout << "seed: "<< seed << endl;
+        cout << "n= "<< n[i] << endl;
 
-        //exemplo com outro algoritmo de ordenação
-        dfLivros.ordenar("titulo", "insertion", true);
-    }
+         // lê o csv e salva n[i] registros_ aleatórios
+         dfLivros.lerCsv(nomeDatasetTeste, n[i], true, true);  //fixme: trocar para ler dataset original
 
-//    carregaArquivoPorBlocos(NOME_DATASET, 1001);
+         // Faz as ordenações, retorna o vetor ordenado e imprime métricas
+         dfLivros.ordenar("titulo", AlgOrdenacao::quicksort, true);
 
-//    read_csv(nomeDataset, 1000);
+         //exemplo com outro algoritmo de ordenação
+         dfLivros.ordenar("titulo", AlgOrdenacao::heapsort, true);
+
+         cout << "\n\n-------------------\n\n";
+     }
+
     return 0;
 }

@@ -2,8 +2,12 @@
 #define TRABALHO_ED2_MATRIZ_HPP
 
 #include <iostream>
-#include "Csv.hpp"
 #include "Registro.hpp"
+
+enum AlgOrdenacao {
+    quicksort,
+    heapsort
+};
 
 class DataFrameLivros {
 public:
@@ -11,14 +15,18 @@ public:
 
     ~DataFrameLivros();
 
-    void lerCsv(std::string nomeArquivo, int numLinhas = -1, bool aleatorio = false, int seed = 42);
+    Registro *getRegistros();
+
+    void setRegistros(Registro *registros_);
+
+    void lerCsv(const std::string &nomeArquivo, int numLinhas = -1, bool aleatorio = false, int seed = 42);
 
     void escreverCsv(std::string nomeArquivo);
 
-    void ordenar(std::string chave, std::string algoritmoOrd, bool imprimeMetricas = false);
+    void ordenar(std::string chave, AlgOrdenacao algoritmoOrd, bool imprimeMetricas = false);
 
 private:
-    Registro *registros;
+    Registro *registros_;
 };
 
 

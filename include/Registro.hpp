@@ -1,25 +1,38 @@
-#include <iostream>
-
 #ifndef TRABALHO_ED2_REGISTRO_H
 #define TRABALHO_ED2_REGISTRO_H
 
+#include <iostream>
 
+/** @brief Documentação de teste da classe Registro
+ *
+ * Uma descrição detalhada da classe ficará aqui
+ * */
 class Registro {
 public:
-    Registro(){};
+    /** Construtor padrão
+     * */
+    Registro() {};
 
+    /** Converte uma string contendo autores em um vetor de int
+     *  testando latex: \f$\sum_{i=0}^{X}{i^2+i}$\f
+     * @param autoresStr é uma string contento, entre "[]" identificadores de autores separados por vírgula.
+     * */
     void setAutores(std::string autoresStr);
+
     void setAutores(int *autores);
 
     void setTodosAtributosStr(std::string *stringArray);
 
-    void setEdicao(std::string basicString);
+    void setEdicao(std::string edicao);
+
     void setRankBestsellers(std::string rankBestsellersStr);
 
     void setCategorias(std::string categorias);
+
     void setCategorias(int *categorias);
 
     void setId(std::string idStr);
+
     void setId(long long id);
 
     void setIsbn10(std::string isbn10);
@@ -33,7 +46,7 @@ public:
     void setTitulo(std::string titulo);
 
 private:
-    int *autores_;
+    int *autores_; /** armazena um vetor de identificadores de autores*/
     std::string rankBestsellers_;
     int *categorias_;
     std::string edicao_;

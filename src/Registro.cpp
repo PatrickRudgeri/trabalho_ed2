@@ -1,9 +1,13 @@
+#include <sstream>  //stringstream
+#include <vector>
 #include "../include/Registro.hpp"
-#include "../include/helpers.hpp"
 
 using namespace std;
 
+int *splitString(std::string str, char delim = ','); //não é membro da classe
+
 void Registro::setTodosAtributosStr(string *stringArray) {
+    cout << stringArray[9] << endl; //fixme: retirar esse debug
     setAutores(stringArray[0]);
     setRankBestsellers(stringArray[1]);
     setCategorias(stringArray[2]);
@@ -39,7 +43,7 @@ void Registro::setCategorias(int *categorias) {
 }
 
 void Registro::setEdicao(string edicao) {
-    edicao_ = edicao;
+    edicao_ = edicao; //fixme: BUG aqui. Depurar
 }
 
 void Registro::setId(string idStr) {
@@ -68,4 +72,16 @@ void Registro::setQtAvaliacoes(string qtAvaliacoes) {
 
 void Registro::setTitulo(string titulo) {
     titulo_ = titulo;
+}
+
+int *splitString(std::string str, char delim) {
+    std::stringstream ss(str);
+    std::string item;
+    auto *itens = new std::vector<int>; //question: é possivel implementar sem std::vector?
+    while (true) {
+        if (ss.eof()) break;
+        getline(ss, item, delim);
+        itens->push_back(stoi(item));
+    }
+    return itens->data();
 }

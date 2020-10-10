@@ -1,9 +1,13 @@
-#include <fstream>
-#include "../include/Txt.h"
+#include <fstream>  //ifstream
+#include "../include/Txt.hpp"
 
 Txt::Txt() {
     nArgs = nullptr;
     xArg = -1;
+}
+
+Txt::~Txt() {
+    delete [] nArgs;
 }
 
 void Txt::lerEntrada(std::string nomeArquivo) {
