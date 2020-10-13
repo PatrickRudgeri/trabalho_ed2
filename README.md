@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/PatrickRudgeri/trabalho_ed2.svg?branch=master)](https://travis-ci.com/PatrickRudgeri/trabalho_ed2)
+
 # Trabalho de Estrutura de Dados II - UFJF
 
 ## Objetivos:
