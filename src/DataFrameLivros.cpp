@@ -18,21 +18,27 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
     csv.lerCsv(nomeArquivo, numLinhas, aleatorio, seed);
 }
 
+Registro *DataFrameLivros::getRegistros() {
+    return registros_;
+}
+
 int particionamento(int pos_ini, int pos_fim) {
 
     int p = (pos_ini + pos_fim) / 2;
-    string pivo = registro_[p].get;
+    string pivo;
+    // Não está sendo possivel usar a variavel registros_ da classe
+    pivo = registros_[p].getTitulo();
     int esq = pos_ini;
     int dir = pos_fim;
     string aux;
 
     while (esq < dir) {
 
-        while (vet[esq] < pivo) {
+        while (registros_[esq].getTitulo() < pivo) {
             esq++;
         }
 
-        while (vet[dir] > pivo) {
+        while (registros_[dir].getTitulo() > pivo) {
             dir--;
         }
         if (esq <= dir) {
@@ -43,9 +49,9 @@ int particionamento(int pos_ini, int pos_fim) {
                 p = dir;
             }
 
-            aux = vet[dir];
-            vet[dir] = vet[esq];
-            vet[esq] = aux;
+            aux = registros_[dir].getTitulo();
+            registros_[dir].getTitulo() = registros_[esq].getTitulo();
+            registros_[dir].getTitulo() = aux;
         }
         esq++;
         dir--;
@@ -81,9 +87,7 @@ void DataFrameLivros::escreverCsv(string nomeArquivo) {
 
 }
 
-Registro *DataFrameLivros::getRegistros() {
-    return registros_;
-}
+
 
 void DataFrameLivros::setRegistros(Registro *registros) {
     registros_ = registros;
