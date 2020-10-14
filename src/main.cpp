@@ -1,11 +1,11 @@
 #include <iostream>
 #include "../include/DataFrameLivros.hpp"
-#include "../include/Txt.hpp"
+#include "../include/TxtLivros.hpp"
 
 using namespace std;
 
 int main() {
-    Txt txtArgs;
+    TxtLivros txtArgs;
     int x, *n, seed;
     DataFrameLivros dfLivros;
     string nomeDataset,
@@ -20,7 +20,7 @@ int main() {
     nomeDatasetTeste = path + "std_" + nomeDataset;
 
     //corrige erros, salva em um novo csv e retorna o nome
-//    nomeDataset = csv.padronizarCsv(nomeDataset); // TODO: mover para Csv::lerCsv
+//    nomeDataset = csv.padronizarCsv(nomeDataset); // TODO: mover para CsvLivros::lerCsv
 
     // obtendo os parâmetros de entrada
     txtArgs.lerEntrada("../io/entrada.txt");

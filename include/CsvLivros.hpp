@@ -4,12 +4,12 @@
 #include <iostream>
 #include "Registro.hpp"
 
-class Csv {
+class CsvLivros {
 public:
 
-    Csv();
+    CsvLivros();
 
-    Csv(Registro *registros);
+    CsvLivros(Registro *registros);
 
     void lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio = false, int seed = -1);
 

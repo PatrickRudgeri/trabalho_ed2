@@ -1,13 +1,13 @@
-#ifndef TRABALHO_ED2_TXT_HPP
-#define TRABALHO_ED2_TXT_HPP
+#ifndef TRABALHO_ED2_TXTLIVROS_HPP
+#define TRABALHO_ED2_TXTLIVROS_HPP
 
 #include <iostream>
 
-class Txt {
+class TxtLivros {
 public:
-    Txt();
+    TxtLivros();
 
-    virtual ~Txt();
+    virtual ~TxtLivros();
 
     void lerEntrada(std::string nomeArquivo);
 
@@ -20,4 +20,4 @@ private:
 };
 
 
-#endif //TRABALHO_ED2_TXT_HPP
+#endif //TRABALHO_ED2_TXTLIVROS_HPP

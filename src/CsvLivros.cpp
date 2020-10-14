@@ -1,19 +1,19 @@
 #include <fstream> //ifstream
 #include <sstream> //stringstream
-#include "../include/Csv.hpp"
+#include "../include/CsvLivros.hpp"
 
 using namespace std;
 
 template<class ClasseStream>
 int tamanhoArquivo(ClasseStream &arq);
 
-Csv::Csv() {}
+CsvLivros::CsvLivros() {}
 
-Csv::Csv(Registro *registros) {
+CsvLivros::CsvLivros(Registro *registros) {
     registros_ = registros;
 }
 
-void Csv::processarLinha(const std::string &linha, Registro *registro) {
+void CsvLivros::processarLinha(const std::string &linha, Registro *registro) {
     int index;
     std::stringstream ss(linha); // converte a string para o tipo std::stringstream e salva em ss
     std::string campo;
@@ -34,7 +34,7 @@ void Csv::processarLinha(const std::string &linha, Registro *registro) {
     registro->setTodosAtributosStr(camposTemp);
 }
 
-void Csv::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, int seed) {
+void CsvLivros::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, int seed) {
     std::string linha;
     int qtLinhas, tamArq, posRandom;
 
@@ -45,7 +45,7 @@ void Csv::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, int s
 
     // TODO: refatorar para tratar excessões (try...catch)
     if (!arquivo.is_open()) {
-        std::cerr << "ERRO=> Csv::lerCsv\n";
+        std::cerr << "ERRO=> CsvLivros::lerCsv\n";
         return;
     }
 
@@ -72,7 +72,7 @@ void Csv::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, int s
 }
 
 //TODO, implementar essa função para "padronizar" o DF
-string Csv::padronizarCsv(string nomeArquivoOriginal) {
+string CsvLivros::padronizarCsv(string nomeArquivoOriginal) {
 
     // processar o arquivo inteiro e salvar em outro csv
 

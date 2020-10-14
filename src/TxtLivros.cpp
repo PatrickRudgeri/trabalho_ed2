@@ -1,16 +1,16 @@
 #include <fstream>  //ifstream
-#include "../include/Txt.hpp"
+#include "../include/TxtLivros.hpp"
 
-Txt::Txt() {
+TxtLivros::TxtLivros() {
     nArgs = nullptr;
     xArg = -1;
 }
 
-Txt::~Txt() {
+TxtLivros::~TxtLivros() {
     delete [] nArgs;
 }
 
-void Txt::lerEntrada(std::string nomeArquivo) {
+void TxtLivros::lerEntrada(std::string nomeArquivo) {
     std::string linha, temp;
     std::ifstream arq(nomeArquivo);
 
@@ -25,10 +25,10 @@ void Txt::lerEntrada(std::string nomeArquivo) {
     }
 }
 
-int *Txt::getNargs() const {
+int *TxtLivros::getNargs() const {
     return nArgs;
 }
 
-int Txt::getXarg() const {
+int TxtLivros::getXarg() const {
     return xArg;
 }

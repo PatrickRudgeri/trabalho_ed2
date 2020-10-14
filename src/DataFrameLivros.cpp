@@ -1,5 +1,5 @@
 #include "../include/DataFrameLivros.hpp"
-#include "../include/Csv.hpp"
+#include "../include/CsvLivros.hpp"
 
 using namespace std;
 
@@ -14,7 +14,7 @@ DataFrameLivros::~DataFrameLivros() {
 
 void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio, int seed) {
     registros_ = new Registro[numLinhas];
-    Csv csv(registros_);
+    CsvLivros csv(registros_);
     csv.lerCsv(nomeArquivo, numLinhas, aleatorio, seed);
 }
 
