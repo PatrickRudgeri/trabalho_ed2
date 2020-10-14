@@ -5,6 +5,7 @@ using namespace std;
 
 DataFrameLivros::DataFrameLivros() {
     registros_ = nullptr;
+    contTrocasQuick = 0;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -22,7 +23,9 @@ Registro *DataFrameLivros::getRegistros() {
     return registros_;
 }
 
-int particionamento(int pos_ini, int pos_fim) {
+
+
+int DataFrameLivros::particionamento(int pos_ini, int pos_fim) {
 
     int p = (pos_ini + pos_fim) / 2;
     string pivo;
@@ -33,7 +36,7 @@ int particionamento(int pos_ini, int pos_fim) {
     string aux;
 
     while (esq < dir) {
-
+        contTrocasQuick++;
         while (registros_[esq].getTitulo() < pivo) {
             esq++;
         }
@@ -61,7 +64,7 @@ int particionamento(int pos_ini, int pos_fim) {
 
 }
 
-void quickSort(int pos_ini, int pos_fim) {
+void DataFrameLivros::quickSort(int pos_ini, int pos_fim) {
     if (pos_fim - pos_ini > 0) {
         int q = particionamento(pos_ini, pos_fim);
         quickSort( pos_ini, q - 1);

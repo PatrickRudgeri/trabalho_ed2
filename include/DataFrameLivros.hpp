@@ -25,8 +25,13 @@ public:
 
     void ordenar(std::string chave, AlgOrdenacao algoritmoOrd, bool imprimeMetricas = false);
 
+    int particionamento(int pos_ini, int pos_fim);
+
+    void quickSort(int pos_ini, int pos_fim);
+
 private:
     Registro *registros_;
+    int contTrocasQuick;
 };
 
 
