@@ -39,10 +39,10 @@ int main() {
          dfLivros.lerCsv(nomeDatasetTeste, n[i], true, seed);  //fixme: trocar para ler dataset original
 
          // Faz as ordenações, retorna o vetor ordenado e imprime métricas
-         dfLivros.ordenar("titulo", AlgOrdenacao::quicksort, true);
+         dfLivros.ordenar("titulo", n[i] ,  AlgOrdenacao::quicksort, true );
 
          //exemplo com outro algoritmo de ordenação
-         dfLivros.ordenar("titulo", AlgOrdenacao::heapsort, true);
+         dfLivros.ordenar("titulo", n[i] , AlgOrdenacao::heapsort, true);
 
          cout << "\n\n-------------------\n\n";
      }

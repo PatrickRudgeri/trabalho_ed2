@@ -74,6 +74,46 @@ void Registro::setTitulo(string titulo) {
     titulo_ = titulo;
 }
 
+int *Registro::getAutores() const {
+    return autores_;
+}
+
+const string &Registro::getRankBestsellers() const {
+    return rankBestsellers_;
+}
+
+int *Registro::getCategorias() const {
+    return categorias_;
+}
+
+const string &Registro::getEdicao() const {
+    return edicao_;
+}
+
+long long int Registro::getId() const {
+    return id_;
+}
+
+const string &Registro::getIsbn10() const {
+    return isbn10_;
+}
+
+const string &Registro::getIsbn13() const {
+    return isbn13_;
+}
+
+const string &Registro::getAvaliacaoMedia() const {
+    return avaliacaoMedia_;
+}
+
+const string &Registro::getQtAvaliacoes() const {
+    return qtAvaliacoes_;
+}
+
+const string &Registro::getTitulo() const {
+    return titulo_;
+}
+
 int *splitString(std::string str, char delim) {
     std::stringstream ss(str);
     std::string item;

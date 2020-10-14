@@ -45,6 +45,26 @@ public:
 
     void setTitulo(std::string titulo);
 
+    int *getAutores() const;
+
+    const std::string &getRankBestsellers() const;
+
+    int *getCategorias() const;
+
+    const std::string &getEdicao() const;
+
+    long long int getId() const;
+
+    const std::string &getIsbn10() const;
+
+    const std::string &getIsbn13() const;
+
+    const std::string &getAvaliacaoMedia() const;
+
+    const std::string &getQtAvaliacoes() const;
+
+    const std::string &getTitulo() const;
+
 private:
     int *autores_; /** armazena um vetor de identificadores de autores*/
     std::string rankBestsellers_;
