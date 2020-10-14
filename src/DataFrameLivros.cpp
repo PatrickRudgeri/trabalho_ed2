@@ -23,7 +23,13 @@ Registro *DataFrameLivros::getRegistros() {
     return registros_;
 }
 
+<<<<<<< HEAD
 int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
+=======
+
+
+int DataFrameLivros::particionamento(int pos_ini, int pos_fim) {
+>>>>>>> origin/master
 
     int p = (pos_ini + pos_fim) / 2;
     string pivo;
