@@ -5,6 +5,7 @@ using namespace std;
 
 DataFrameLivros::DataFrameLivros() {
     registros_ = nullptr;
+    contTrocasQuick = 0;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -33,7 +34,7 @@ int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
     string aux;
 
     while (esq < dir) {
-
+        contTrocasQuick++;
         while (registros_[esq].getTitulo() < pivo) {
             esq++;
         }

@@ -32,6 +32,7 @@ private:
     int particionamentoQuick(int pos_ini, int pos_fim);
     void quickSort(int pos_ini, int pos_fim);
 
+    int contTrocasQuick;
 };
 
 
