@@ -27,6 +27,11 @@ public:
 
 private:
     Registro *registros_;
+
+    //métodos de ordenação
+    int particionamentoQuick(int pos_ini, int pos_fim);
+    void quickSort(int pos_ini, int pos_fim);
+
 };
 
 

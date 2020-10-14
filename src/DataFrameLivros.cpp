@@ -22,7 +22,7 @@ Registro *DataFrameLivros::getRegistros() {
     return registros_;
 }
 
-int particionamento(int pos_ini, int pos_fim) {
+int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
 
     int p = (pos_ini + pos_fim) / 2;
     string pivo;
@@ -48,10 +48,21 @@ int particionamento(int pos_ini, int pos_fim) {
             if (esq == p) {
                 p = dir;
             }
-
+            //FIXME: Se fizer dessa forma apenas os titulos dos livros serão alterados de posição, sendo que o
+            // certo seria todo o registro mudar de posição (baseado na ordem dos titulos)
             aux = registros_[dir].getTitulo();
-            registros_[dir].getTitulo() = registros_[esq].getTitulo();
-            registros_[dir].getTitulo() = aux;
+            registros_[dir].setTitulo(registros_[esq].getTitulo());
+            registros_[esq].setTitulo(aux);
+            // Poderia ser feito desse jeito abaixo, porém quando a gente for chamar o próximo algorítimo de ordenação
+            // o vetor registro já vai estar ordenado. O que vai obrigar a gente a fazer uma "copia" do vetor registro original
+            // e passar esse cópia pro próximo algoritmo
+            /*//------------------------
+            aux = registros_[dir];  //teria que alterar aux pro tipo (Registro*)
+            registros_[dir] = registros_[esq];
+            registros_[esq] = aux;
+            *///------------------------
+            //TODO: Creio que a melhor solução seja cria um vetor vazio de tamanho n[i] (numLinhas) para armazenar esses
+            // registros ordenados. Pq assim não teriamos que fazer uma cópia do original
         }
         esq++;
         dir--;
@@ -61,9 +72,9 @@ int particionamento(int pos_ini, int pos_fim) {
 
 }
 
-void quickSort(int pos_ini, int pos_fim) {
+void DataFrameLivros::quickSort(int pos_ini, int pos_fim) {
     if (pos_fim - pos_ini > 0) {
-        int q = particionamento(pos_ini, pos_fim);
+        int q = particionamentoQuick(pos_ini, pos_fim);
         quickSort( pos_ini, q - 1);
         quickSort(q, pos_fim);
     }
