@@ -6,6 +6,8 @@ using namespace std;
 DataFrameLivros::DataFrameLivros() {
     registros_ = nullptr;
     contTrocasQuick = 0;
+    contTrocasHeap = 0;
+    contComparacoesHeap = 0;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -94,6 +96,10 @@ void DataFrameLivros::ordenar(string chave, int tamanhoVetor ,  AlgOrdenacao alg
             cout << ">>chamar a função de quicksort aqui<<" << endl;
             break;
         case AlgOrdenacao::heapsort:
+            registrosHeap = new Registro[numLinhas];
+            for(int i = 0 ; i < tamanhoVetor ; i++)
+                registrosHeap[i] = resgistros_[i];
+            HeapSort(registrosHeap,tamanhoVetor);
             cout << ">>chamar a função de heapsort aqui<<" << endl;
             break;
     }
@@ -110,3 +116,41 @@ void DataFrameLivros::escreverCsv(string nomeArquivo) {
 void DataFrameLivros::setRegistros(Registro *registros) {
     registros_ = registros;
 }
+
+    void DataFrameLivros::HeapMax(Registro registrosHeap[],int raiz,int n){
+        int filho_esq = 2*raiz+1;
+        int filho_dir = 2*raiz+2;
+        int m;
+        if ((filho_esq<n) and (registrosHeap[filho_esq].getTitulo()>registrosHeap[raiz].getTitulo())){
+            contComparacoesHeap = contComparacoesHeap + 1;
+            m = filho_esq;
+        } else m = raiz;
+        if ((filho_dir<n) and (registrosHeap[filho_dir].getTitulo()>registrosHeap[m].getTitulo())){
+            contComparacoesHeap = contComparacoesHeap + 1;
+            m = filho_dir;
+        }
+        if (m != raiz) {
+            contTrocasHeap = contTrocasHeap + 1;
+            Registro aux = registrosHeap[raiz];
+            registrosHeap[raiz] = registrosHeap[m];
+            registrosHeap[m] = aux;
+            HeapMax(registrosHeap,m,n);
+        }
+    }
+
+    void DataFrameLivros::CriaHeap(Registro registrosHeap[],int n){
+        for(int i=(n/2)-1;i>=0;i--){
+            HeapMax(registrosHeap,i,n);
+        }
+    }
+
+    void DataFrameLivros::HeapSort(Registro registrosHeap[],int n){
+        CriaHeap(registrosHeap,n);
+        for(int i=n-1;i>=0;i--){
+            contTrocasHeap = contTrocasHeap + 1;
+            Registro aux = registrosHeap[i];
+            registrosHeap[i]= registrosHeap[0];
+            registrosHeap[0]= aux;
+            HeapMax(registrosHeap,0,i);
+        }
+    }

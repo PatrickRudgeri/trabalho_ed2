@@ -33,8 +33,14 @@ private:
     //métodos de ordenação
     int particionamentoQuick(int pos_ini, int pos_fim);
     void quickSort(int pos_ini, int pos_fim);
+    void HeapMax(Registro registrosHeap[],int raiz,int n);
+    void CriaHeap(Registro registrosHeap[],int n);
+    void HeapSort(Registro registrosHeap[],int n);
+
 
     int contTrocasQuick;
+    int contTrocasHeap;
+    int contComparacoesHeap;
 };
 
 
