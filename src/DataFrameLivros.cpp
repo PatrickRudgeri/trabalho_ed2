@@ -110,3 +110,37 @@ void DataFrameLivros::escreverCsv(string nomeArquivo) {
 void DataFrameLivros::setRegistros(Registro *registros) {
     registros_ = registros;
 }
+
+    void DataFrameLivros::HeapMax(Registro registros_[],int raiz,int n){
+        int filho_esq = 2*raiz+1;
+        int filho_dir = 2*raiz+2;
+        int m;
+        if ((filho_esq<n) and (registros_[filho_esq].getTitulo()>registros_[raiz].getTitulo())){
+            m = filho_esq;
+        } else m = raiz;
+        if ((filho_dir<n) and (registros_[filho_dir].getTitulo()>registros_[m].getTitulo())){
+            m = filho_dir;
+        }
+        if (m != raiz) {
+            Registro aux = registros_[raiz];
+            registros_[raiz] = registros_[m];
+            registros_[m] = aux;
+            HeapMax(registros_,m,n);
+        }
+    }
+
+    void DataFrameLivros::CriaHeap(Registro registros_[],int n){
+        for(int i=(n/2)-1;i>=0;i--){
+            HeapMax(registros_,i,n);
+        }
+    }
+
+    void DataFrameLivros::HeapSort(Registro registros_[],int n){
+        CriaHeap(registros_,n);
+        for(int i=n-1;i>=0;i--){
+            Registro aux = registros_[i];
+            registros_[i]= registros_[0];
+            registros_[0]= aux;
+            HeapMax(registros_,0,i);
+        }
+    }
