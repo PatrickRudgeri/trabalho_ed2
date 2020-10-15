@@ -27,6 +27,8 @@ public:
 
 private:
     Registro *registros_;
+    Registro *registrosQuick;
+    Registro *registrosHeap;
 
     //métodos de ordenação
     int particionamentoQuick(int pos_ini, int pos_fim);

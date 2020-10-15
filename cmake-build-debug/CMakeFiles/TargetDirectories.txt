@@ -1,0 +1,3 @@
+C:/Users/Luciana/Desktop/TrabTeste/trabalho_ed2/cmake-build-debug/CMakeFiles/trabalho_ed2.dir
+C:/Users/Luciana/Desktop/TrabTeste/trabalho_ed2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Luciana/Desktop/TrabTeste/trabalho_ed2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
