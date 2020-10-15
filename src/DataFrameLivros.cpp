@@ -34,18 +34,18 @@ int DataFrameLivros::particionamento(int pos_ini, int pos_fim) {
     int p = (pos_ini + pos_fim) / 2;
     string pivo;
     // Não está sendo possivel usar a variavel registros_ da classe
-    pivo = registros_[p].getTitulo();
+    pivo = registrosQuick[p].getTitulo();
     int esq = pos_ini;
     int dir = pos_fim;
     string aux;
 
     while (esq < dir) {
         contTrocasQuick++;
-        while (registros_[esq].getTitulo() < pivo) {
+        while (registrosQuick[esq].getTitulo() < pivo) {
             esq++;
         }
 
-        while (registros_[dir].getTitulo() > pivo) {
+        while (registrosQuick[dir].getTitulo() > pivo) {
             dir--;
         }
         if (esq <= dir) {
@@ -57,17 +57,14 @@ int DataFrameLivros::particionamento(int pos_ini, int pos_fim) {
             }
             //FIXME: Se fizer dessa forma apenas os titulos dos livros serão alterados de posição, sendo que o
             // certo seria todo o registro mudar de posição (baseado na ordem dos titulos)
-            aux = registros_[dir].getTitulo();
-            registros_[dir].setTitulo(registros_[esq].getTitulo());
-            registros_[esq].setTitulo(aux);
             // Poderia ser feito desse jeito abaixo, porém quando a gente for chamar o próximo algorítimo de ordenação
             // o vetor registro já vai estar ordenado. O que vai obrigar a gente a fazer uma "copia" do vetor registro original
             // e passar esse cópia pro próximo algoritmo
-            /*//------------------------
-            aux = registros_[dir];  //teria que alterar aux pro tipo (Registro*)
-            registros_[dir] = registros_[esq];
-            registros_[esq] = aux;
-            *///------------------------
+
+            aux = registrosQuick[dir];  //teria que alterar aux pro tipo (Registro*)
+            registrosQuick[dir] = registrosQuick[esq];
+            registrosQuick[esq] = aux;
+ 
             //TODO: Creio que a melhor solução seja cria um vetor vazio de tamanho n[i] (numLinhas) para armazenar esses
             // registros ordenados. Pq assim não teriamos que fazer uma cópia do original
         }
@@ -90,7 +87,10 @@ void DataFrameLivros::ordenar(string chave, int tamanhoVetor ,  AlgOrdenacao alg
     
     switch (algoritmoOrd) {
         case AlgOrdenacao::quicksort:
-            quickSort(0 , tamanhoVetor)
+            registrosQuick = new Registro[numLinhas];
+            for(int i = 0 ; i < tamanhoVetor ; i++)
+                registrosQuick[i] = resgistros_[i];
+            quickSort(0 , tamanhoVetor - 1)
             cout << ">>chamar a função de quicksort aqui<<" << endl;
             break;
         case AlgOrdenacao::heapsort:
