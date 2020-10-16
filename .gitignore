@@ -36,7 +36,6 @@
 
 # Outros
 project.md
-testando_github
-/cmake-build-debug-coverage/
-/cmake-build-debug/
-/build/
+/cmake-build-debug-coverage/*
+/cmake-build-debug/*
+/build/*
