@@ -39,3 +39,4 @@ project.md
 /cmake-build-debug-coverage/*
 /cmake-build-debug/*
 /build/*
+/.idea/*
