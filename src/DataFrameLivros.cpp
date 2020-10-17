@@ -153,23 +153,34 @@ void DataFrameLivros::quickSort(int pos_ini, int pos_fim) {
         quickSort(q, pos_fim); //ordena a partição direita
     }
 }
+/*
+ *  A função copiadeRegistros copia nosso vetor original de Registros
+ *  para dois outros vetores: registrosQuick_ e registrosHeap_. Desta maneira,
+ *  podemos sempre deixa o original intacto e armazenar cada ordenação
+ *  em seu respectivo array
+ *
+ */
+void DataFrameLivros::copiadeRegistros()
+{
+    for (int i = 0; i < numLinhas_; i++) {
+        registrosQuick_[i] = registros_[i];
+        registrosHeap_[i] = registros_[i];
+    }
+}
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
 void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, ChavesOrdenacao chave, bool imprimeMetricas) {
 //    chaveOrd_ = chave; não está sendo usada no momento
     switch (algoritmoOrd) {
         case AlgOrdenacao::quicksort:
-            registrosQuick_ = new Registro[numLinhas_];  //question: mover para o construtor?
-            //TODO: criar uma função para fazer essa cópia de registros_
-            for (int i = 0; i < numLinhas_; i++)
-                registrosQuick_[i] = registros_[i];
+            registrosQuick_ = new Registro[numLinhas_];  //question: mover para o construtor? //no construtor fica mais limpo,
+            // porém aqui acho que reforça mais a justificativa do porque de criar. Mas pode colocar e comentar, no caso
+
             quickSort(0, numLinhas_ - 1);
             break;
         case AlgOrdenacao::heapsort:
             registrosHeap_ = new Registro[numLinhas_];  //question: mover para o construtor?
-            //TODO: criar uma função para fazer essa cópia de registros_
-            for (int i = 0; i < numLinhas_; i++)
-                registrosHeap_[i] = registros_[i];
+
             heapSort(registrosHeap_, numLinhas_);
             break;
     }
@@ -216,14 +227,14 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
      * */
     if ((filho_esq < n) and (registrosHeap[filho_esq].getTitulo() > registrosHeap[raiz].getTitulo())) {
         contComparacoesHeap_ = contComparacoesHeap_ + 1;
-        //o nó a esquerda é maior que o nó pai
+        //Se o filho esquerdo for maior que a raiz
         maior = filho_esq;
     } else {
-        //caso em que nó pai é maior ou igual que seus filhos
+        //Se não a raiz é maior que o filho esquerdo
         maior = raiz;
     }
     if ((filho_dir < n) and (registrosHeap[filho_dir].getTitulo() > registrosHeap[maior].getTitulo())) {
-        //o nó a direita é maior que o nó pai
+        //Se o filho direito for maior do que a maior até agora
         contComparacoesHeap_ = contComparacoesHeap_ + 1;
         maior = filho_dir;
     }
@@ -237,6 +248,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
         Registro aux = registrosHeap[raiz];
         registrosHeap[raiz] = registrosHeap[maior];
         registrosHeap[maior] = aux;
+        //Montar recursivamente a subárvore afetada
         heapMax(registrosHeap, maior, n);
     }
 }
@@ -244,8 +256,9 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
 //TODO: documentar os blocos funcionais e variáveis dentro do método
 void DataFrameLivros::criaHeap(Registro *registrosHeap, int n) {
     /*
-     * breve descrição do que
-     * está acontecendo abaixo
+     * Constrói um heap com o elemento máximo no índice 0, com uma árvore binária e satisfazendo
+     * repetidamente a invariante Heap-Máximo
+     *
      * */
     for (int i = (n / 2) - 1; i >= 0; i--) {
         heapMax(registrosHeap, i, n);
@@ -254,20 +267,24 @@ void DataFrameLivros::criaHeap(Registro *registrosHeap, int n) {
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
 void DataFrameLivros::heapSort(Registro *registrosHeap, int n) {
-    /*
-     * breve descrição do que
-     * está acontecendo abaixo
-     * */
+
+    //Constrói a Heap
     criaHeap(registrosHeap, n);
+
+    //Extraia um elemento do Heap um por um
     for (int i = n - 1; i >= 0; i--) {
-        contTrocasHeap_ = contTrocasHeap_ + 1;
+        contTrocasHeap_ = contTrocasHeap_ + 1; //question: mesmo caso do quick, contabiliza uma troca mesmo sendo 3 movimentações?
         /*
-         * breve descrição do que
-         * está acontecendo abaixo
+         * A variável auxilar recebe o novo nó a ser inserido para realizar a troca
+         * Troca-se então o item na posição 1 do vetor (raiz do heap) com o item da posição i
+         * Use o procedimento Max-Heapify para reconstituir o heap
+         * Os passos anteriores são repetidos até que reste apenas um elemento.
+         *
          * */
         Registro aux = registrosHeap[i];
         registrosHeap[i] = registrosHeap[0];
         registrosHeap[0] = aux;
+        //Chama Max Heapify com a raiz e o elemento inserido
         heapMax(registrosHeap, 0, i);
     }
 }

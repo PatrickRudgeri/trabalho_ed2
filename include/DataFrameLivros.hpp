@@ -121,6 +121,8 @@ private:
      * */
     //TODO: Documentar esse método, seguindo padrão acima
     void heapSort(Registro *registrosHeap, int n);
+
+    void copiadeRegistros();
 };
 
 
