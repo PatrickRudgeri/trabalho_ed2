@@ -3,9 +3,22 @@
 
 #include <iostream>
 
-/** @brief Documentação de teste da classe Registro
+/** Breve descrição da classe
  *
- * Uma descrição detalhada da classe ficará aqui
+ *  Descrição detalhada da classe
+ *
+ *  Atributos
+ *  ----------------
+ *  @attr autores_ armazena um vetor de identificadores de autores
+ *  @attr rankBestsellers_ <o que é esse atributo?>
+ *  @attr categorias_ <o que é esse atributo?>
+ *  @attr edicao_ <o que é esse atributo?>
+ *  @attr id_ <o que é esse atributo?>
+ *  @attr isbn10_ <o que é esse atributo?>
+ *  @attr isbn13_ <o que é esse atributo?>
+ *  @attr avaliacaoMedia_ <o que é esse atributo?>
+ *  @attr qtAvaliacoes_ <o que é esse atributo?>
+ *  @attr titulo_ <o que é esse atributo?>
  * */
 class Registro {
 public:
@@ -13,10 +26,6 @@ public:
      * */
     Registro() {};
 
-    /** Converte uma string contendo autores em um vetor de int
-     *  testando latex: \f$\sum_{i=0}^{X}{i^2+i}$\f
-     * @param autoresStr é uma string contento, entre "[]" identificadores de autores separados por vírgula.
-     * */
     void setAutores(std::string autoresStr);
 
     void setAutores(int *autores);
@@ -66,7 +75,7 @@ public:
     const std::string &getTitulo() const;
 
 private:
-    int *autores_; /** armazena um vetor de identificadores de autores*/
+    int *autores_;
     std::string rankBestsellers_;
     int *categorias_;
     std::string edicao_;

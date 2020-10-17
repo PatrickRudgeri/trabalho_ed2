@@ -7,12 +7,11 @@ using namespace std;
 template<class ClasseStream>
 int tamanhoArquivo(ClasseStream &arq);
 
-CsvLivros::CsvLivros() {}
-
 CsvLivros::CsvLivros(Registro *registros) {
     registros_ = registros;
 }
 
+//TODO: documentar os blocos funcionais e variáveis dentro do método
 void CsvLivros::processarLinha(const std::string &linha, Registro *registro) {
     int index;
     std::stringstream ss(linha); // converte a string para o tipo std::stringstream e salva em ss
@@ -34,6 +33,7 @@ void CsvLivros::processarLinha(const std::string &linha, Registro *registro) {
     registro->setTodosAtributosStr(camposTemp);
 }
 
+//TODO: documentar os blocos funcionais e variáveis dentro do método
 void CsvLivros::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, int seed) {
     std::string linha;
     int qtLinhas, tamArq, posRandom;
@@ -54,7 +54,6 @@ void CsvLivros::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio,
             break;
         //se aleatorio == true, seleciona uma posição aleatoria do arquivo, lê até o final da
         // linha e processa a próxima.
-        //fixme: do jeito que está implementado, a ultima e a primeira linha nunca serão lidas
         if (aleatorio) {
             posRandom = rand() % (tamArq - 1);//
             arquivo.seekg(posRandom);
@@ -71,16 +70,43 @@ void CsvLivros::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio,
     arquivo.close();
 }
 
-//TODO, implementar essa função para "padronizar" o DF
+//TODO: (implementando esse metodo)
 string CsvLivros::padronizarCsv(string nomeArquivoOriginal) {
 
-    // processar o arquivo inteiro e salvar em outro csv
+    string linha, linhaTemp;
+    int qtLinhas, tamArq;
 
-    // Para continuar o desenvolvimento, criei um dataset manualmente padronizado.
-    // Assim que tudo estiver funcionando implementarei essa função
-    return "std_" + nomeArquivoOriginal;
+    qtLinhas = 0;
+    ifstream arquivo(nomeArquivoOriginal);
+    tamArq = tamanhoArquivo<ifstream>(arquivo);
+
+    // TODO: refatorar para tratar excessões (try...catch)
+    if (!arquivo.is_open()) {
+        cerr << "ERRO=> CsvLivros::padronizarCsv\n";
+        return "";
+    }
+    linhaTemp = "";
+    linha = "";
+    while (!arquivo.eof()) {
+        getline(arquivo, linha); //lê a proxima linha
+
+        if (linha.size() < 2) continue;
+
+        linhaTemp += linha;
+        cout << (linha.substr(linha.size() - 2, 1)) << " >> ";
+        if (linha.substr(linha.size() - 2, 1) == "\"") {
+            cout << qtLinhas << "\n";  //fixme: retirar esse debug
+//            cout << "\t" << linhaTemp << endl;  //fixme: retirar esse debug
+
+            linhaTemp = "";
+            qtLinhas++;
+        }
+    }
+    arquivo.close();
+    return "teste_std_" + nomeArquivoOriginal;
 }
 
+//TODO: documentar os blocos funcionais e variáveis dentro da função
 template<class ClasseStream>
 int tamanhoArquivo(ClasseStream &arq) {
     arq.seekg(0, arq.end);

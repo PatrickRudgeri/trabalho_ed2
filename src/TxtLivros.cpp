@@ -10,6 +10,7 @@ TxtLivros::~TxtLivros() {
     delete [] nArgs;
 }
 
+//TODO: documentar os blocos funcionais e variáveis dentro do método
 void TxtLivros::lerEntrada(std::string nomeArquivo) {
     std::string linha, temp;
     std::ifstream arq(nomeArquivo);

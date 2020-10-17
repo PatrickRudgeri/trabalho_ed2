@@ -20,6 +20,7 @@ void Registro::setTodosAtributosStr(string *stringArray) {
     setTitulo(stringArray[9]);
 }
 
+//TODO: documentar os blocos funcionais e variáveis dentro do método
 void Registro::setAutores(string autoresStr) {
     string stripStr = autoresStr.substr(1, autoresStr.length() - 1);
     autores_ = splitString(stripStr);
@@ -33,6 +34,7 @@ void Registro::setRankBestsellers(std::string rankBestsellersStr) {
     rankBestsellers_ = rankBestsellersStr;
 }
 
+//TODO: documentar os blocos funcionais e variáveis dentro do método
 void Registro::setCategorias(std::string categorias) {
     string stripStr = categorias.substr(1, categorias.length() - 1);
     categorias_ = splitString(stripStr);
@@ -43,9 +45,10 @@ void Registro::setCategorias(int *categorias) {
 }
 
 void Registro::setEdicao(string edicao) {
-    edicao_ = edicao; //fixme: BUG aqui. Depurar
+    edicao_ = edicao;
 }
 
+//TODO: documentar os blocos funcionais e variáveis dentro do método
 void Registro::setId(string idStr) {
     id_ = stoll(idStr);
 }
@@ -114,6 +117,12 @@ const string &Registro::getTitulo() const {
     return titulo_;
 }
 
+/**  <Breve descrição>
+ *  @param str <o que é esse parâmetro?>
+ *  @param delim <o que é esse parâmetro?>
+ *  @return <se tiver algum retorno descreva aqui>
+ * */
+//TODO: documentar os blocos funcionais e variáveis dentro do método
 int *splitString(std::string str, char delim) {
     std::stringstream ss(str);
     std::string item;
