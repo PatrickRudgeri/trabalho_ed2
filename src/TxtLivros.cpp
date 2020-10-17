@@ -25,6 +25,7 @@ void TxtLivros::lerEntrada(std::string nomeArquivo) {
         nArgs[i] = std::stoi(linha);
     }
 }
+//TODO: criar método para salvar saidas
 
 int *TxtLivros::getNargs() const {
     return nArgs;

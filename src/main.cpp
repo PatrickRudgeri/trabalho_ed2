@@ -1,9 +1,11 @@
 #include <iostream>
+#include <chrono>
 #include "../include/DataFrameLivros.hpp"
 #include "../include/TxtLivros.hpp"
 //#include "../include/CsvLivros.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 int main() {
     TxtLivros txtArgs;
@@ -26,8 +28,9 @@ int main() {
 
     // obtendo os parâmetros de entrada
     txtArgs.lerEntrada("../io/entrada.txt");
-    x = txtArgs.getXarg();
-    n = txtArgs.getNargs();
+
+    x = txtArgs.getXarg(); //guarda iterações
+    n = txtArgs.getNargs(); //guarda quantidade de registros por iteração
 ///*
     //utilizar o codigo comentado abaixo quando tudo já estiver funcional
     for (int i=0; i < x; i++) {
@@ -40,10 +43,28 @@ int main() {
          dfLivros.lerCsv(nomeDatasetTeste, n[i], true, seed);  //fixme: trocar para ler dataset original
 
          // Faz as ordenações, retorna o vetor ordenado e imprime métricas
-         dfLivros.ordenar(AlgOrdenacao::quicksort, ChavesOrdenacao::titulo, true );
 
-         //exemplo com outro algoritmo de ordenação
-         dfLivros.ordenar(AlgOrdenacao::heapsort, ChavesOrdenacao::titulo, true);
+         //Seta inicio da execução do algoritmo
+         high_resolution_clock::time_point inicio = high_resolution_clock::now();
+         //chama algoritmo de Ordenação Quicksort
+         dfLivros.ordenar(AlgOrdenacao::quicksort, ChavesOrdenacao::titulo, true ); //fixme: passar tamanho de registro
+         // Seta fim da execução do algoritmo
+         high_resolution_clock::time_point fim = high_resolution_clock::now();
+
+         //salva no arquivo de saida o tempo de execução do algoritmo
+         //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
+         //arq << duration_cast<duration<double>>(fim - inicio).count() << " segundos" << endl;
+
+         //Seta inicio da execução do algoritmo
+         high_resolution_clock::time_point inicio = high_resolution_clock::now();
+         //chama algoritmo de Ordenação HeapSort
+         dfLivros.ordenar(AlgOrdenacao::heapsort, ChavesOrdenacao::titulo, true); //fixme: passar tamanho de registros
+         // Seta fim da execução do algoritmo
+         high_resolution_clock::time_point fim = high_resolution_clock::now();
+
+         //salva no arquivo de saida o tempo de execução do algoritmo
+         //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
+         //arq << duration_cast<duration<double>>(fim - inicio).count() << " segundos" << endl;
 
          cout << "\n\n-------------------\n\n";
      }
