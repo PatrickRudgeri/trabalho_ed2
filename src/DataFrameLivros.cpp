@@ -11,6 +11,7 @@ DataFrameLivros::DataFrameLivros() {
     contTrocasQuick_ = 0;
     contTrocasHeap_ = 0;
     contComparacoesHeap_ = 0;
+    contComparacoesQuick_ = 0;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -32,14 +33,38 @@ Registro *DataFrameLivros::getRegistros() {
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
 int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
-    //descrever o que é essa variável
-    int p = (pos_ini + pos_fim) / 2;
+    /**
+     *  Descrever o que está acontecendo abaixo
+     * */
+    int pontoMedio = (pos_ini + pos_fim) / 2;
+    Registro primeiraPosicao = registrosQuick_[pos_ini];
+    Registro meioPosicao = registrosQuick_[pontoMedio];
+    Registro UltimaPosicao = registrosQuick_[pos_fim];
+    int mediaDeTres;
+    if (primeiraPosicao.getTitulo() < meioPosicao.getTitulo()){
+        if(primeiraPosicao.getTitulo() > UltimaPosicao.getTitulo()){
+            mediaDeTres = pos_ini;
+        } else if(meioPosicao.getTitulo() > UltimaPosicao.getTitulo()){
+            mediaDeTres = pos_fim;
+        } else {
+            mediaDeTres = pontoMedio;
+        }
+    } else {
+        if(primeiraPosicao.getTitulo() < UltimaPosicao.getTitulo()){
+            mediaDeTres = pos_ini;
+        } else if(meioPosicao.getTitulo() < UltimaPosicao.getTitulo()){
+            mediaDeTres = pos_fim;
+        } else {
+            mediaDeTres = pontoMedio;
+        }
+    }
 
     //descrever o que é essa variável
     string pivo;
 
     //descrever o que é essa variável
-    pivo = registrosQuick_[p].getTitulo();
+//    pivo = registrosQuick_[p].getTitulo();
+    pivo = registrosQuick[mediaDeTres].getTitulo();
     int esq = pos_ini;
     int dir = pos_fim;
 
@@ -53,10 +78,12 @@ int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
     while (esq < dir) {
         contTrocasQuick_++;
         while (registrosQuick_[esq].getTitulo() < pivo) {
+            contComparacoesQuick_++;
             esq++;
         }
 
         while (registrosQuick_[dir].getTitulo() > pivo) {
+            contComparacoesQuick_++;
             dir--;
         }
         if (esq <= dir) {

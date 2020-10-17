@@ -71,6 +71,7 @@ private:
     int contTrocasQuick_;
     int contTrocasHeap_;
     int contComparacoesHeap_;
+    int contComparacoesQuick_;
 //    ChavesOrdenacao chaveOrd_; // para usar se getCampoChave() for implementado
     Registro *registros_;
     Registro *registrosQuick_;
