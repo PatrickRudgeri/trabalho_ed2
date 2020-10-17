@@ -32,15 +32,37 @@ Registro *DataFrameLivros::getRegistros() {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
+/*
+ * A função QuickSort implementada incorpora as seguintes funcionalidades
+ *
+ * 1. A função de particionamentoQuick, responsável por pegar uma sequência de entrada
+ *    registrosQuick_ e dividi-la em duas partes. Para isto, é escolhido uma posição
+ *    denominada pivô. Desta forma, a parte da esquerda possui chaves menores ou iguais
+ *    ao pivô, e a parte direita com chaves maiores ou iguais ao pivô.
+ *
+ * 2. A escolha do pivô influencia no desempenho do método. Nesta implementação utilizou-se
+ *    o valor mediano entre o primeiro, do último e do meio elemento do vetor. A vantagem
+ *    é sua simplicidade de codificação, rápido de calcular e pode ajudar
+ *    a evitar a pegar valores extremos. Todavia, o custo ainda pode degradar para O(n2)
+ */
 int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
-    /**
-     *  Descrever o que está acontecendo abaixo
-     * */
+    //variável pontoMedio recebe a posição localizada no meio do vetor
     int pontoMedio = (pos_ini + pos_fim) / 2;
+
+    //variável do tipo Registro que recebe o primeiro registro
     Registro primeiraPosicao = registrosQuick_[pos_ini];
+    //variável do tipo Registro que recebe o registro do meio
     Registro meioPosicao = registrosQuick_[pontoMedio];
+    //variável variável do tipo Registro que recebe o último registro
     Registro UltimaPosicao = registrosQuick_[pos_fim];
+
+    //variável para calcular a media das três posições: primeira,meio,última
     int mediaDeTres;
+
+    /*
+     *  Abaixo é feito o calculo da média utilizando os valores entre o primeiro, do último e do meio.
+     *
+     */
     if (primeiraPosicao.getTitulo() < meioPosicao.getTitulo()){
         if(primeiraPosicao.getTitulo() > UltimaPosicao.getTitulo()){
             mediaDeTres = pos_ini;
@@ -59,24 +81,27 @@ int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
         }
     }
 
-    //descrever o que é essa variável
+    //variavel pivo é o elemento central da minha entrada de dados
     string pivo;
 
-    //descrever o que é essa variável
-//    pivo = registrosQuick_[p].getTitulo();
-    pivo = registrosQuick[mediaDeTres].getTitulo();
+    //a variável pivo recebe o titulo localizado no indice mediaDeTres de registrosQuick_
+
+    //pivo = registrosQuick_[p].getTitulo();
+    pivo = registrosQuick_[mediaDeTres].getTitulo();
     int esq = pos_ini;
     int dir = pos_fim;
 
-    //descrever o que é essa variável
+    //Variável auxiliar do tipo Registro para armazenar as trocas de posições
     Registro aux;
 
     /*
-     * breve descrição do que
-     * está acontecendo abaixo
-     * */
+     *  A primeira partição é percorrida da esquerda para direita enquanto o elemento no indice < pivô
+     *
+     *  A segunda partição  é percorrida da direita para esquerda enquanto o elemento no indice > pivo
+     *
+     */
     while (esq < dir) {
-        contTrocasQuick_++;
+        contTrocasQuick_++; //question: contabiliza trocas aqui? para mim seria abaixo
         while (registrosQuick_[esq].getTitulo() < pivo) {
             contComparacoesQuick_++;
             esq++;
@@ -87,17 +112,18 @@ int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
             dir--;
         }
         if (esq <= dir) {
-            if (dir == p) {
-                p = esq;
+            if (dir == pontoMedio) {
+                pontoMedio = esq; //question: vai contabilizar essas comparações? acredito que não porque não está comparando chaves.
             }
-            if (esq == p) {
-                p = dir;
+            if (esq == pontoMedio) {
+                pontoMedio = dir;
             }
 
             /*
-             * breve descrição do que
-             * está acontecendo abaixo
+             * Abaixo realizamos as trocas de dados entre duas posições no vetor
              * */
+
+            //question: para mim, contTrocasQuick_ seria aqui e seriam 3 trocas (movimentação de dados)
             aux = registrosQuick_[dir];
             registrosQuick_[dir] = registrosQuick_[esq];
             registrosQuick_[esq] = aux;
@@ -106,20 +132,25 @@ int DataFrameLivros::particionamentoQuick(int pos_ini, int pos_fim) {
         dir--;
     }
 
-    return p + 1;
+    return pontoMedio + 1;
 
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
 void DataFrameLivros::quickSort(int pos_ini, int pos_fim) {
     /*
-     * breve descrição do que
-     * está acontecendo abaixo
+     *  O Quick Sort é a execução de consectivos particionamentos.
+     *  Efetua-se o primeiro levando em consideração o array inteiro (posição inicial = 0 e posição final = tamanho do Vetor - 1).
+     *  Depois, leva-se em consideração a esquerda do pivo, ou seja, posição inicial = 0 e posição final = pivo - 1
+     *  e à direita do pivo (left = pivo + 1 e right = values.length - 1). Adiante, o mesmo processo
+     *  é feito com a esquerda e a direita dos novos pivos em chamada recursivas até que
+     *  array inteiro já tenha sido percorrido (esquerda >= direita).
+     *
      * */
     if (pos_fim - pos_ini > 0) {
-        int q = particionamentoQuick(pos_ini, pos_fim);
-        quickSort(pos_ini, q - 1);
-        quickSort(q, pos_fim);
+        int q = particionamentoQuick(pos_ini, pos_fim); //realiza a partição
+        quickSort(pos_ini, q - 1); //ordena a partição esquerda
+        quickSort(q, pos_fim); //ordena a partição direita
     }
 }
 
@@ -152,43 +183,61 @@ void DataFrameLivros::setRegistros(Registro *registros) {
     registros_ = registros;
 }
 
-//TODO: documentar os blocos funcionais e variáveis dentro do método
-void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
-    //descrever o que é essa variável
-    int filho_esq = 2 * raiz + 1;
-
-    //descrever o que é essa variável
-    int filho_dir = 2 * raiz + 2;
-
-    //descrever o que é essa variável
-    int m;
 
     /*
-     * breve descrição do que
-     * está acontecendo abaixo
+     *  O método heapMax implementa um algoritmo Heap de Máximo. Construímos uma árvore binária completa
+     *  de n nós tal que a chave de cada nó seja menor ou igual à chave de seu pai.
+     *  Cada nó da arvore corresponde um elemento do array.
+     *  O heap é acessado da seguinte maneira.
+     *  Dado um elemento e na localização i:
+     *  o nó filho esquerdo de e está em 2 * i + 1.
+     *  o nó filho direito de e está em 2 * i + 2.
+     *
+     */
+//TODO: documentar os blocos funcionais e variáveis dentro do método
+void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
+
+
+    //Variável que representa a posição do filho a esquerda
+    int filho_esq = 2 * raiz + 1;
+
+    //Variável que representa a posição do filho a direita
+    int filho_dir = 2 * raiz + 2;
+
+    //Variavel que recebe o maior entre os nós
+    int maior; //question: seria do tipo inteiro ou do tipo string?
+
+    /*
+     * Percorre a árvore para baixo começando na raiz, recupera quais são os nós filhos da esquerda e
+     * da direita em chamadas recursivas até que se chegue no fim da árvore.
+     * Se o nó pai é maior ou igual que seus filhos então não é preciso fazer nada.
+     * Se não, troque o pai com o maior dos filhos e repita o processo para o filho envolvido na troca.
+     *
      * */
     if ((filho_esq < n) and (registrosHeap[filho_esq].getTitulo() > registrosHeap[raiz].getTitulo())) {
         contComparacoesHeap_ = contComparacoesHeap_ + 1;
-        m = filho_esq;
+        //o nó a esquerda é maior que o nó pai
+        maior = filho_esq;
     } else {
-        //descrição aqui
-        m = raiz;
+        //caso em que nó pai é maior ou igual que seus filhos
+        maior = raiz;
     }
-    if ((filho_dir < n) and (registrosHeap[filho_dir].getTitulo() > registrosHeap[m].getTitulo())) {
-        //descrição aqui
+    if ((filho_dir < n) and (registrosHeap[filho_dir].getTitulo() > registrosHeap[maior].getTitulo())) {
+        //o nó a direita é maior que o nó pai
         contComparacoesHeap_ = contComparacoesHeap_ + 1;
-        m = filho_dir;
+        maior = filho_dir;
     }
-    if (m != raiz) {
+    if (maior != raiz) {
         /*
-         * breve descrição do que
-         * está acontecendo abaixo
-         * */
+         * Se maior não é o pai, então troque o pai com o maior dos filhos
+         * e repita o processo para o filho envolvido na troca
+         *
+         */
         contTrocasHeap_ = contTrocasHeap_ + 1;
         Registro aux = registrosHeap[raiz];
-        registrosHeap[raiz] = registrosHeap[m];
-        registrosHeap[m] = aux;
-        heapMax(registrosHeap, m, n);
+        registrosHeap[raiz] = registrosHeap[maior];
+        registrosHeap[maior] = aux;
+        heapMax(registrosHeap, maior, n);
     }
 }
 
