@@ -16,6 +16,8 @@ int main() {
             nomeDatasetOriginal,
             path;
 
+    high_resolution_clock::time_point inicio, fim;
+
     path = "../dataset/";
     nomeDataset = "dataset_simp_sem_descricao.csv";
 
@@ -45,22 +47,22 @@ int main() {
          // Faz as ordenações, retorna o vetor ordenado e imprime métricas
 
          //Seta inicio da execução do algoritmo
-         high_resolution_clock::time_point inicio = high_resolution_clock::now();
+         inicio = high_resolution_clock::now();
          //chama algoritmo de Ordenação Quicksort
          dfLivros.ordenar(AlgOrdenacao::quicksort, ChavesOrdenacao::titulo, true ); //fixme: passar tamanho de registro
          // Seta fim da execução do algoritmo
-         high_resolution_clock::time_point fim = high_resolution_clock::now();
+         fim = high_resolution_clock::now();
 
          //salva no arquivo de saida o tempo de execução do algoritmo
          //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
          //arq << duration_cast<duration<double>>(fim - inicio).count() << " segundos" << endl;
 
          //Seta inicio da execução do algoritmo
-         high_resolution_clock::time_point inicio = high_resolution_clock::now();
+         inicio = high_resolution_clock::now();
          //chama algoritmo de Ordenação HeapSort
          dfLivros.ordenar(AlgOrdenacao::heapsort, ChavesOrdenacao::titulo, true); //fixme: passar tamanho de registros
          // Seta fim da execução do algoritmo
-         high_resolution_clock::time_point fim = high_resolution_clock::now();
+         fim = high_resolution_clock::now();
 
          //salva no arquivo de saida o tempo de execução do algoritmo
          //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
