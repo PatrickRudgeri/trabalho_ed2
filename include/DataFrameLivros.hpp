@@ -4,28 +4,26 @@
 #include <iostream>
 #include "Registro.hpp"
 
+/** Constantes que representam os algorítmos disponíveis para ordenação
+ * */
 enum AlgOrdenacao {
     quicksort,
     heapsort
 };
-enum ChavesOrdenacao {
-    titulo,
-    id
-};
 
-/** Breve descrição da classe
+/** Classe que representa o dataset de Livros
  *
- *  Descrição detalhada da classe
+ *  TODO: Descrição detalhada da classe
  *
  *  Atributos
  *  ----------------
- *  @attr numLinhas_ <indica a quantidade de Registros lidos>
- *  @attr contTrocasQuick_  <contador de trocas no QuickSort>
- *  @attr contTrocasHeap_ <contador de trocas no HeapSort>
- *  @attr contComparacoesHeap_ <contador de Comparações no HeapSort>
- *  @attr *registros_   <o que é esse atributo?>
- *  @attr *registrosQuick_ <o que é esse atributo?>
- *  @attr *registrosHeap_ <o que é esse atributo?>
+ *  @attr numLinhas_ : indica a quantidade de Registros lidos
+ *  @attr contTrocasQuick_ : contador de trocas no QuickSort
+ *  @attr contTrocasHeap_ : contador de trocas no HeapSort
+ *  @attr contComparacoesHeap_ : contador de Comparações no HeapSort
+ *  @attr *registros_ : Vetor de Registros
+ *  @attr *registrosQuick_ : Vetor de Registros para ordenação por Quicksort
+ *  @attr *registrosHeap_ : Vetor de Registros para ordenação por Heapsort
  * */
 class DataFrameLivros {
 public:
@@ -35,36 +33,33 @@ public:
     // Destrutor da classe
     ~DataFrameLivros();
 
-    /**  <Breve descrição>
-     *  @return <se tiver algum retorno descreva aqui>
+    /** Método get do vetor registros_
+     *
+     *  @return : vetor registros_
      * */
     Registro *getRegistros();
 
-    /**  <Breve descrição>
-     *  @param registros <o que é esse parâmetro?>
+    /**  setar o vetor registros_ com outro vetor de Registros
+     *
+     *  @param registros : vetor de Registros externos
      * */
     void setRegistros(Registro *registros);
 
-    /**  <Breve descrição>
-     *  @param nomeArquivo <indica qual o nome do Arquivo>
-     *  @param numLinhas <indica a quantidade de Registros lidos>
-     *  @param aleatorio <indica se os Registros serão lidos de forma aleatória ou não>
-     *  @param seed <semente do gerador aleatório>
+    /**  Utilizado para criar e preencher o vetor de Registros
+     *
+     *  @param nomeArquivo : indica qual o nome do Arquivo
+     *  @param numLinhas : indica a quantidade de Registros lidos
+     *  @param aleatorio : indica se os Registros serão lidos de forma aleatória ou não
+     *  @param seed : semente do gerador aleatório
      * */
     void lerCsv(const std::string &nomeArquivo, int numLinhas = -1, bool aleatorio = false, int seed = 42);
 
-    /**  <Breve descrição>
-     *  @param nomeArquivo <indica qual o nome do Arquivo>
+    /**  Ordenar o vetor interno de registros
+     *
+     *  @param algoritmoOrd : indica qual algoritmo de ordenação>
+     *  @param imprimeMetricas : indica se irá imprimir metricas no terminal
      * */
-    void escreverCsv(std::string nomeArquivo);
-
-    /**  <Breve descrição>
-     *  @param algoritmoOrd <indica qual algoritmo de ordenação>
-     *  @param chave <o que é esse parâmetro?> //vai usar?
-     *  @param imprimeMetricas <indica se irá imprimir metricas>
-     * */
-    void ordenar(AlgOrdenacao algoritmoOrd, ChavesOrdenacao chave = ChavesOrdenacao::titulo,
-                 bool imprimeMetricas = false);
+    void ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas = false);
 
 private:
     int numLinhas_;
@@ -72,57 +67,50 @@ private:
     int contTrocasHeap_;
     int contComparacoesHeap_;
     int contComparacoesQuick_;
-//    ChavesOrdenacao chaveOrd_; // para usar se getCampoChave() for implementado
     Registro *registros_;
     Registro *registrosQuick_;
     Registro *registrosHeap_;
 
     //métodos de ordenação
     //quicksort
-    /**  <Breve descrição>
-     *  @param pos_ini <Posição inicial do Vetor a ser Ordenado>
-     *  @param pos_fim <Posição final do Vetor a ser Ordenado>
-     *  @return <se tiver algum retorno descreva aqui>
+    /**  Responsável por pegar uma sequência da entrada e dividi-la em duas partes
+     *
+     *  @param posIni : Posição inicial do Vetor a ser Ordenado
+     *  @param posFim : Posição final do Vetor a ser Ordenado
+     *  @return : Retorna o indice do pivô+1
      * */
-    //TODO: Documentar esse método, seguindo padrão acima
-    int particionamentoQuick(int pos_ini, int pos_fim);
+    int particionamentoQuick(int posIni, int posFim);
 
-    /**  <Breve descrição>
-     *  @param pos_ini <Posição inicial do Vetor a ser Ordenado>
-     *  @param pos_fim <Posição final do Vetor a ser Ordenado>
-     *  @return <se tiver algum retorno descreva aqui>
+    /**  Método para ordenação quicksort
+     *
+     *  @param posIni : Posição inicial do Vetor a ser Ordenado
+     *  @param posFim : Posição final do Vetor a ser Ordenado
      * */
-    //TODO: Documentar esse método, seguindo padrão acima
-    void quickSort(int pos_ini, int pos_fim);
+    void quickSort(int posIni, int posFim);
 
     //heapsort
-    /**  <Breve descrição>
-     *  @param registrosHeap <Vetor para armazenar Registros Ordenados por HeapSort>
-     *  @param raiz <Raiz da Heap>
-     *  @param n <Número de nós da Heap>
-     *  @return <se tiver algum retorno descreva aqui>
+    /**  TODO:<Breve descrição>
+     *
+     *  @param registrosHeap : Vetor para armazenar Registros Ordenados por HeapSort
+     *  @param raiz : Raiz da Heap
+     *  @param n : Número de nós da Heap
      * */
-    //TODO: Documentar esse método, seguindo padrão acima
     void heapMax(Registro *registrosHeap, int raiz, int n);
 
-    /**  <Breve descrição>
-     *  @param registrosHeap <Vetor para armazenar Registros Ordenados por HeapSort>
-     *  @param raiz <Raiz da Heap>
-     *  @param n <Número de nós da Heap>
-     *  @return <se tiver algum retorno descreva aqui>
+    /**  TODO:<Breve descrição>
+     *
+     *  @param registrosHeap : Vetor para armazenar Registros Ordenados por HeapSort
+     *  @param raiz : Raiz da Heap
+     *  @param n : Número de nós da Heap
      * */
-    //TODO: Documentar esse método, seguindo padrão acima
     void criaHeap(Registro *registrosHeap, int n);
 
-    /**  <Breve descrição>
-     *  @param registrosHeap <Vetor para armazenar Registros Ordenados por HeapSort>
-     *  @param n <Número de nós da Heap>
-     *  @return <se tiver algum retorno descreva aqui>
+    /**  TODO:<Breve descrição>
+     *
+     *  @param registrosHeap : Vetor para armazenar Registros Ordenados por HeapSort
+     *  @param n : Número de nós da Heap
      * */
-    //TODO: Documentar esse método, seguindo padrão acima
     void heapSort(Registro *registrosHeap, int n);
-
-    void copiadeRegistros();
 };
 
 

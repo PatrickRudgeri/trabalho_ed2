@@ -47,9 +47,11 @@ int main() {
          // Faz as ordenações, retorna o vetor ordenado e imprime métricas
 
          //Seta inicio da execução do algoritmo
+        //fixme: a contabilização do tempo deve ficar dentro do método ordenar, depois de criar a copia do vetor
+        //fixme: senão, ele irá contabilizar tbm o tempo para copiar o vetor
          inicio = high_resolution_clock::now();
          //chama algoritmo de Ordenação Quicksort
-         dfLivros.ordenar(AlgOrdenacao::quicksort, ChavesOrdenacao::titulo, true ); //fixme: passar tamanho de registro
+        dfLivros.ordenar(AlgOrdenacao::quicksort, true); //fixme: passar tamanho de registro
          // Seta fim da execução do algoritmo
          fim = high_resolution_clock::now();
 
@@ -60,7 +62,7 @@ int main() {
          //Seta inicio da execução do algoritmo
          inicio = high_resolution_clock::now();
          //chama algoritmo de Ordenação HeapSort
-         dfLivros.ordenar(AlgOrdenacao::heapsort, ChavesOrdenacao::titulo, true); //fixme: passar tamanho de registros
+        dfLivros.ordenar(AlgOrdenacao::heapsort, true); //fixme: passar tamanho de registros
          // Seta fim da execução do algoritmo
          fim = high_resolution_clock::now();
 
