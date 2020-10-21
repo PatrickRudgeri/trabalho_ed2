@@ -6,36 +6,16 @@
 /** Breve descrição da classe
  *
  *  Descrição detalhada da classe
- *
- *  Atributos
- *  ----------------
- *  @attr nArgs <o que é esse atributo?>
- *  @attr xArgs  <o que é esse atributo?>
  * */
 class TxtLivros {
 public:
-    TxtLivros();
 
-    virtual ~TxtLivros();
-
-    /**  <Breve descrição>
-     *  @param nomeArquivo <o que é esse parâmetro?>
+    /**  Método para ler os parametros X e N do arquivo de entrada
+     *  @param nomeArquivo : nome do arquivo de entrada
+     *  @param x : Número de iterações
+     *  @param n : vetor de inteiros de tamanho x que será preenchido
      * */
-    void lerEntrada(std::string nomeArquivo);
-
-    /**  <Breve descrição>
-     *  @return <se tiver algum retorno descreva aqui>
-     * */
-    int *getNargs() const;
-
-    /**  <Breve descrição>
-     *  @return <se tiver algum retorno descreva aqui>
-     * */
-    int getXarg() const;
-
-private:
-    int *nArgs;
-    int xArg;
+    static void lerEntrada(int *x, int * &n, const std::string &nomeArquivo = "entrada.txt");
 };
 
 
