@@ -5,7 +5,6 @@
 //#include "../include/CsvLivros.hpp"
 
 using namespace std;
-using namespace std::chrono;
 
 int main() {
     TxtLivros txtArgs;
@@ -15,8 +14,6 @@ int main() {
             nomeDatasetTeste,
             nomeDatasetOriginal,
             path;
-
-    high_resolution_clock::time_point inicio, fim;
 
     path = "../dataset/";
     nomeDataset = "dataset_simp_sem_descricao.csv";
@@ -44,31 +41,13 @@ int main() {
          // lê o csv e salva n[i] registros_ aleatórios
          dfLivros.lerCsv(nomeDatasetTeste, n[i], true, seed);  //fixme: trocar para ler dataset original
 
-         // Faz as ordenações, retorna o vetor ordenado e imprime métricas
+         // Faz as ordenações e imprime métricas
 
-         //Seta inicio da execução do algoritmo
-        //fixme: a contabilização do tempo deve ficar dentro do método ordenar, depois de criar a copia do vetor
-        //fixme: senão, ele irá contabilizar tbm o tempo para copiar o vetor
-         inicio = high_resolution_clock::now();
          //chama algoritmo de Ordenação Quicksort
-        dfLivros.ordenar(AlgOrdenacao::quicksort, true); //fixme: passar tamanho de registro
-         // Seta fim da execução do algoritmo
-         fim = high_resolution_clock::now();
+        dfLivros.ordenar(AlgOrdenacao::quicksort, true);
 
-         //salva no arquivo de saida o tempo de execução do algoritmo
-         //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
-         //arq << duration_cast<duration<double>>(fim - inicio).count() << " segundos" << endl;
-
-         //Seta inicio da execução do algoritmo
-         inicio = high_resolution_clock::now();
          //chama algoritmo de Ordenação HeapSort
         dfLivros.ordenar(AlgOrdenacao::heapsort, true); //fixme: passar tamanho de registros
-         // Seta fim da execução do algoritmo
-         fim = high_resolution_clock::now();
-
-         //salva no arquivo de saida o tempo de execução do algoritmo
-         //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
-         //arq << duration_cast<duration<double>>(fim - inicio).count() << " segundos" << endl;
 
          cout << "\n\n-------------------\n\n";
      }

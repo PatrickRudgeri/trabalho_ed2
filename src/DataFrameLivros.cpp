@@ -1,7 +1,9 @@
 #include "../include/DataFrameLivros.hpp"
 #include "../include/CsvLivros.hpp"
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 // --------------- Construtores e Destrutores ---------------- //
 
@@ -61,6 +63,7 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
 }
 
 void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas) {
+    high_resolution_clock::time_point inicio, fim;
     // Faz a alocação dos vetores que serão ordenados (cópias de registros_)
     // Executa o método de ordenação escolhido em algoritmoOrd
     if (algoritmoOrd == AlgOrdenacao::quicksort) {
@@ -70,8 +73,9 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas) {
          *   para registrosQuick_
          */
         copiarRegistros(registros_, registrosQuick_, numLinhas_);
-
+        inicio = high_resolution_clock::now();
         quickSort(0, numLinhas_ - 1);
+
     }
     if (algoritmoOrd == AlgOrdenacao::heapsort) {
         registrosHeap_ = new Registro[numLinhas_];
@@ -80,9 +84,13 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas) {
          *   para registrosHeap_
          */
         copiarRegistros(registros_, registrosHeap_, numLinhas_);
-
+        inicio = high_resolution_clock::now();
         heapSort(registrosHeap_, numLinhas_);
     }
+    fim = high_resolution_clock::now();
+    //salva no arquivo de saida o tempo de execução do algoritmo
+    //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
+    //arq << duration_cast<duration<double>>(fim - inicio).count() << " segundos" << endl;
 }
 
 // ----------------- Algorítmos de ordenação ----------------- //
