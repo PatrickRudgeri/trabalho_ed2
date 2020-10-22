@@ -3,32 +3,34 @@
 
 #include <iostream>
 
-/** Breve descrição da classe
+/** TODO: Breve descrição da classe
  *
  *  Descrição detalhada da classe
  *
  *  Atributos
  *  ----------------
  *  @attr autores_ armazena um vetor de identificadores de autores
- *  @attr rankBestsellers_ <o que é esse atributo?>
- *  @attr categorias_ <o que é esse atributo?>
- *  @attr edicao_ <o que é esse atributo?>
- *  @attr id_ <o que é esse atributo?>
- *  @attr isbn10_ <o que é esse atributo?>
- *  @attr isbn13_ <o que é esse atributo?>
- *  @attr avaliacaoMedia_ <o que é esse atributo?>
- *  @attr qtAvaliacoes_ <o que é esse atributo?>
- *  @attr titulo_ <o que é esse atributo?>
+ *  @attr rankBestsellers_ : o que é esse atributo?
+ *  @attr categorias_ : o que é esse atributo?
+ *  @attr edicao_ : o que é esse atributo?
+ *  @attr id_ : o que é esse atributo?
+ *  @attr isbn10_ : o que é esse atributo?
+ *  @attr isbn13_ : o que é esse atributo?
+ *  @attr avaliacaoMedia_ : o que é esse atributo?
+ *  @attr qtAvaliacoes_ : o que é esse atributo?
+ *  @attr titulo_ : o que é esse atributo?
  * */
 class Registro {
 public:
     /** Construtor padrão
      * */
-    Registro() {};
+    Registro();
 
-    void setAutores(std::string autoresStr);
+    virtual ~Registro();
 
-    void setAutores(int *autores);
+    void setAutores(const std::string& autoresStr);
+
+    void setAutores(const int *autores, int n);
 
     void setTodosAtributosStr(std::string *stringArray);
 
@@ -36,11 +38,11 @@ public:
 
     void setRankBestsellers(std::string rankBestsellersStr);
 
-    void setCategorias(std::string categorias);
+    void setCategorias(const std::string& categorias);
 
     void setCategorias(int *categorias);
 
-    void setId(std::string idStr);
+    void setId(const std::string& idStr);
 
     void setId(long long id);
 
@@ -73,6 +75,10 @@ public:
     const std::string &getQtAvaliacoes() const;
 
     const std::string &getTitulo() const;
+
+    // O método abaixo será utizado para comparar dois Registros, eles serão iguais se todos os campos forem iguais
+    // (poderá ser utilizada na parte 2 do trabalho para obter apenas registros diferentes)
+    bool operator==(const Registro &rhs) const;
 
 private:
     int *autores_;
