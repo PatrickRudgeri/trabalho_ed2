@@ -178,7 +178,7 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
 
             //Abaixo realizamos as trocas de dados entre duas posições no vetor
 
-            //question(OPEN): para mim, contTrocasQuick_ seria aqui e seriam 3 trocas (movimentação de dados)
+            //question: para mim, contTrocasQuick_ seria aqui e seriam 3 trocas (movimentação de dados)
             aux = registrosQuick_[dir];
             registrosQuick_[dir] = registrosQuick_[esq];
             registrosQuick_[esq] = aux;

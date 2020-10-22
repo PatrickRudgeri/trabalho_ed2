@@ -4,10 +4,50 @@
 
 using namespace std;
 
-int *splitString(std::string str, char delim = ','); //não é membro da classe
+//não é membro da classe
+/**  TODO:<Breve descrição>
+ *  @param str <o que é esse parâmetro?>
+ *  @param array <o que é esse parâmetro?>
+ *  @param delim <o que é esse parâmetro?>
+ *  @return <se tiver algum retorno descreva aqui>
+ * */
+//TODO: documentar os blocos funcionais e variáveis dentro do método
+void splitString(std::string str, int *&array, int n = -1, char delim = ',') {
+    int cont = 0;
+    stringstream ss(str);
+    string item;
+
+    //se n > 0, então aloca um vetor de tamanho n e atribui pro array passado como parametro
+    if (n > 0)
+        array = new int[n];
+
+    // se n==-1 então esse loop fará a contagem de elementos dentro da string `str`
+    while (!ss.eof()) {
+        getline(ss, item, delim);
+
+        //somente quando o array foi criado que os itens serão atribuidos
+        if (n > 0)
+            array[cont] = std::stoi(item);
+        cont++;
+    }
+    // se não foi passado paramêtro nenhum para `n` então a função é chamada novamente contendo o valor de n que
+    // foi contabilizado
+    if (n == -1)
+        splitString(str, array, cont);
+}
+
+Registro::Registro() {
+    autores_ = nullptr;
+    categorias_ = nullptr;
+    id_ = -1;
+}
+
+Registro::~Registro() {
+    delete[] autores_;
+    delete[] categorias_;
+}
 
 void Registro::setTodosAtributosStr(string *stringArray) {
-    cout << stringArray[9] << endl; //fixme: retirar esse debug
     setAutores(stringArray[0]);
     setRankBestsellers(stringArray[1]);
     setCategorias(stringArray[2]);
@@ -21,13 +61,17 @@ void Registro::setTodosAtributosStr(string *stringArray) {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
-void Registro::setAutores(string autoresStr) {
-    string stripStr = autoresStr.substr(1, autoresStr.length() - 1);
-    autores_ = splitString(stripStr);
+void Registro::setAutores(const string& autoresStr) {
+
+    string stripStr = autoresStr.substr(1, autoresStr.length() - 2);
+    if (!stripStr.empty())
+        splitString(stripStr, autores_);
 }
 
-void Registro::setAutores(int *autores) {
-    autores_ = autores;
+void Registro::setAutores(const int *autores, int n) {
+    for (int i = 0; i < n; i++) {
+        autores_[i] = autores[i];
+    }
 }
 
 void Registro::setRankBestsellers(std::string rankBestsellersStr) {
@@ -35,9 +79,10 @@ void Registro::setRankBestsellers(std::string rankBestsellersStr) {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
-void Registro::setCategorias(std::string categorias) {
-    string stripStr = categorias.substr(1, categorias.length() - 1);
-    categorias_ = splitString(stripStr);
+void Registro::setCategorias(const std::string& categorias) {
+    string stripStr = categorias.substr(1, categorias.length() - 2);
+    if (!stripStr.empty())
+        splitString(stripStr, categorias_);
 }
 
 void Registro::setCategorias(int *categorias) {
@@ -49,7 +94,7 @@ void Registro::setEdicao(string edicao) {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
-void Registro::setId(string idStr) {
+void Registro::setId(const string& idStr) {
     id_ = stoll(idStr);
 }
 
@@ -117,20 +162,16 @@ const string &Registro::getTitulo() const {
     return titulo_;
 }
 
-/**  <Breve descrição>
- *  @param str <o que é esse parâmetro?>
- *  @param delim <o que é esse parâmetro?>
- *  @return <se tiver algum retorno descreva aqui>
- * */
-//TODO: documentar os blocos funcionais e variáveis dentro do método
-int *splitString(std::string str, char delim) {
-    std::stringstream ss(str);
-    std::string item;
-    auto *itens = new std::vector<int>; //question: é possivel implementar sem std::vector?
-    while (true) {
-        if (ss.eof()) break;
-        getline(ss, item, delim);
-        itens->push_back(stoi(item));
-    }
-    return itens->data();
+//fixme: corrigir comparações de arrays
+bool Registro::operator==(const Registro &rhs) const {
+    return autores_ == rhs.autores_ &&
+           rankBestsellers_ == rhs.rankBestsellers_ &&
+           categorias_ == rhs.categorias_ &&
+           edicao_ == rhs.edicao_ &&
+           id_ == rhs.id_ &&
+           isbn10_ == rhs.isbn10_ &&
+           isbn13_ == rhs.isbn13_ &&
+           avaliacaoMedia_ == rhs.avaliacaoMedia_ &&
+           qtAvaliacoes_ == rhs.qtAvaliacoes_ &&
+           titulo_ == rhs.titulo_;
 }
