@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Registro.hpp"
+#include "TxtLivros.hpp"
 
 /** Constantes que representam os algorítmos disponíveis para ordenação
  * */
@@ -52,16 +53,17 @@ public:
      *  @param aleatorio : indica se os Registros serão lidos de forma aleatória ou não
      *  @param seed : semente do gerador aleatório
      * */
-    void lerCsv(const std::string &nomeArquivo, int numLinhas = -1, bool aleatorio = false, int seed = 42);
+    void lerCsv(const std::string &nomeArquivo, int numLinhas = -1, bool aleatorio = false, unsigned int seed = 42);
 
     /**  Ordenar o vetor interno de registros
      *
      *  @param algoritmoOrd : indica qual algoritmo de ordenação>
-     *  @param imprimeMetricas : indica se irá imprimir metricas no terminal
+     *  @param logMetricas : indica se irá imprimir metricas no terminal
      * */
-    void ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas = false);
+    void ordenar(AlgOrdenacao algoritmoOrd, const std::string &nomeArqSaida);
 
 private:
+    unsigned seed_;
     int numLinhas_;
     int contTrocasQuick_;
     int contTrocasHeap_;

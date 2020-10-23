@@ -3,32 +3,29 @@
 
 #include <iostream>
 
-/** TODO: Breve descrição da classe
- *
- *  Descrição detalhada da classe
+/** Armazena um registro/livro do dataset e possui métodos para manipulação dos mesmos
  *
  *  Atributos
  *  ----------------
- *  @attr autores_ armazena um vetor de identificadores de autores
+ *  @attr autores_ : armazena um vetor de identificadores de autores
  *  @attr rankBestsellers_ : o que é esse atributo?
- *  @attr categorias_ : o que é esse atributo?
- *  @attr edicao_ : o que é esse atributo?
- *  @attr id_ : o que é esse atributo?
- *  @attr isbn10_ : o que é esse atributo?
- *  @attr isbn13_ : o que é esse atributo?
- *  @attr avaliacaoMedia_ : o que é esse atributo?
- *  @attr qtAvaliacoes_ : o que é esse atributo?
- *  @attr titulo_ : o que é esse atributo?
+ *  @attr categorias_ : armazena um vetor de identificadores de categorias
+ *  @attr edicao_ : edição do livro
+ *  @attr id_ : id do livro
+ *  @attr isbn10_ : isbn10 atribuido ao registro
+ *  @attr isbn13_ : isbn13 atribuido ao registro
+ *  @attr avaliacaoMedia_ : avaliação média do livro
+ *  @attr qtAvaliacoes_ : quantidae de avaliacoes
+ *  @attr titulo_ : titulo do livro
  * */
 class Registro {
 public:
-    /** Construtor padrão
-     * */
+    //Construtor padrão
     Registro();
 
     virtual ~Registro();
 
-    void setAutores(const std::string& autoresStr);
+    void setAutores(const std::string &autoresStr);
 
     void setAutores(const int *autores, int n);
 
@@ -38,11 +35,11 @@ public:
 
     void setRankBestsellers(std::string rankBestsellersStr);
 
-    void setCategorias(const std::string& categorias);
+    void setCategorias(const std::string &categorias);
 
     void setCategorias(int *categorias);
 
-    void setId(const std::string& idStr);
+    void setId(const std::string &idStr);
 
     void setId(long long id);
 
@@ -75,10 +72,12 @@ public:
     const std::string &getQtAvaliacoes() const;
 
     const std::string &getTitulo() const;
-
-    // O método abaixo será utizado para comparar dois Registros, eles serão iguais se todos os campos forem iguais
-    // (poderá ser utilizada na parte 2 do trabalho para obter apenas registros diferentes)
+/*
+    //Se for verificar se uma instancia de Registro é igual a outra, usar esse método
     bool operator==(const Registro &rhs) const;
+*/
+    //Se atribuir uma instancia de Registro em outra a classe usa esse método
+    Registro &operator=(const Registro &rhs);
 
 private:
     int *autores_;
