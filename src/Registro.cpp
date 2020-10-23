@@ -79,7 +79,7 @@ void Registro::setRankBestsellers(std::string rankBestsellersStr) {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
-void Registro::setCategorias(const std::string &categorias) {
+void Registro::setCategorias(const std::string & categorias) {
     string stripStr = categorias.substr(1, categorias.length() - 2);
     if (!stripStr.empty())
         splitString(stripStr, categorias_);
@@ -94,7 +94,7 @@ void Registro::setEdicao(string edicao) {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
-void Registro::setId(const string &idStr) {
+void Registro::setId(const string & idStr) {
     id_ = stoll(idStr);
 }
 
