@@ -1,6 +1,7 @@
 #include <fstream> //ifstream
 #include <sstream> //stringstream
 #include <algorithm> //std::replace
+#include <random>
 #include "../include/CsvLivros.hpp"
 
 using namespace std;
@@ -42,14 +43,15 @@ void CsvLivros::processarLinha(const std::string &linha, int numRegistro) {
     registros_[numRegistro].setTodosAtributosStr(camposTemp);
 }
 
-void CsvLivros::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, int seed) {
+void CsvLivros::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio, unsigned int seed) {
     std::string linha;  // armazenará a linha atual
     std::string linhaTemp;  // utilizado como auxiliar para tratar as quebras de linha do CSV
     int numRegistro;  // contador de registros/linhas
     int posRandom;  // armazenará uma posição randômica contida no arquivo
     int tamArq;  // tamanho do arquivo
 
-    srand(seed);  // semente de randomizão
+    // inicializando a engine de randomização com o seed
+    std::default_random_engine myRandomEngine(seed);
 
     std::ifstream arquivo(nomeArquivo);
 
@@ -71,7 +73,10 @@ void CsvLivros::lerCsv(const string &nomeArquivo, int numLinhas, bool aleatorio,
             if (numRegistro == numLinhas) {
                 break;
             }
-            posRandom = rand() % (tamArq - 1);
+            // utilizando uma distribuição uniforme para gerar valores entre 0 e tamArq-1
+            std::uniform_int_distribution<int> myUnifIntDist(0, tamArq-1);
+            posRandom = myUnifIntDist(myRandomEngine);
+
             // acessa a posição, definida por `posRandom`, do arquivo
             arquivo.seekg(posRandom);
             //lê até o final da linha

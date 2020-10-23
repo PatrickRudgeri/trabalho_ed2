@@ -30,7 +30,7 @@ public:
      *  @param aleatorio <o que é esse parâmetro?>
      *  @param seed <o que é esse parâmetro?>
      * */
-    void lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio = false, int seed = -1);
+    void lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio = false, unsigned int seed = 42);
 
 private:
     std::string nomeArquivo_;

@@ -1,17 +1,13 @@
 #include <sstream>  //stringstream
 #include <vector>
+#include <cassert>
 #include "../include/Registro.hpp"
 
 using namespace std;
 
-//não é membro da classe
-/**  TODO:<Breve descrição>
- *  @param str <o que é esse parâmetro?>
- *  @param array <o que é esse parâmetro?>
- *  @param delim <o que é esse parâmetro?>
- *  @return <se tiver algum retorno descreva aqui>
- * */
-//TODO: documentar os blocos funcionais e variáveis dentro do método
+
+// ------------------- Funções auxiliares -------------------- //
+
 void splitString(std::string str, int *&array, int n = -1, char delim = ',') {
     int cont = 0;
     stringstream ss(str);
@@ -26,8 +22,11 @@ void splitString(std::string str, int *&array, int n = -1, char delim = ',') {
         getline(ss, item, delim);
 
         //somente quando o array foi criado que os itens serão atribuidos
-        if (n > 0)
-            array[cont] = std::stoi(item);
+        if (n > 0) {
+            if (!item.empty() && item.length() > 1) {
+                array[cont] = std::stoi(item);
+            }
+        }
         cont++;
     }
     // se não foi passado paramêtro nenhum para `n` então a função é chamada novamente contendo o valor de n que
@@ -36,6 +35,8 @@ void splitString(std::string str, int *&array, int n = -1, char delim = ',') {
         splitString(str, array, cont);
 }
 
+// --------------- Construtores e Destrutores ---------------- //
+
 Registro::Registro() {
     autores_ = nullptr;
     categorias_ = nullptr;
@@ -43,9 +44,11 @@ Registro::Registro() {
 }
 
 Registro::~Registro() {
-//    delete[] autores_;
-//    delete[] categorias_;
+    delete[] autores_;
+    delete[] categorias_;
 }
+
+// -------------------------- Sets --------------------------- //
 
 void Registro::setTodosAtributosStr(string *stringArray) {
     setAutores(stringArray[0]);
@@ -64,8 +67,9 @@ void Registro::setTodosAtributosStr(string *stringArray) {
 void Registro::setAutores(const string &autoresStr) {
 
     string stripStr = autoresStr.substr(1, autoresStr.length() - 2);
-    if (!stripStr.empty())
+    if (!stripStr.empty() && stripStr.length() > 1) {
         splitString(stripStr, autores_);
+    }
 }
 
 void Registro::setAutores(const int *autores, int n) {
@@ -79,10 +83,11 @@ void Registro::setRankBestsellers(std::string rankBestsellersStr) {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
-void Registro::setCategorias(const std::string & categorias) {
+void Registro::setCategorias(const std::string &categorias) {
     string stripStr = categorias.substr(1, categorias.length() - 2);
-    if (!stripStr.empty())
+    if (!stripStr.empty() && stripStr.length() > 1) {
         splitString(stripStr, categorias_);
+    }
 }
 
 void Registro::setCategorias(int *categorias) {
@@ -94,7 +99,8 @@ void Registro::setEdicao(string edicao) {
 }
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
-void Registro::setId(const string & idStr) {
+void Registro::setId(const string &idStr) {
+    assert(isdigit(idStr[0]));
     id_ = stoll(idStr);
 }
 
@@ -121,6 +127,8 @@ void Registro::setQtAvaliacoes(string qtAvaliacoes) {
 void Registro::setTitulo(string titulo) {
     titulo_ = titulo;
 }
+
+// --------------------------- Gets -------------------------- //
 
 int *Registro::getAutores() const {
     return autores_;
@@ -162,7 +170,11 @@ const string &Registro::getTitulo() const {
     return titulo_;
 }
 
-//fixme: corrigir comparações de arrays
+// ----------------- Sobrecarga de operadores ---------------- //
+
+/*
+//Se for verificar se uma instancia de Registro é igual a outra, usar esse método
+//obs:corrigir comparações de arrays
 bool Registro::operator==(const Registro &rhs) const {
     return autores_ == rhs.autores_ &&
            rankBestsellers_ == rhs.rankBestsellers_ &&
@@ -175,3 +187,23 @@ bool Registro::operator==(const Registro &rhs) const {
            qtAvaliacoes_ == rhs.qtAvaliacoes_ &&
            titulo_ == rhs.titulo_;
 }
+*/
+
+///*
+//Se atribuir uma instancia de Registro em outra a classe usa esse método
+Registro &Registro::operator=(const Registro &rhs) {
+    if (&rhs != this) {
+//        setAutores(rhs.autores_); //TODO
+        rankBestsellers_ = rhs.rankBestsellers_;
+//        categorias_ = rhs.categorias_;//TODO
+        edicao_ = rhs.edicao_;
+        id_ = rhs.id_;
+        isbn10_ = rhs.isbn10_;
+        isbn13_ = rhs.isbn13_;
+        avaliacaoMedia_ = rhs.avaliacaoMedia_;
+        qtAvaliacoes_ = rhs.qtAvaliacoes_;
+        titulo_ = rhs.titulo_;
+    }
+    return *this;
+}
+//*/

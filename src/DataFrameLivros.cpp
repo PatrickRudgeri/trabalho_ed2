@@ -1,6 +1,9 @@
 #include "../include/DataFrameLivros.hpp"
 #include "../include/CsvLivros.hpp"
+#include "../include/TxtLivros.hpp"
 #include <chrono>
+#include <iomanip>
+#include <fstream>
 
 using namespace std;
 using namespace std::chrono;
@@ -13,10 +16,6 @@ DataFrameLivros::DataFrameLivros() {
     registrosHeap_ = nullptr;
     registrosQuick_ = nullptr;
     numLinhas_ = 0;
-    contTrocasQuick_ = 0;
-    contTrocasHeap_ = 0;
-    contComparacoesHeap_ = 0;
-    contComparacoesQuick_ = 0;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -52,8 +51,9 @@ void copiarRegistros(Registro *vetorOriginal, Registro *vetorCopia, int n) {
 
 // --------------------- Métodos públicos -------------------- //
 
-void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio, int seed) {
+void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio, unsigned int seed) {
     numLinhas_ = numLinhas;
+    seed_ = seed;
     // aloca um vetor de Registros de tamanho `numLinhas`
     registros_ = new Registro[numLinhas];
     // o construtor de CsvLivros recebe um vetor de registros (vazio)
@@ -62,8 +62,17 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
     csv.lerCsv(nomeArquivo, numLinhas, aleatorio, seed);
 }
 
-void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas) {
+void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSaida) {
     high_resolution_clock::time_point inicio, fim;
+    //zerando contadores
+    contTrocasQuick_ = 0;
+    contTrocasHeap_ = 0;
+    contComparacoesHeap_ = 0;
+    contComparacoesQuick_ = 0;
+
+    // ofstream para concatenar as métricas no arquivo de saida
+    ofstream outStream(nomeArqSaida, ios::app);
+
     // Faz a alocação dos vetores que serão ordenados (cópias de registros_)
     // Executa o método de ordenação escolhido em algoritmoOrd
     if (algoritmoOrd == AlgOrdenacao::quicksort) {
@@ -73,9 +82,14 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas) {
          *   para registrosQuick_
          */
         copiarRegistros(registros_, registrosQuick_, numLinhas_);
+
         inicio = high_resolution_clock::now();
         quickSort(0, numLinhas_ - 1);
+        fim = high_resolution_clock::now();
 
+        //concatenando métricas:
+        outStream << "Q\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoesQuick_ << "\t" << contTrocasQuick_
+                  << "\t";
     }
     if (algoritmoOrd == AlgOrdenacao::heapsort) {
         registrosHeap_ = new Registro[numLinhas_];
@@ -84,13 +98,20 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, bool imprimeMetricas) {
          *   para registrosHeap_
          */
         copiarRegistros(registros_, registrosHeap_, numLinhas_);
+
         inicio = high_resolution_clock::now();
         heapSort(registrosHeap_, numLinhas_);
+        fim = high_resolution_clock::now();
+
+        //concatenando métricas:
+        outStream << "H\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoesHeap_ << "\t" << contTrocasHeap_
+                  << "\t";
     }
-    fim = high_resolution_clock::now();
+
+    //logs de métricas:
     //salva no arquivo de saida o tempo de execução do algoritmo
-    //arq << "Tempo de execucao:: "; //fixme: alterar arq para o arquivo de saida ou usar um método de "salvar saida"
-    //arq << duration_cast<duration<double>>(fim - inicio).count() << " segundos" << endl;
+    outStream << to_string(duration_cast<duration<double>>(fim - inicio).count()) << endl;
+    outStream.close();
 }
 
 // ----------------- Algorítmos de ordenação ----------------- //
@@ -150,7 +171,7 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
     int dir = posFim;
 
     //Variável auxiliar para armazenar as trocas de posições
-    Registro aux; //question: qual o tipo correto dessa variavel?
+//    Registro aux; //question: qual o tipo correto dessa variavel?
 
     /**
      *  A primeira partição é percorrida da esquerda para direita enquanto o elemento no indice < pivô
@@ -158,7 +179,6 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
      *  A segunda partição  é percorrida da direita para esquerda enquanto o elemento no indice > pivo
      */
     while (esq < dir) {
-        contTrocasQuick_++; //question: contabiliza trocas aqui? para mim seria abaixo
         while (registrosQuick_[esq].getTitulo() < registrosQuick_[pivo].getTitulo()) {
             contComparacoesQuick_++;
             esq++;
@@ -169,12 +189,9 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
             dir--;
         }
         if (esq <= dir) {
-
-
-            //Abaixo realizamos as trocas de dados entre duas posições no vetor
-
-            //question: para mim, contTrocasQuick_ seria aqui e seriam 3 trocas (movimentação de dados)
-            aux = registrosQuick_[dir];
+            //Abaixo é realizado as trocas de dados entre duas posições no vetor
+            contTrocasQuick_ += 3;
+            Registro aux = registrosQuick_[dir];
             registrosQuick_[dir] = registrosQuick_[esq];
             registrosQuick_[esq] = aux;
         }
@@ -196,10 +213,10 @@ void DataFrameLivros::quickSort(int posIni, int posFim) {
      *  array inteiro já tenha sido percorrido (esquerda >= direita).
      *
      * */
-    if (posFim - posIni > 0) {
+    if (posIni < posFim) {
         int q = particionamentoQuick(posIni, posFim); //realiza a partição
         quickSort(posIni, q - 1); //ordena a partição esquerda
-        quickSort(q, posFim); //ordena a partição direita
+        quickSort(q + 1, posFim); //ordena a partição direita
     }
 }
 
@@ -230,7 +247,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
      *
      * */
     if ((filho_esq < n) and (registrosHeap[filho_esq].getTitulo() > registrosHeap[raiz].getTitulo())) {
-        contComparacoesHeap_ = contComparacoesHeap_ + 1;
+        contComparacoesHeap_++;
         //Se o filho esquerdo for maior que a raiz
         maior = filho_esq;
     } else {
@@ -239,7 +256,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
     }
     if ((filho_dir < n) and (registrosHeap[filho_dir].getTitulo() > registrosHeap[maior].getTitulo())) {
         //Se o filho direito for maior do que a maior até agora
-        contComparacoesHeap_ = contComparacoesHeap_ + 1;
+        contComparacoesHeap_++;
         maior = filho_dir;
     }
     if (maior != raiz) {
@@ -248,7 +265,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
          * e repita o processo para o filho envolvido na troca
          *
          */
-        contTrocasHeap_ = contTrocasHeap_ + 1;
+        contTrocasHeap_ += 3;
         Registro aux = registrosHeap[raiz];
         registrosHeap[raiz] = registrosHeap[maior];
         registrosHeap[maior] = aux;
@@ -274,7 +291,6 @@ void DataFrameLivros::heapSort(Registro *registrosHeap, int n) {
 
     //Extraia um elemento do Heap um por um
     for (int i = n - 1; i >= 0; i--) {
-        contTrocasHeap_ = contTrocasHeap_ + 1;
         /*
          * A variável auxilar recebe o novo nó a ser inserido para realizar a troca
          * Troca-se então o item na posição 1 do vetor (raiz do heap) com o item da posição i
@@ -282,6 +298,7 @@ void DataFrameLivros::heapSort(Registro *registrosHeap, int n) {
          * Os passos anteriores são repetidos até que reste apenas um elemento.
          *
          * */
+        contTrocasHeap_ += 3;
         Registro aux = registrosHeap[i];
         registrosHeap[i] = registrosHeap[0];
         registrosHeap[0] = aux;
