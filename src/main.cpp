@@ -36,7 +36,7 @@ int main() {
             // Faz as ordenações e imprime métricas
 
             //chama algoritmo de Ordenação Quicksort
-//            dfLivros.ordenar(AlgOrdenacao::quicksort, true);  //TODO: falta testar
+            dfLivros.ordenar(AlgOrdenacao::quicksort, true);  //TODO: falta testar
 //
 //            //chama algoritmo de Ordenação HeapSort
 //            dfLivros.ordenar(AlgOrdenacao::heapsort, true);  //TODO: falta testar

@@ -142,10 +142,10 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
     }
 
     //variavel pivo é o elemento central da entrada de dados
-    string pivo;
+    int pivo;
 
     //a variável pivo recebe o titulo localizado no indice mediaDeTres de registrosQuick_
-    pivo = registrosQuick_[mediaDeTres].getTitulo();
+    pivo = mediaDeTres;
     int esq = posIni;
     int dir = posFim;
 
@@ -159,22 +159,17 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
      */
     while (esq < dir) {
         contTrocasQuick_++; //question: contabiliza trocas aqui? para mim seria abaixo
-        while (registrosQuick_[esq].getTitulo() < pivo) {
+        while (registrosQuick_[esq].getTitulo() < registrosQuick_[pivo].getTitulo()) {
             contComparacoesQuick_++;
             esq++;
         }
 
-        while (registrosQuick_[dir].getTitulo() > pivo) {
+        while (registrosQuick_[dir].getTitulo() > registrosQuick_[pivo].getTitulo()) {
             contComparacoesQuick_++;
             dir--;
         }
         if (esq <= dir) {
-            if (dir == pontoMedio) {
-                pontoMedio = esq; //question: vai contabilizar essas comparações? acredito que não porque não está comparando chaves.
-            }
-            if (esq == pontoMedio) {
-                pontoMedio = dir;
-            }
+
 
             //Abaixo realizamos as trocas de dados entre duas posições no vetor
 
@@ -187,7 +182,7 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
         dir--;
     }
 
-    return pontoMedio + 1;
+    return dir + 1;
 
 }
 
