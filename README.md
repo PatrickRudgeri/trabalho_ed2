@@ -4,7 +4,7 @@
 ## Parte 1 
 
 ## Instruções para executar o programa
-1. Colocar o dataset do diretório dataset/ 
+1. Colocar o dataset no diretório dataset/ 
 2. executar o comando: `cd bin && ./trabalho_ed2 <nomeDataset>.csv`. 
 
 Obs: 
