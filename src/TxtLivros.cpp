@@ -28,6 +28,8 @@ void TxtLivros::lerEntrada(int *x, int *&n, const std::string &nomeArqEntrada) {
     arq.close();
 }
 
+//fixme: Testando issue automation
+// labels: bug, enhancement
 void TxtLivros::lerSaida(Stats *&stats, const std::string &nomeArqSaida) {
     string linha, strExec, strStats;
     ifstream arq("../io/" + nomeArqSaida);
