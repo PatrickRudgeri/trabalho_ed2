@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "Registro.hpp"
-#include "TxtLivros.hpp"
+#include "txtLivros.hpp"
 
 /** Constantes que representam os algorítmos disponíveis para ordenação
  * */

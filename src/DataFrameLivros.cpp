@@ -1,9 +1,10 @@
 #include "../include/DataFrameLivros.hpp"
-#include "../include/CsvLivros.hpp"
-#include "../include/TxtLivros.hpp"
+#include "../include/csvLivros.hpp"
+#include "../include/txtLivros.hpp"
 #include <chrono>
 #include <iomanip>
 #include <fstream>
+#include <assert.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -56,10 +57,8 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
     seed_ = seed;
     // aloca um vetor de Registros de tamanho `numLinhas`
     registros_ = new Registro[numLinhas];
-    // o construtor de CsvLivros recebe um vetor de registros (vazio)
-    CsvLivros csv(registros_);
     //preenche o vetor registros_ com os valores lidos do csv
-    csv.lerCsv(nomeArquivo, numLinhas, aleatorio, seed);
+    csv::lerRegistros(registros_, nomeArquivo, numLinhas, aleatorio, seed);
 }
 
 void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSaida) {
@@ -72,6 +71,7 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSa
 
     // ofstream para concatenar as métricas no arquivo de saida
     ofstream outStream(nomeArqSaida, ios::app);
+    assert(outStream.is_open());//se arquivo não estiver aberto interrompe a execução
 
     // Faz a alocação dos vetores que serão ordenados (cópias de registros_)
     // Executa o método de ordenação escolhido em algoritmoOrd

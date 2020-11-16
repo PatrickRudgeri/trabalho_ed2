@@ -1,0 +1,15 @@
+#ifndef TRABALHO_ED2_CSV_H
+#define TRABALHO_ED2_CSV_H
+
+#include <iostream>
+#include "Registro.hpp"
+
+namespace csv {
+//TODO: documentar definição da função
+    void lerRegistros(Registro *registros, const std::string &nomeArquivo, int numLinhas, bool aleatorio = false,
+                      unsigned int seed = 42);
+
+    void lerAutores(const std::string &nomeArquivo);
+}
+
+#endif //TRABALHO_ED2_CSV_H

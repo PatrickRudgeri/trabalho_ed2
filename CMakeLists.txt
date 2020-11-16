@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(trabalho_ed2
         src/main.cpp
-        src/CsvLivros.cpp include/CsvLivros.hpp
+        src/csvLivros.cpp include/csvLivros.hpp
         src/DataFrameLivros.cpp include/DataFrameLivros.hpp
         src/Registro.cpp include/Registro.hpp
-        src/TxtLivros.cpp include/TxtLivros.hpp)
+        src/txtLivros.cpp include/txtLivros.hpp include/Stats.hpp src/Stats.cpp)
