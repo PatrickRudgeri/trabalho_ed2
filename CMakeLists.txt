@@ -8,4 +8,7 @@ add_executable(trabalho_ed2
         src/csvLivros.cpp include/csvLivros.hpp
         src/DataFrameLivros.cpp include/DataFrameLivros.hpp
         src/Registro.cpp include/Registro.hpp
-        src/txtLivros.cpp include/txtLivros.hpp include/Stats.hpp src/Stats.cpp)
+        src/txtLivros.cpp include/txtLivros.hpp include/Stats.hpp src/Stats.cpp
+        include/secao_2/Autor.hpp include/secao_2/Hash.hpp include/secao_2/Primo.hpp
+        src/secao_2/Autor.cpp src/secao_2/Hash.cpp src/secao_2/Primo.cpp
+        )

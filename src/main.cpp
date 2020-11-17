@@ -90,8 +90,8 @@ void secao2(string dataset) {
     const string ARQ_SAIDA = "saida.txt";
 
     seed = gerarRandomSeed();
-
-    // here
+    // Códigos aqui
+    csv::lerAutores("../dataset/authors.csv");
 }
 
 // ------------------------- Etapa 3 ------------------------- //
