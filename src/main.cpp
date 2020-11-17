@@ -3,6 +3,7 @@
 #include <random>
 #include <cassert>
 #include "../include/DataFrameLivros.hpp"
+#include "../include/csvLivros.hpp"
 
 #define ITER 5  // número de iterações por algoritmo de ordenação
 #define ORD_ALGS 2 // número de algoritmos de ordenação que serão testados
@@ -30,8 +31,8 @@ int main(int argc, char **argv, char **argp) {
 
     //TODO: Criar menu interativo aqui
 
-    secao1(dataset);
-//    secao2(dataset);
+//    secao1(dataset);
+    secao2(dataset);
 //    secao3(dataset);
 
     return 0;
