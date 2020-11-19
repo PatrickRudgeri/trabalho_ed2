@@ -3,10 +3,12 @@
 
 #include <iostream>
 #include "Registro.hpp"
+#include "DataFrameLivros.hpp"
 
 namespace csv {
 //TODO: documentar definição da função
-    void lerRegistros(Registro *registros, const std::string &nomeArquivo, int numLinhas, bool aleatorio = false,
+
+    void lerRegistros(DataFrameLivros *df, const std::string &nomeArquivo, int numLinhas, bool aleatorio = false,
                       unsigned int seed = 42);
 
     void lerAutores(const std::string &nomeArquivo);

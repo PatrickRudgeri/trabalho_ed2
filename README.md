@@ -16,6 +16,52 @@ trocar `<nomeDataset>.csv` pelo nome do dataset. Se o nome do dataset possui esp
 - N° de cópias de registros realizadas;
 - Tempo total gasto (processamento);
 
+## Estrutura do projeto:
+
+<pre><span style="background-color:#00AA00"><font color="#A000AA">trabalho_ed2</font></span>
+├── <font color="#5555FF"><b>bin</b></font>
+├── <font color="#55FF55"><b>CMakeLists.txt</b></font>
+├── <span style="background-color:#00AA00"><font color="#A000AA">dataset</font></span>
+│   ├── <font color="#55FF55"><b>authors.csv</b></font>
+│   ├── <font color="#55FF55"><b>dataset_simp_sem_descricao.csv</b></font>
+│   └── <font color="#55FF55"><b>small_dataset_simp_sem_descricao.csv</b></font>
+├── <span style="background-color:#00AA00"><font color="#A000AA">include</font></span>
+│   ├── <font color="#55FF55"><b>csvLivros.hpp</b></font>
+│   ├── <font color="#55FF55"><b>DataFrameLivros.hpp</b></font>
+│   ├── <font color="#55FF55"><b>Registro.hpp</b></font>
+│   ├── <font color="#5555FF"><b>secao_1</b></font>
+│   ├── <font color="#5555FF"><b>secao_2</b></font>
+│   │   ├── Autor.h
+│   │   ├── Hash.h
+│   │   └── Primo.h
+│   ├── <font color="#5555FF"><b>secao_3</b></font>
+│   ├── Stats.hpp
+│   └── <font color="#55FF55"><b>txtLivros.hpp</b></font>
+├── <span style="background-color:#00AA00"><font color="#A000AA">io</font></span>
+│   ├── <font color="#5555FF"><b>secao_1</b></font>
+│   │   ├── <font color="#55FF55"><b>entrada.txt</b></font>
+│   │   ├── saida.txt
+│   │   └── <font color="#5555FF"><b>stats</b></font>
+│   │       ├── stats_comp.txt
+│   │       ├── stats_tempo.txt
+│   │       └── stats_trocas.txt
+│   ├── <font color="#5555FF"><b>secao_2</b></font>
+│   └── <font color="#5555FF"><b>secao_3</b></font>
+├── <font color="#55FF55"><b>README.md</b></font>
+└── <span style="background-color:#00AA00"><font color="#A000AA">src</font></span>
+    ├── <font color="#55FF55"><b>csvLivros.cpp</b></font>
+    ├── <font color="#55FF55"><b>DataFrameLivros.cpp</b></font>
+    ├── <font color="#55FF55"><b>main.cpp</b></font>
+    ├── <font color="#55FF55"><b>Registro.cpp</b></font>
+    ├── <font color="#5555FF"><b>secao_1</b></font>
+    ├── <font color="#5555FF"><b>secao_2</b></font>
+    │   ├── Autor.cpp
+    │   ├── Hash.cpp
+    │   └── Primo.cpp
+    ├── <font color="#5555FF"><b>secao_3</b></font>
+    ├── Stats.cpp
+    └── <font color="#55FF55"><b>txtLivros.cpp</b></font>
+
 
 ## Entrega:
 

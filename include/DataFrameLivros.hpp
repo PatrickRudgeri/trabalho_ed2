@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include "Registro.hpp"
+#include "secao_2/HashRegistro.hpp"
+#include "secao_2/HashAutor.hpp"
 #include "txtLivros.hpp"
 
 /** Constantes que representam os algorítmos disponíveis para ordenação
@@ -52,8 +54,18 @@ public:
      *  @param numLinhas : indica a quantidade de Registros lidos
      *  @param aleatorio : indica se os Registros serão lidos de forma aleatória ou não
      *  @param seed : semente do gerador aleatório
+     *  @param hashTable : indica se registros serão armazenados em uma tabela hash ou em um vetor de registros
      * */
-    void lerCsv(const std::string &nomeArquivo, int numLinhas = -1, bool aleatorio = false, unsigned int seed = 42);
+    void lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio = true, unsigned int seed = 42,
+                bool hashTable = false);
+
+    /**  Insere um registro no dataframe
+     *
+     *  @param camposStrVet : vetor de string contendo os campos do registro
+     *  @param index : se for != 1  corresponde a posição a ser inserida no vetor registro
+     *  @return true se inseriu com sucesso, false caso contrário
+     * */
+    bool inserirRegistro(std::string *camposStrVet, int index = -1);
 
     /**  Ordenar o vetor interno de registros
      *
@@ -61,6 +73,13 @@ public:
      *  @param logMetricas : indica se irá imprimir metricas no terminal
      * */
     void ordenar(AlgOrdenacao algoritmoOrd, const std::string &nomeArqSaida);
+
+    /**  retorna o valor do atributo hashTable_
+     *
+     *  @param algoritmoOrd : indica qual algoritmo de ordenação>
+     *  @return hashTable_
+     * */
+    bool isHashTable() const;
 
 private:
     unsigned seed_;
@@ -72,6 +91,9 @@ private:
     Registro *registros_;
     Registro *registrosQuick_;
     Registro *registrosHeap_;
+    HashRegistro *hashRegistros_; //TODO: documentar
+    HashAutor *hashAutores_; //TODO: documentar
+    bool hashTable_; //TODO: documentar
 
     //métodos de ordenação
     //quicksort

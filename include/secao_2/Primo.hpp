@@ -16,29 +16,25 @@
  * */
 
 class Primo {
-private:
-    int tamanho;
-    bool *tabelaPrimos;
-
 public:
-    //Construtor da classe
-    Primo();
+    static bool *tabelaPrimos;
+    static int tamanho;
 
-    //Destrutor da classe
-    ~Primo();
-
-    /**  <Breve descrição> criatabela
+    /**  <Breve descrição> criarTabela
     *  @param n <o que é esse parametro?>
     *  @return <se tiver algum retorno descreva aqui>
     */
-    void criatabela(int n);
+    static void criarTabela(int n);
 
     /**  <Breve descrição> proxPrimo
     *  @param num <o que é esse parametro?>
     *  @return <se tiver algum retorno descreva aqui>
     */
-    int proxPrimo(int num);
+    static int proxPrimo(int num);
 
+private:
+    //Definindo construtor como privado, para impedir de instanciar a classe
+    Primo() {}
 };
 
 

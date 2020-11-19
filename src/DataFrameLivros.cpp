@@ -4,7 +4,7 @@
 #include <chrono>
 #include <iomanip>
 #include <fstream>
-#include <assert.h>
+#include <cassert>
 
 using namespace std;
 using namespace std::chrono;
@@ -16,7 +16,10 @@ DataFrameLivros::DataFrameLivros() {
     registros_ = nullptr;
     registrosHeap_ = nullptr;
     registrosQuick_ = nullptr;
+    hashRegistros_ = nullptr;
+    hashAutores_ = nullptr;
     numLinhas_ = 0;
+    hashTable_ = false;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -24,6 +27,8 @@ DataFrameLivros::~DataFrameLivros() {
     delete[] registros_;
     delete[] registrosQuick_;
     delete[] registrosHeap_;
+    delete hashRegistros_;
+    delete hashAutores_;
 }
 
 // ----------------------- Sets e Gets ----------------------- //
@@ -34,6 +39,10 @@ Registro *DataFrameLivros::getRegistros() {
 
 void DataFrameLivros::setRegistros(Registro *registros) {
     registros_ = registros;
+}
+
+bool DataFrameLivros::isHashTable() const {
+    return hashTable_;
 }
 
 // ------------------- Funções auxiliares -------------------- //
@@ -52,14 +61,53 @@ void copiarRegistros(Registro *vetorOriginal, Registro *vetorCopia, int n) {
 
 // --------------------- Métodos públicos -------------------- //
 
-void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio, unsigned int seed) {
+void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio, unsigned int seed,
+                             bool hashTable) {
     numLinhas_ = numLinhas;
     seed_ = seed;
-    // aloca um vetor de Registros de tamanho `numLinhas`
-    registros_ = new Registro[numLinhas];
-    //preenche o vetor registros_ com os valores lidos do csv
-    csv::lerRegistros(registros_, nomeArquivo, numLinhas, aleatorio, seed);
+    hashTable_ = hashTable;
+    //se essa função (lerCsv) for chamada mais de uma vez, o espaço alocado anteriormente será desalocado
+    delete hashRegistros_;
+    delete [] registros_;
+
+    // se é hashTable então aloca a tabela hash
+    if (hashTable_) {
+        hashRegistros_ = new HashRegistro(numLinhas_);
+    } else {
+        // aloca um vetor de Registros de tamanho `numLinhas`
+        registros_ = new Registro[numLinhas_];
+    }
+    //preenche o data frame com os valores lidos do csv
+    csv::lerRegistros(this, nomeArquivo, numLinhas, aleatorio, seed);
 }
+
+bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
+    bool statusInsercao = false;
+    if(hashTable_){
+        // usar Hash Table aqui
+        // será true se registro é unico, caso contrário retorna false
+        Registro reg;
+        reg.setTodosAtributosStr(camposStrVet);
+
+         statusInsercao = hashRegistros_->buscar(reg.getId()) == -1; // se busca == -1, então registro não está duplicado
+         if(statusInsercao){
+             hashRegistros_->inserir(&reg);
+         }
+//        hashAutores_->inserir();
+        //TODO: para cada registro inserido, adicionar cada autor tbm para a tabela hash de autores
+        // e para cada autor repetido, incrementrar seu contador interno
+    }
+    else if (index >= 0 && index < numLinhas_) {
+        registros_[index].setTodosAtributosStr(camposStrVet);
+        statusInsercao = true;
+    }else{
+        cout << "Erro de index na função DataFrameLivros::inserirRegistro()";
+        exit(-1);
+    }
+    return statusInsercao; //se é hashTable, tenta inserir , se já existir retorna falso, caso contrario true;
+}
+//Adicionar tbm função para buscar registro
+
 
 void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSaida) {
     high_resolution_clock::time_point inicio, fim;

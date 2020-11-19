@@ -4,6 +4,8 @@
 #include <cassert>
 #include "../include/DataFrameLivros.hpp"
 #include "../include/csvLivros.hpp"
+#include "../include/secao_2/HashRegistro.hpp"
+#include "../include/secao_2/Primo.hpp"
 
 #define ITER 5  // número de iterações por algoritmo de ordenação
 #define ORD_ALGS 2 // número de algoritmos de ordenação que serão testados
@@ -61,7 +63,7 @@ void secao1(string dataset) {
             seed = gerarRandomSeed();
 
             // lê o csv e salva n[i] registros aleatórios
-            dfLivros.lerCsv(dataset, n[i], true, seed);
+            dfLivros.lerCsv(dataset, n[i], true, seed, true);
             if (j == 0) cout << n[i] << " registros aleatorios carregados." << endl;
             // Faz as ordenações e imprime métricas
 
@@ -85,13 +87,42 @@ void secao1(string dataset) {
 // ------------------------- Etapa 2 ------------------------- //
 
 void secao2(string dataset) {
+    int N, M;
+    DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
     const string PATH_SECAO = "../io/secao_2/";
     const string ARQ_SAIDA = "saida.txt";
 
+    //remove o arquivo de saida, se existir
+    remove((PATH_SECAO + ARQ_SAIDA).c_str());
+
+    N = 50000;
+    M = 10;
+    Primo::criarTabela(N);
+
     seed = gerarRandomSeed();
-    // Códigos aqui
-    csv::lerAutores("../dataset/authors.csv");
+    /*
+    Registro *r;
+    r = new Registro[10];
+    HashRegistro h(10);
+    for (int i = 0; i < 14; i++) {
+        r[i].setId(12345678912 + i * i);
+        h.inserir(&r[i]);
+    }
+    cout << h.buscar(12345678913) << endl;
+    */
+
+    // lê o csv e salva n[i] registros aleatórios e distintos
+    dfLivros.lerCsv(dataset, N, true, seed, true);
+
+//    csv::lerAutores("../dataset/authors.csv");
+
+//    cout << "Digite o valor de N: "; cin >> N;
+//    cout << "Digite o valor de M: "; cin >> M;
+
+//    Hash h(20);
+//    h.inserir(new Autor("Nome Teste", 234));
+//    h.buscar(234);
 }
 
 // ------------------------- Etapa 3 ------------------------- //

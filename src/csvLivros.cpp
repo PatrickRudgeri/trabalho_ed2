@@ -4,6 +4,7 @@
 #include <random>
 #include "../include/csvLivros.hpp"
 
+
 using namespace std;
 
 //TODO: documentar os blocos funcionais e variáveis dentro da função
@@ -16,7 +17,7 @@ int tamanhoArquivo(ClasseStream &arq) {
 }
 
 //TODO: documentar definição da função
-void processarLinhaRegistro(Registro *registros, const string &linha, int numRegistro) {
+bool processarLinhaRegistro(DataFrameLivros *df, const string &linha, int idx) {
     int index;
     stringstream ss(linha); // converte a string para o tipo stringstream e salva em ss
     string campo;
@@ -37,8 +38,9 @@ void processarLinhaRegistro(Registro *registros, const string &linha, int numReg
     getline(ss, campo);
     //retira as aspas iniciais e finais do titulo
     camposTemp[9] = campo.substr(2, campo.length() - 4);
-    //set todos os atributos do Registro da posição numRegistro
-    registros[numRegistro].setTodosAtributosStr(camposTemp);
+
+    //tentar inserir o registro atual no data frame, retorna false caso nao seja possivel
+    return df->inserirRegistro(camposTemp, idx);
 }
 
 //TODO: documentar definição da função
@@ -58,23 +60,41 @@ int gerarRandomNum(unsigned int seed, int rangeMin, int rangeMax) {
     // inicializando a engine de randomização com o seed
     default_random_engine myRandomEngine(seed);
 
-    // utilizando uma distribuição uniforme para gerar valores entre 0 e tamArq-1
+    // utilizando uma distribuição uniforme para gerar um valor entre 0 e tamArq-1
     uniform_int_distribution<int> myUnifIntDist(rangeMin, rangeMax);
     return myUnifIntDist(myRandomEngine);
 }
 
+void gerarRandomNum(int *&vetRand, int size, unsigned int seed, int rangeMin, int rangeMax) {
+    vetRand = new int[size];
+    // inicializando a engine de randomização com o seed
+    default_random_engine myRandomEngine(seed);
+
+    // utilizando uma distribuição uniforme para gerar 'size' valores entre 0 e tamArq-1
+    uniform_int_distribution<int> myUnifIntDist(rangeMin, rangeMax);
+    for (int i = 0; i < size; i++) {
+        vetRand[i] = myUnifIntDist(myRandomEngine);
+    }
+}
+
 namespace csv {
-    void lerRegistros(Registro *registros, const string &nomeArquivo, int numLinhas, bool aleatorio,
+
+    void lerRegistros(DataFrameLivros *df, const string &nomeArquivo, int numLinhas, bool aleatorio,
                       unsigned int seed) {
         string linha;  // armazenará a linha atual
         string linhaTemp;  // utilizado como auxiliar para tratar as quebras de linha do CSV
         int numRegistro;  // contador de registros/linhas
         int posRandom;  // armazenará uma posição randômica contida no arquivo
         int tamArq;  // tamanho do arquivo
+        bool inserido; // armazena o resultado da operação de inserção no dataframe
+        int *randomNumeros = nullptr; // vetor para armazenar os numeros aleatórios
 
         ifstream arquivo(nomeArquivo);
 
         tamArq = tamanhoArquivo<ifstream>(arquivo);
+
+        gerarRandomNum(randomNumeros, numLinhas, seed, 0, tamArq - 1);
+
         numRegistro = 0;
 
         if (!arquivo.is_open()) {
@@ -91,18 +111,18 @@ namespace csv {
                 if (numRegistro == numLinhas) {
                     break;
                 }
-                posRandom = gerarRandomNum(seed, 0, tamArq - 1);
-
+                posRandom = randomNumeros[numRegistro];
                 // acessa a posição, definida por `posRandom`, do arquivo
                 arquivo.seekg(posRandom);
                 //lê até o final da linha
                 getline(arquivo, linha);
                 /**
-                 * se contem apenas um char ou não terminar com " então inicia o loop novamente e escolhe outra posição
+                 * se contem apenas um char ou não terminar com " então escolhe outra posição e inicia o loop novamente
                  * aleatória.
                  *se o if for falso a linha atual será ignorada
                 */
                 if (linha.length() < 2 || linha[linha.length() - 2] != '"') {
+                    randomNumeros[numRegistro] = gerarRandomNum(++seed, 0, tamArq - 1); //fixme: corrigir
                     continue;
                 }
             } else {
@@ -130,13 +150,20 @@ namespace csv {
             //substitui todas as quebras de linha da string
             replace(linhaTemp.begin(), linhaTemp.end(), (char) 13, ' ');
 
-            //processa a linha atual e salva na posição `numRegistro` do vetor de Registros
-            processarLinhaRegistro(registros, linhaTemp, numRegistro);
+            inserido = processarLinhaRegistro(df, linhaTemp, numRegistro);
 
-            numRegistro++;
+            //Se o registro foi inserido incrementa o contador, caso contrário busca um novo registro aleatório
+            if (inserido) {//TODO: quando inserção estiver ok, descomentar
+//
+                numRegistro++;
+            }else{
+                cout << linhaTemp << " " << numRegistro <<endl; // fixme: debug
+                randomNumeros[numRegistro] = gerarRandomNum(++seed, 0, tamArq - 1); //fixme: corrigir
+            }
         }
         //fechando o arquivo
         arquivo.close();
+//        delete [] randomNumeros;
     }
 
     //TODO question: processar authors.csv
