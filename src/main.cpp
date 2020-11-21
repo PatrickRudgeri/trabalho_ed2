@@ -6,6 +6,7 @@
 #include "../include/csvLivros.hpp"
 #include "../include/secao_2/HashRegistro.hpp"
 #include "../include/secao_2/Primo.hpp"
+#include "../include/secao_3/AVP.h"
 
 #define ITER 5  // número de iterações por algoritmo de ordenação
 #define ORD_ALGS 2 // número de algoritmos de ordenação que serão testados
@@ -34,8 +35,8 @@ int main(int argc, char **argv, char **argp) {
     //TODO: Criar menu interativo aqui
 
 //    secao1(dataset);
-    secao2(dataset);
-//    secao3(dataset);
+ //   secao2(dataset);
+    secao3(dataset);
 
     return 0;
 }
@@ -126,6 +127,32 @@ void secao2(string dataset) {
 }
 
 // ------------------------- Etapa 3 ------------------------- //
+void secao3(string dataset) {
+
+
+    int i;
+    AVP* arvoreVP = new AVP();
+
+    for (i = 0; i < 12; i++)
+    {
+        int x = rand() % 10;
+        //int x = i;
+        cout<<"Inserindo "<<x<<" -> "<<endl<<endl;
+        arvoreVP->insere(x);
+        arvoreVP->imprime_AVP();
+    }
+
+    bool achou = arvoreVP->busca(2);
+    cout<< endl << endl;
+    cout << "Achou? -> ";
+    cout << achou << endl;
+
+    cout<< arvoreVP->qtdComparacoes << endl;
+
+    cout<< arvoreVP->qtdTrocas  << endl;
+
+
+}
 
 
 // ------------------- Funções auxiliares -------------------- //

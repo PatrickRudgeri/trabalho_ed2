@@ -14,4 +14,5 @@ add_executable(trabalho_ed2
         src/DataFrameLivros.cpp include/DataFrameLivros.hpp
         src/txtLivros.cpp include/txtLivros.hpp
         include/Stats.hpp src/Stats.cpp
+        include/secao_3/noVP.h include/secao_3/AVP.h src/secao_3/noVP.cpp src/secao_3/AVP.cpp
         )
