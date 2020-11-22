@@ -1,8 +1,8 @@
-
-#ifndef TRABALHO_ED2_STATS_HPP
-#define TRABALHO_ED2_STATS_HPP
+#ifndef TRABALHO_ED2_METRICAS_HPP
+#define TRABALHO_ED2_METRICAS_HPP
 
 #include <iostream>
+#include <chrono>
 
 /* Struct para auxiliar o armazenamento das estatisticas das ordenações
  *
@@ -46,5 +46,4 @@ struct Stats {
     } metricas;
 };
 
-
-#endif //TRABALHO_ED2_STATS_HPP
+#endif //TRABALHO_ED2_METRICAS_HPP

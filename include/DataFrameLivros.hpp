@@ -10,8 +10,14 @@
 /** Constantes que representam os algorítmos disponíveis para ordenação
  * */
 enum AlgOrdenacao {
-    quicksort,
-    heapsort
+    QUICKSORT,
+    HEAPSORT
+};
+
+enum ED{
+    VETOR,
+    HASH_TABLE,
+    ARVORE
 };
 
 /** Classe que representa o dataset de Livros
@@ -54,10 +60,10 @@ public:
      *  @param numLinhas : indica a quantidade de Registros lidos
      *  @param aleatorio : indica se os Registros serão lidos de forma aleatória ou não
      *  @param seed : semente do gerador aleatório
-     *  @param hashTable : indica se registros serão armazenados em uma tabela hash ou em um vetor de registros
+     *  @param armazInterno : indica se registros serão armazenados em uma tabela hash ou em um vetor de registros
      * */
     void lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio = true, unsigned int seed = 42,
-                bool hashTable = false);
+                ED armazInterno = VETOR);
 
     /**  Insere um registro no dataframe
      *
@@ -74,10 +80,10 @@ public:
      * */
     void ordenar(AlgOrdenacao algoritmoOrd, const std::string &nomeArqSaida);
 
-    /**  retorna o valor do atributo hashTable_
+    /**  retorna o valor do atributo armazInterno_
      *
      *  @param algoritmoOrd : indica qual algoritmo de ordenação>
-     *  @return hashTable_
+     *  @return armazInterno_
      * */
     bool isHashTable() const;
 
@@ -93,7 +99,7 @@ private:
     Registro *registrosHeap_;
     HashRegistro *hashRegistros_; //TODO: documentar
     HashAutor *hashAutores_; //TODO: documentar
-    bool hashTable_; //TODO: documentar
+    ED armazInterno_; //TODO: documentar
 
     //métodos de ordenação
     //quicksort

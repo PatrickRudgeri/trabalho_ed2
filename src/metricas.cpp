@@ -1,4 +1,4 @@
-#include "../include/Stats.hpp"
+#include "../include/metricas.hpp"
 
 std::ostream &operator<<(std::ostream &os, const Stats &stats) {
     os << "alg: " << stats.alg << " n: " << stats.n << " seed: " << stats.seed << " comp: " << stats.comp

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <sstream>
-#include "Stats.hpp"
+#include "metricas.hpp"
 
 namespace txt {
 /**  Função para ler os parametros X e N do arquivo de entrada

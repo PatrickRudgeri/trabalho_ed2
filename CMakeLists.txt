@@ -10,9 +10,10 @@ add_executable(trabalho_ed2
         include/secao_2/HashRegistro.hpp src/secao_2/HashRegistro.cpp
         include/secao_2/HashAutor.hpp src/secao_2/HashAutor.cpp
         include/secao_2/Primo.hpp src/secao_2/Primo.cpp
+        include/secao_3/noVP.hpp src/secao_3/noVP.cpp
+        include/secao_3/AVP.hpp src/secao_3/AVP.cpp
         src/csvLivros.cpp include/csvLivros.hpp
         src/DataFrameLivros.cpp include/DataFrameLivros.hpp
         src/txtLivros.cpp include/txtLivros.hpp
-        include/Stats.hpp src/Stats.cpp
-        include/secao_3/noVP.h include/secao_3/AVP.h src/secao_3/noVP.cpp src/secao_3/AVP.cpp
+        include/metricas.hpp src/metricas.cpp
         )

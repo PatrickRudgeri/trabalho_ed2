@@ -1,42 +1,38 @@
-//
-// Created by Larissa on 19/11/2020.
-//
-
 #include <iostream>
 #include <cstdlib>
 #include <cassert>
+
 #define INDENT_STEP  4
 
-#include "../../include/secao_3/AVP.h"
-
+#include "../../include/secao_3/AVP.hpp"
 
 using namespace std;
 
-AVP::AVP()
-{
-    raiz = nullptr;
-    qtdComparacoes = 0;
-    qtdTrocas = 0;
-
+AVP::AVP() {
+    raiz_ = nullptr;
+    qtdComparacoes_ = 0;
+    qtdTrocas_ = 0;
 }
 
-AVP::~AVP()
-{
-    auxDestrutor(this->raiz);
+AVP::~AVP() {
+    auxDestrutor(this->raiz_);
 }
 
-// Função auxiliar do destrutor da árvore VP
-void AVP::auxDestrutor(NoVP *p)
-{
-    if(p != nullptr)
-    {
+/*
+ * Retorna PRETO se Ã© noh folha (NIL), caso contrÃ¡rio retorna s cor do noh
+ */
+Cor AVP::getCorNo(NoVP *n) {
+    return n == nullptr ? Cor::PRETO : n->getCor();
+}
+
+// Funï¿½ï¿½o auxiliar do destrutor da ï¿½rvore VP
+void AVP::auxDestrutor(NoVP *p) {
+    if (p != nullptr) {
         auxDestrutor(p->getDir());
         auxDestrutor(p->getEsq());
         free(p);
     }
 }
-
-
 
 //Propriedades da arvore vermelho preta
 
@@ -44,96 +40,77 @@ void AVP::auxDestrutor(NoVP *p)
  * Funcao que verifica a propriedade 1 (todoh no de uma arvore VP eh vermelho ou preta )
  * e desce recursivamente a arvore ate as folhas verificando cada noh
  */
-void AVP::verifica_propriedade1(NoVP* n)
-{
-    assert(n->noh_cor(n) == VERMELHO || n->noh_cor(n) == PRETO);
-    verifica_propriedade1(n->getEsq());
-    verifica_propriedade1(n->getDir());
+void AVP::verificaPropriedade1(NoVP *n) {
+    assert(getCorNo(n) == VERMELHO || getCorNo(n) == PRETO);
+    verificaPropriedade1(n->getEsq());
+    verificaPropriedade1(n->getDir());
 }
-
-
 
 /*
  * Funcao que verifica a propriedade 2 (a raiuz da arvore VP eh sempre preta )
  */
-void AVP::verifica_propriedade2(NoVP* r)
-{
-    assert(r->noh_cor(r) == PRETO);
+void AVP::verificaPropriedade2(NoVP *raiz) {
+    assert(getCorNo(raiz) == PRETO);
 }
 
 /*
- * A propriedade 3 (todas folha (NIL) eh preto eh verificada no metodo "cor NoVP::noh_cor(NoVP* n)" em noVP.cppp
+ * A propriedade 3 (todas folha (NIL) eh preto eh verificada no metodo "Cor getCorNo(NoVP* n)"
  */
 
 
 /*
  * Funcao que verifica a propriedade 4 os filhos a direita e a esquerda de um noh vermelho sao sempre pretos
  */
-void AVP::verifica_propriedade4(NoVP* n)
-{
-    if(NoVP::noh_cor(n) == VERMELHO)
-    {
-        assert(n->getEsq()->noh_cor(n) == PRETO);
-        assert(n->getDir()->noh_cor(n) == PRETO);
-        assert(n->getPai(n)->noh_cor(n) == PRETO);
+void AVP::verificaPropriedade4(NoVP *n) {
+    if (getCorNo(n) == VERMELHO) {
+        assert(getCorNo(n->getEsq()) == PRETO);
+        assert(getCorNo(n->getDir()) == PRETO);
+        assert(getCorNo(n->getPai()) == PRETO);
     }
     if (n == nullptr)
         return;
     //percorre a arvore inteira recursivamente
-    verifica_propriedade4(n->getEsq());
-    verifica_propriedade4(n->getDir());
+    verificaPropriedade4(n->getEsq());
+    verificaPropriedade4(n->getDir());
 }
+
 /*
  * Funcao que verifica a propriedade 5 da altura negra
  */
-void AVP::verifica_propriedade5(NoVP* r)
-{
-    int contador_caminho_negro = -1;
-    verifica_propriedade5_aux(r, 0, &contador_caminho_negro);
+void AVP::verificaPropriedade5(NoVP *raiz) {
+    int contadorCaminhoNegro = -1;
+    verificaPropriedade5Aux(raiz, 0, &contadorCaminhoNegro);
 }
 
-void AVP::verifica_propriedade5_aux(NoVP* n, int contador, int* contador_caminho_negro)
-{
-    if( NoVP::noh_cor(n) == PRETO)
-    {
+void AVP::verificaPropriedade5Aux(NoVP *n, int contador, int *contadorCaminhoNegro) {
+    if (getCorNo(n) == PRETO) {
         contador++;
     }
-    if (n == nullptr)
-    {
-        if (*contador_caminho_negro == -1)
-        {
-            *contador_caminho_negro = contador;
-        }
-        else
-        {
-            assert(contador == *contador_caminho_negro);
+    if (n == nullptr) {
+        if (*contadorCaminhoNegro == -1) {
+            *contadorCaminhoNegro = contador;
+        } else {
+            assert(contador == *contadorCaminhoNegro);
         }
         return;
     }
-    verifica_propriedade5_aux(n->getEsq(),  contador, contador_caminho_negro);
-    verifica_propriedade5_aux(n->getDir(), contador, contador_caminho_negro);
+    verificaPropriedade5Aux(n->getEsq(), contador, contadorCaminhoNegro);
+    verificaPropriedade5Aux(n->getDir(), contador, contadorCaminhoNegro);
 }
-
-
-
-
-
 
 /*
  * Verifica propriedades da AVP
  */
-void AVP::verifica_propriedades()
-{
-    verifica_propriedade1(raiz);
-    verifica_propriedade2(raiz);
-    verifica_propriedade4(raiz);
-    verifica_propriedade5(raiz);
+void AVP::verificaPropriedades() {
+    verificaPropriedade1(raiz_);
+    verificaPropriedade2(raiz_);
+    verificaPropriedade4(raiz_);
+    verificaPropriedade5(raiz_);
 }
-
 
 //busca e retorna o no
 
-/*NoVP* AVP::busca_no(NoVP *p, int val)
+/*NoVP* AVP::buscaNo(NoVP *p, int val)
 {
 
     if(p == NULL)
@@ -156,26 +133,18 @@ void AVP::verifica_propriedades()
         auxBusca(p->getDir(), val);
     }
 
-
 }*/
 
-NoVP* AVP::busca_no(int val) const
-{
-    NoVP *p = this->raiz;
-    if( p == nullptr)
+NoVP *AVP::buscaNo(int val) const {
+    NoVP *p = this->raiz_;
+    if (p == nullptr)
         return nullptr;
-    while (p != nullptr)
-    {
-        if (p->getInfo() == val)
-        {
+    while (p != nullptr) {
+        if (p->getInfo() == val) {
             return p;
-        }
-        else if (p->getInfo() < val)
-        {
+        } else if (p->getInfo() < val) {
             p = p->getEsq();
-        }
-        else
-        {
+        } else {
             assert(p->getInfo() > val);
             p = p->getDir();
         }
@@ -183,17 +152,12 @@ NoVP* AVP::busca_no(int val) const
     return p;
 }
 
-
-
-
 /*
  * Retorna o no maximo apartir de noh passado
  */
-NoVP* AVP::noMaximo(NoVP* n)
-{
+NoVP *AVP::noMaximo(NoVP *n) {
     assert(n != nullptr);
-    while (n->getDir() != nullptr)
-    {
+    while (n->getDir() != nullptr) {
         n = n->getDir();
     }
     return n;
@@ -203,280 +167,232 @@ NoVP* AVP::noMaximo(NoVP* n)
 /*
 * Caso 1: N eh unico noh na arvore. Neste caso, terminamos.
  */
-void AVP::deleta_caso1(NoVP* n)
-{
-    if (NoVP::getPai(n) == nullptr)
-        return;
-    else
-        deleta_caso2(n);
+void AVP::deletaCaso1(NoVP *n) {
+    if (n->getPai() != nullptr)
+        deletaCaso2(n);
 }
 
 /*
- * Caso 2: O irmão(I) é vermelho. Nesse caso, invertemos as cores do pai (P) e  do irmao (I) e, em seguida,
- giramos para a esquerda em P, transformando irmão(I) no avô de N. Observe que P tem que ser
- preto porque teve um filho vermelho. A subárvore resultante tem um caminho curto um noh
- preto, então não terminamos. Agora N tem um irmão preto e um pai vermelho, então podemos
- prosseguir para a etapa 3, 4, 5 ou 6. (Seu novo irmão é preto porque já foi filho do (I) vermelho).
- Em casos posteriores, vamos renomear N novo irmão como I.
+ * Caso 2: O irmï¿½o(I) ï¿½ vermelho. Nesse caso, invertemos as cores do pai_ (P) e  do irmao (I) e, em seguida,
+ giramos para a esquerda em P, transformando irmï¿½o(I) no avï¿½ de N. Observe que P tem que ser
+ preto porque teve um filho vermelho. A subï¿½rvore resultante tem um caminho curto um noh
+ preto, entï¿½o nï¿½o terminamos. Agora N tem um irmï¿½o preto e um pai_ vermelho, entï¿½o podemos
+ prosseguir para a etapa 3, 4, 5 ou 6. (Seu novo irmï¿½o ï¿½ preto porque jï¿½ foi filho do (I) vermelho).
+ Em casos posteriores, vamos renomear N novo irmï¿½o como I.
  */
-void AVP::deleta_caso2(NoVP* n)
-{
-    NoVP* noh_irmao = NoVP::getIrmao(n);
-    NoVP* noh_pai = NoVP::getPai(n);
+void AVP::deletaCaso2(NoVP *n) {
+    NoVP *noh_irmao = n->getIrmao();
+    NoVP *noh_pai = n->getPai();
 
-    if (NoVP::noh_cor(noh_irmao) == VERMELHO)
-    {
+    if (getCorNo(noh_irmao) == VERMELHO) {
         noh_pai->setCor(VERMELHO);
 
         noh_irmao->setCor(PRETO);
 
         if (n == noh_pai->getEsq())
-            rotacao_esquerda(noh_pai);
+            rotacaoEsquerda(noh_pai);
         else
-            rotacao_direita(noh_pai);
+            rotacaoDireita(noh_pai);
 
     }
-    deleta_caso3(n);
+    deletaCaso3(n);
 }
 
 /*
- Caso 3:  Pai (P), Irmao (I) e filhos de I são pretos. Neste caso, simplesmente repintamos I vermelho.
- O resultado eh que todos os caminhos que passam por I, que são precisamente aqueles caminhos que nao
- passam por N, tem um noh preto a menos. Como a exclusao do pai original de N fez com que
+ Caso 3:  Pai (P), Irmao (I) e filhos de I sï¿½o pretos. Neste caso, simplesmente repintamos I vermelho.
+ O resultado eh que todos os caminhos que passam por I, que sï¿½o precisamente aqueles caminhos que nao
+ passam por N, tem um noh preto a menos. Como a exclusao do pai_ original de N fez com que
  todos os caminhos que passam por N tivessem um noh preto a menos, isso equilibra as coisas.
- No entanto, todos os caminhos através de P agora têm um noh preto a menos do que os caminhos
- que não passam por P, entao a propriedade 5 (todos os caminhos de qualquer noh dado para
- seus nos folha contêm o mesmo numero de nos pretos) ainda eh violada.
+ No entanto, todos os caminhos atravï¿½s de P agora tï¿½m um noh preto a menos do que os caminhos
+ que nï¿½o passam por P, entao a propriedade 5 (todos os caminhos de qualquer noh dado para
+ seus nos folha contï¿½m o mesmo numero de nos pretos) ainda eh violada.
  Para corrigir isso, realizamos o procedimento de rebalanceamento em P, iniciando no caso 1.
  */
-void AVP:: deleta_caso3(NoVP* n)
-{
-    NoVP* noh_irmao = NoVP::getIrmao(n);
-    NoVP* noh_pai = NoVP::getPai(n);
+void AVP::deletaCaso3(NoVP *n) {
+    NoVP *noh_irmao = n->getIrmao();
+    NoVP *noh_pai = n->getPai();
 
-    if ( NoVP::noh_cor(noh_pai) == PRETO &&  NoVP::noh_cor(noh_irmao) == PRETO &&
-    noh_irmao->getEsq()->noh_cor(noh_irmao) == PRETO && noh_irmao->getDir()->noh_cor(noh_irmao) == PRETO)
-    {
+    if (getCorNo(noh_pai) == PRETO && getCorNo(noh_irmao) == PRETO &&
+        getCorNo(noh_irmao->getEsq()) == PRETO &&
+        getCorNo(noh_irmao->getDir()) == PRETO) {
         noh_irmao->setCor(VERMELHO);
-        deleta_caso1(noh_pai);
+        deletaCaso1(noh_pai);
 
-    }
-    else
-        deleta_caso4(n);
+    } else
+        deletaCaso4(n);
 }
 
-
 /*
- * Caso4: Os filhos de I(Irmao) e o I são pretos, mas Pai (P) é vermelho. Neste caso, simplesmente trocamos as cores de I e P.
- Isso nao afeta o numero de nós pretos nos caminhos que passam por I, mas adiciona um ao numero de nohs pretos
+ * Caso4: Os filhos de I(Irmao) e o I sï¿½o pretos, mas Pai (P) ï¿½ vermelho. Neste caso, simplesmente trocamos as cores de I e P.
+ Isso nao afeta o numero de nï¿½s pretos nos caminhos que passam por I, mas adiciona um ao numero de nohs pretos
  nos caminhos que passam por N, compensando o noh preto excluido nesses caminhos.
  */
-void AVP::deleta_caso4(NoVP* n)
-{
+void AVP::deletaCaso4(NoVP *n) {
 
-    NoVP* noh_irmao = NoVP::getIrmao(n);
-    NoVP* noh_pai = NoVP::getPai(n);
+    NoVP *noh_irmao = n->getIrmao();
+    NoVP *noh_pai = n->getPai();
 
-
-    if ( NoVP::noh_cor(noh_pai) == VERMELHO &&  NoVP::noh_cor(noh_irmao) == PRETO &&
-            noh_irmao->getEsq()->noh_cor(noh_irmao) == PRETO &&  noh_irmao->getDir()->noh_cor(noh_irmao) == PRETO)
-    {
+    if (getCorNo(noh_pai) == VERMELHO && getCorNo(noh_irmao) == PRETO &&
+        getCorNo(noh_irmao->getEsq()) == PRETO &&
+        getCorNo(noh_irmao->getDir()) == PRETO) {
         noh_irmao->setCor(VERMELHO);
         noh_pai->setCor(PRETO);
 
-    }
-    else
-        deleta_caso5(n);
+    } else
+        deletaCaso5(n);
 }
 
 /*
 Irmao (I) eh preto, o filho esquerdo de I eh vermelho, o filho direito de I eh preto e N eh
-o filho esquerdo de seu pai. Nesse caso, giramos para a direita em I, de modo que
-o filho esquerdo de I se torne o pai de I e o novo irmão de N. Em seguida, trocamos as
- cores de I e de seu novo pai. Todos os caminhos ainda tem o mesmo número de nohs pretos,
- mas agora N tem um irmao preto cujo filho direito eh vermelho, então caimos no caso 6.
- Nem N nem seu pai são afetados por esta transformação. (Novamente, para o caso 6, renomeamos o novo irmao de N como I.)
+o filho esquerdo de seu pai_. Nesse caso, giramos para a direita em I, de modo que
+o filho esquerdo de I se torne o pai_ de I e o novo irmï¿½o de N. Em seguida, trocamos as
+ cores de I e de seu novo pai_. Todos os caminhos ainda tem o mesmo nï¿½mero de nohs pretos,
+ mas agora N tem um irmao preto cujo filho direito eh vermelho, entï¿½o caimos no caso 6.
+ Nem N nem seu pai_ sï¿½o afetados por esta transformaï¿½ï¿½o. (Novamente, para o caso 6, renomeamos o novo irmao de N como I.)
 
 */
-void AVP::deleta_caso5(NoVP* n)
-{
-    NoVP* irmao = NoVP::getIrmao(n);
+void AVP::deletaCaso5(NoVP *n) {
+    NoVP *irmao = n->getIrmao();
 
-    // Esta instrução if eh trivial, devido ao caso 2 (mesmo que o caso 2 tenha mudado
+    // Esta instruï¿½ï¿½o if eh trivial, devido ao caso 2 (mesmo que o caso 2 tenha mudado
     // irmao do filho do irmao, o filho do irmao nao pode ser vermelho, pois
-    // nenhum pai vermelho pode ter um filho vermelho).
-    if ( NoVP::noh_cor(irmao)== PRETO)
-    {
-        // As instrucoes a seguir apenas forçam o vermelho a ficar a esquerda do
-        // esquerda do pai, ou direita da direita, então o caso seis irá girar
+    // nenhum pai_ vermelho pode ter um filho vermelho).
+    if (getCorNo(irmao) == PRETO) {
+        // As instrucoes a seguir apenas forï¿½am o vermelho a ficar a esquerda do
+        // esquerda do pai_, ou direita da direita, entï¿½o o caso seis irï¿½ girar
         // corretamente.
-        if ((n == NoVP::getPai(n)->getEsq()) && (irmao->getDir()->noh_cor(irmao) == PRETO) &&
-            (irmao->getEsq()->noh_cor(irmao) == VERMELHO))
-        {
+        if ((n == n->getPai()->getEsq()) && (getCorNo(irmao->getDir()) == PRETO) &&
+            (getCorNo(irmao->getEsq()) == VERMELHO)) {
             // Este ultimo teste tambem eh trivial devido aos casos 2-4.
             irmao->setCor(VERMELHO);
             irmao->getEsq()->setCor(PRETO);
-            rotacao_direita(irmao);
+            rotacaoDireita(irmao);
 
-        }
-        else if ((n == NoVP::getPai(n)->getDir()) && (irmao->getEsq()->noh_cor(irmao) == PRETO) &&
-                 (irmao->getDir()->noh_cor(irmao) == VERMELHO))
-        {
+        } else if ((n == n->getPai()->getDir()) && (getCorNo(irmao->getEsq()) == PRETO) &&
+                   (getCorNo(irmao->getDir()) == VERMELHO)) {
             // Este ultimo teste tambem eh trivial devido aos casos 2-4.
             irmao->setCor(VERMELHO);
             irmao->getDir()->setCor(PRETO);
-            rotacao_esquerda(irmao);
-
+            rotacaoEsquerda(irmao);
         }
     }
-    deleta_caso6(n);
+    deletaCaso6(n);
 }
+
 /*
-Irmao (I) eh preto, filho direito de I eh vermelho, e N eh o filho esquerdo do pai P .
-Neste caso, giramos a esquerda em P , de modo que I torna-se o pai de P.
+Irmao (I) eh preto, filho direito de I eh vermelho, e N eh o filho esquerdo do pai_ P .
+Neste caso, giramos a esquerda em P , de modo que I torna-se o pai_ de P.
 Em seguida, trocamos as cores de P e I e tornamos o filho certo de I preto.
-A subarvore ainda tem a mesma cor em sua raiz, então as propriedades 4
-(ambos os filhos de cada noh vermelho são pretos) e 5 (todos os caminhos
+A subarvore ainda tem a mesma Cor em sua raiz_, entï¿½o as propriedades 4
+(ambos os filhos de cada noh vermelho sï¿½o pretos) e 5 (todos os caminhos
 de qualquer noh dado para seus
-nohss folha contêm o mesmo número de nós pretos)
+nohss folha contï¿½m o mesmo nï¿½mero de nï¿½s pretos)
 nao foram violadas
 */
-void AVP::deleta_caso6(NoVP* n)
-{
-    NoVP* irmao = NoVP::getIrmao(n);
-    NoVP* pai = NoVP::getPai(n);
+void AVP::deletaCaso6(NoVP *n) {
+    NoVP *irmao = n->getIrmao();
+    NoVP *pai = n->getPai();
 
-    irmao->setCor(NoVP::noh_cor(pai));
+    irmao->setCor(getCorNo(pai));
     pai->setCor(PRETO);
 
-
-    if (n == pai->getEsq())
-    {
+    if (n == pai->getEsq()) {
         irmao->getDir()->setCor(PRETO);
-        rotacao_esquerda(pai);
-
-    }
-    else
-    {
+        rotacaoEsquerda(pai);
+    } else {
         irmao->getEsq()->setCor(PRETO);
-        rotacao_direita(pai);
-
+        rotacaoDireita(pai);
     }
 }
-
 
 /*
  * substitui um no
  */
-void AVP::substitui_no(NoVP* velho, NoVP* novo) {
+void AVP::substituiNo(NoVP *velho, NoVP *novo) {
 
-    if (NoVP::getPai(velho) == nullptr)
-    {
-        this->raiz = novo;
-    }
-    else
-    {
-        if (velho == NoVP::getPai(velho)->getEsq())
-            NoVP::getPai(velho)->setEsq(novo);
+    if (velho->getPai() == nullptr) {
+        this->raiz_ = novo;
+    } else {
+        if (velho == velho->getPai()->getEsq())
+            velho->getPai()->setEsq(novo);
         else
-            NoVP::getPai(velho)->setDir(novo);
+            velho->getPai()->setDir(novo);
     }
-    if (novo != nullptr)
-    {
-        novo->setPai(NoVP::getPai(velho));
+    if (novo != nullptr) {
+        novo->setPai(velho->getPai());
     }
 }
-
 
 /*
  * Deleta noh da AVP
  */
+void AVP::deleta(int val) {
+    NoVP *filho;
 
-
-void AVP::deleta(int val)
-{
-    NoVP* filho;
-
-    NoVP* n = busca_no(val);
+    NoVP *n = buscaNo(val);
 
     if (n == nullptr)
         return;
-    if (n->getEsq() != nullptr && n->getDir() != nullptr)
-    {
-        NoVP* pred = noMaximo(n->getEsq());
+    if (n->getEsq() != nullptr && n->getDir() != nullptr) {
+        NoVP *pred = noMaximo(n->getEsq());
         n->setInfo(pred->getInfo());
         n = pred;
     }
-    assert(n->getEsq()== nullptr || n->getDir() == nullptr);
+    assert(n->getEsq() == nullptr || n->getDir() == nullptr);
 
-    filho = n->getDir() == nullptr ? n->getEsq()  : n->getDir();
+    filho = n->getDir() == nullptr ? n->getEsq() : n->getDir();
 
-    if (NoVP::noh_cor(n) == PRETO)
-    {
-        n->setCor(NoVP::noh_cor(filho));
-        deleta_caso1(n);
+    if (getCorNo(n) == PRETO) {
+        n->setCor(getCorNo(filho));
+        deletaCaso1(n);
     }
-    substitui_no(n, filho);
+    substituiNo(n, filho);
     //free(n);
-    delete(n);
-    verifica_propriedades();
+    delete (n);
+    verificaPropriedades();
 }
-
 
 //Busca
-bool AVP::busca(int val)
-{
-    return auxBusca(raiz, val);
+bool AVP::busca(int val) {
+    return auxBusca(raiz_, val);
 }
 
-bool AVP::auxBusca(NoVP *p, int val)
-{
-    if(p == nullptr)
-    {
+bool AVP::auxBusca(NoVP *p, int val) {
+    if (p == nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
-
-
+        this->qtdComparacoes_++;
         return false;
-    }
-    else if(p->getInfo() == val)
-    {
+    } else if (p->getInfo() == val) {
 
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
         return true;
-    }
-
-    else if(val < p->getInfo())
-    {
+    } else if (val < p->getInfo()) {
 
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
         return auxBusca(p->getEsq(), val);
-    }
-    else
-    {
+    } else {
         return auxBusca(p->getDir(), val);
     }
 
 }
 
-void AVP::rotacao_esquerda(NoVP* n)
-{
+void AVP::rotacaoEsquerda(NoVP *n) {
 
     //nnovo eh noh auxiliar
-    NoVP* nnovo = n->getDir();
+    NoVP *nnovo = n->getDir();
 
     //Contabiliza troca
-    this->qtdTrocas++;
+    this->qtdTrocas_++;
 
-    //p eh noh pai do no passado
-    NoVP* p = NoVP::getPai(n);
+    //p eh noh pai_ do no passado
+    NoVP *p = n->getPai();
 
     //Contabiliza troca
-    this->qtdTrocas++;
+    this->qtdTrocas_++;
 
-    //A função assert() testa se uma expressão é true (verdadeira). Sa expressão for falsa (false),
+    //A funï¿½ï¿½o assert() testa se uma expressï¿½o ï¿½ true (verdadeira). Sa expressï¿½o for falsa (false),
     //o assert interrompe a execucao do programa.
 
     assert(nnovo != nullptr);  //Como as folhas de uma arvore vermelho-preto estao vazias,
@@ -488,64 +404,57 @@ void AVP::rotacao_esquerda(NoVP* n)
     n->setPai(nnovo);
 
     //Contabiliza troca
-    this->qtdTrocas = this->qtdTrocas+3;
+    this->qtdTrocas_ = this->qtdTrocas_ + 3;
 
-    // Lidar com outros ponteiros filho/pai.
+    // Lidar com outros ponteiros filho/pai_.
 
-    if (n->getDir() != nullptr)
-    {
+    if (n->getDir() != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
 
         n->getDir()->setPai(n);
 
         //Contabiliza troca
-        this->qtdTrocas++;
-
+        this->qtdTrocas_++;
     }
 
-    //Inicialmente n poderia ser a raiz.
-    if (p != nullptr)
-    {
-        if (n == p->getEsq())
-        {
+    //Inicialmente n poderia ser a raiz_.
+    if (p != nullptr) {
+        if (n == p->getEsq()) {
             //Contabiliza comparacao
-            this->qtdComparacoes++;
+            this->qtdComparacoes_++;
 
             p->setEsq(nnovo);
 
-        }
-        else if (n == p->getDir())
-        {
+        } else if (n == p->getDir()) {
             //Contabiliza comparacao
-            this->qtdComparacoes++;
+            this->qtdComparacoes_++;
 
             p->setDir(nnovo);
 
             //Contabiliza troca
-            this->qtdTrocas++;
+            this->qtdTrocas_++;
         }
     }
     //Contabiliza troca
-    this->qtdTrocas++;
+    this->qtdTrocas_++;
 
     nnovo->setPai(p);
 }
 
-void AVP::rotacao_direita(NoVP* n)
-{
+void AVP::rotacaoDireita(NoVP *n) {
 
     //nnovo eh um noh auxiliar
-    NoVP* nnovo = n->getEsq();
+    NoVP *nnovo = n->getEsq();
 
     //Contabiliza troca
-    this->qtdTrocas++;
+    this->qtdTrocas_++;
 
-    //p eh noh pai do no passado
-    NoVP* p = NoVP::getPai(n);
+    //p eh noh pai_ do no passado
+    NoVP *p = n->getPai();
 
     //Contabiliza troca
-    this->qtdTrocas++;
+    this->qtdTrocas_++;
 
     assert(nnovo != nullptr); //Como as folhas de uma arvore vermelho-preto estao vazias,
     //elas nao podem se tornar nos internos.
@@ -556,58 +465,50 @@ void AVP::rotacao_direita(NoVP* n)
     n->setPai(nnovo);
 
     //Contabiliza troca
-    this->qtdTrocas = this->qtdTrocas+3;
+    this->qtdTrocas_ = this->qtdTrocas_ + 3;
 
-    //Lidar com outros ponteiros filho/pai.
-    if (n->getEsq() != nullptr)
-    {
+    //Lidar com outros ponteiros filho/pai_.
+    if (n->getEsq() != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
 
         n->getEsq()->setPai(n);
 
         //Contabiliza troca
-        this->qtdTrocas++;
-
+        this->qtdTrocas_++;
     }
 
-    //Inicialmente n poderia ser a raiz.
-    if (p != nullptr)
-    {
-        if (n == p->getEsq())
-        {
+    //Inicialmente n poderia ser a raiz_.
+    if (p != nullptr) {
+        if (n == p->getEsq()) {
             //Contabiliza comparacao
-            this->qtdComparacoes++;
+            this->qtdComparacoes_++;
 
             p->setEsq(nnovo);
 
             //Contabiliza troca
-            this->qtdTrocas++;
-        }
-        else if (n == p->getDir())
-        {
+            this->qtdTrocas_++;
+        } else if (n == p->getDir()) {
             //Contabiliza comparacao
-            this->qtdComparacoes++;
+            this->qtdComparacoes_++;
 
             p->setDir(nnovo);
 
             //Contabiliza troca
-            this->qtdTrocas++;
+            this->qtdTrocas_++;
         }
     }
-
-
     nnovo->setPai(p);
 
     //Contabiliza troca
-    this->qtdTrocas++;
+    this->qtdTrocas_++;
 }
 
 //Insercao
 /*
-* A insercao começa adicionando o noh de uma maneira muito semelhante a uma insercao de arvore de pesquisa binaria
-de busca. A grande diferença eh que na arvore binaria de busca um novo noh
-eh adicionado como uma folha,que nao contem nenhuma informacao sobre cor e sem verificacao. Na arvore vermelho-preto,
+* A insercao comeï¿½a adicionando o noh de uma maneira muito semelhante a uma insercao de arvore de pesquisa binaria
+de busca. A grande diferenï¿½a eh que na arvore binaria de busca um novo noh
+eh adicionado como uma folha,que nao contem nenhuma informacao sobre Cor e sem verificacao. Na arvore vermelho-preto,
 entao, em vez disso, o novo noh eh inserido como folha e vermelho, em seguida, eh verificado se as propriedades da arvore vermelho preto
 foram violadas
 *
@@ -616,182 +517,150 @@ foram violadas
 /*
 Observa-se que:
 
-A propriedade 1 (cada nó é vermelho ou preto) e a propriedade 3 (todas as folhas são pretas) sempre são válidas.
-A propriedade 2 (a raiz é preta) é verificada e corrigida com o caso 1.
-A propriedade 4 (nós vermelhos têm apenas filhos pretos) é ameaçada apenas pela adição de um nó vermelho, repintura de um nó de preto para vermelho ou uma rotação.
-A propriedade 5 (todos os caminhos de qualquer nó dado para suas folhas têm o mesmo número de nós pretos) é ameaçada apenas pela adição de um nó preto, repintura de um nó ou uma rotação.
+A propriedade 1 (cada nï¿½ ï¿½ vermelho ou preto) e a propriedade 3 (todas as folhas sï¿½o pretas) sempre sï¿½o vï¿½lidas.
+A propriedade 2 (a raiz ï¿½ preta) ï¿½ verificada e corrigida com o caso 1.
+A propriedade 4 (nï¿½s vermelhos tï¿½m apenas filhos pretos) ï¿½ ameaï¿½ada apenas pela adiï¿½ï¿½o de um nï¿½ vermelho, repintura de um nï¿½ de preto para vermelho ou uma rotaï¿½ï¿½o.
+A propriedade 5 (todos os caminhos de qualquer nï¿½ dado para suas folhas tï¿½m o mesmo nï¿½mero de nï¿½s pretos) ï¿½ ameaï¿½ada apenas pela adiï¿½ï¿½o de um nï¿½ preto, repintura de um nï¿½ ou uma rotaï¿½ï¿½o.
 */
 
 /*
-Caso 1: O nó atual N está na raiz da árvore. Nesse caso, é repintado de preto para satisfazer a propriedade 2
- (a raiz é preta). Uma vez que isso adiciona um nó preto a cada caminho de uma vez, a propriedade 5
- (todos os caminhos de qualquer nó dado para seus nós folha contêm o mesmo número de nós pretos) não é violada.
+Caso 1: O nï¿½ atual N estï¿½ na raiz da ï¿½rvore. Nesse caso, ï¿½ repintado de preto para satisfazer a propriedade 2
+ (a raiz ï¿½ preta). Uma vez que isso adiciona um nï¿½ preto a cada caminho de uma vez, a propriedade 5
+ (todos os caminhos de qualquer nï¿½ dado para seus nï¿½s folha contï¿½m o mesmo nï¿½mero de nï¿½s pretos) nï¿½o ï¿½ violada.
 */
-void AVP::insereCaso1(NoVP* n)
-{
-    n->setCor(PRETO);
-
-
+void AVP::insereCaso1(NoVP *n) {
+    if (n != nullptr)
+        n->setCor(PRETO);
 }
 
 /*
-Caso 2: A propriedade 2 (a raiz é preta) é verificada e corrigida com o caso 1
+Caso 2: A propriedade 2 (a raiz ï¿½ preta) ï¿½ verificada e corrigida com o caso 1
 
-Sendo o pai P do noh atual preto, então a propriedade 4 (ambos os filhos de cada nó
-vermelho são pretos) é válida. A propriedade 5 (todos os caminhos de qualquer nó dado
-para seus nós folhas contêm o mesmo número de nós pretos) não está ameaçada, porque o
-novo nó N tem dois filhos folhas pretas, e ainda N sendo vermelho, os caminhos através
-de cada um de seus filhos têm o mesmo número de nós pretos que o caminho através da
+Sendo o pai P do noh atual preto, entï¿½o a propriedade 4 (ambos os filhos de cada nï¿½
+vermelho sï¿½o pretos) ï¿½ vï¿½lida. A propriedade 5 (todos os caminhos de qualquer nï¿½ dado
+para seus nï¿½s folhas contï¿½m o mesmo nï¿½mero de nï¿½s pretos) nï¿½o estï¿½ ameaï¿½ada, porque o
+novo nï¿½ N tem dois filhos folhas pretas, e ainda N sendo vermelho, os caminhos atravï¿½s
+de cada um de seus filhos tï¿½m o mesmo nï¿½mero de nï¿½s pretos que o caminho atravï¿½s da
 folha que ele substituiu, que era preto, e assim essa propriedade permanece satisfeita.
-Portanto, a árvore permanece válida.
+Portanto, a ï¿½rvore permanece vï¿½lida.
 */
-void AVP::insereCaso2()
-{
+void AVP::insereCaso2() {
 //Nao faz nada, pois a arvore continua valida.
 }
 
 /*
-Caso 3: se o pai P e o tio T são vermelhos, ambos podem ser repintados de preto e
-o avô A torna-se vermelho para manter a propriedade 5 (todos os caminhos de um
-nó para as folhas contêm o mesmo número de nós pretos) . Uma vez que qualquer
-caminho através dos pais ou tio deve passar pelo avô, o número de nós pretos
-nesses caminhos não mudou. No entanto, o avô A pode violar a Propriedade
-2 (a raiz é preta) se for a raiz ou a Propriedade 4 (ambos os filhos de cada nó vermelho são pretos)
-se ele tiver um pai vermelho. Para corrigir isso, realizamos o procedimento de reparo da árvore vermelho-preto
+Caso 3: se o pai P e o tio T sï¿½o vermelhos, ambos podem ser repintados de preto e
+o avï¿½ A torna-se vermelho para manter a propriedade 5 (todos os caminhos de um
+nï¿½ para as folhas contï¿½m o mesmo nï¿½mero de nï¿½s pretos) . Uma vez que qualquer
+caminho atravï¿½s dos pais ou tio deve passar pelo avï¿½, o nï¿½mero de nï¿½s pretos
+nesses caminhos nï¿½o mudou. No entanto, o avï¿½ A pode violar a Propriedade
+2 (a raiz ï¿½ preta) se for a raiz ou a Propriedade 4 (ambos os filhos de cada nï¿½ vermelho sï¿½o pretos)
+se ele tiver um pai vermelho. Para corrigir isso, realizamos o procedimento de reparo da ï¿½rvore vermelho-preto
 novamente em A.
 */
-
-void AVP::insereCaso3(NoVP* n)
-{
-    NoVP::getPai(n)->setCor(PRETO);
-    NoVP::getTio(n)->setCor(PRETO);
-    NoVP::getAvo(n)->setCor(VERMELHO);
-
-
+void AVP::insereCaso3(NoVP *n) {
+    n->getPai()->setCor(PRETO);
+    n->getTio()->setCor(PRETO);
+    n->getAvo()->setCor(VERMELHO);
 }
 
 /*
-Caso 4, etapa 1: O pai P é vermelho, mas o tio T é preto. Neste caso, realizamos uma rotação em P
-que muda os papéis do novo nó N e de seu pai P. E tanto P quanto N são vermelhos, então propriedade 5
-(todos os caminhos de um nó para suas folhas contêm o mesmo número de preto nós) é preservado.
- A propriedade 4 (ambos os filhos de cada nó vermelho são pretos) é restaurada na etapa 2
+Caso 4, etapa 1: O pai P ï¿½ vermelho, mas o tio T ï¿½ preto. Neste caso, realizamos uma rotaï¿½ï¿½o em P
+que muda os papï¿½is do novo nï¿½ N e de seu pai P. E tanto P quanto N sï¿½o vermelhos, entï¿½o propriedade 5
+(todos os caminhos de um nï¿½ para suas folhas contï¿½m o mesmo nï¿½mero de preto nï¿½s) ï¿½ preservado.
+ A propriedade 4 (ambos os filhos de cada nï¿½ vermelho sï¿½o pretos) ï¿½ restaurada na etapa 2
 */
+void AVP::insereCaso4(NoVP *n) {
 
-void AVP::insereCaso4(NoVP* n)
-{
+    NoVP *p = n->getPai();
+    NoVP *g = n->getAvo();
 
-    NoVP* p = NoVP::getPai(n);
-    NoVP* g = NoVP::getAvo(n);
+    if (g != nullptr) {
+        insereCorrecao(g);
 
+        if (n == p->getDir() && p == g->getEsq()) {
+            //Contabiliza comparacao
+            this->qtdComparacoes_++;
 
-    insereCorrecao(NoVP::getAvo(n));
+            rotacaoEsquerda(p);
+            n = n->getEsq();
+        } else if (n == p->getEsq() && p == g->getDir()) {
+            //Contabiliza comparacao
+            this->qtdComparacoes_++;
 
-    if (n == p->getDir() && p == g->getEsq())
-    {
-        //Contabiliza comparacao
-        this->qtdComparacoes++;
-
-        rotacao_esquerda(p);
-        n = n->getEsq();
+            rotacaoDireita(p);
+            n = n->getDir();
+        }
     }
-    else if (n == p->getEsq() && p == g->getDir())
-    {
-
-        //Contabiliza comparacao
-        this->qtdComparacoes++;
-
-        rotacao_direita(p);
-        n = n->getDir();
-    }
-
     insereCaso4etapa2(n);
 }
 
 /*
-Caso 4, etapa 2: Faz a rotação sobre o avô A,  colocando P no lugar de A e tornando P o pai
-de N e A. A é preto e seu antigo filho P é vermelho, pois a propriedade 4 foi violada.
-Trocamos então as cores de P e A.
+Caso 4, etapa 2: Faz a rotaï¿½ï¿½o sobre o avï¿½ A,  colocando P no lugar de A e tornando P o pai
+de N e A. A ï¿½ preto e seu antigo filho P ï¿½ vermelho, pois a propriedade 4 foi violada.
+Trocamos entï¿½o as cores de P e A.
 */
+void AVP::insereCaso4etapa2(NoVP *n) {
 
-void AVP::insereCaso4etapa2(NoVP* n)
-{
+    NoVP *p = n->getPai();
+    NoVP *g = n->getAvo();
+    if (g != nullptr) {
+        insereCorrecao(g);
 
-    NoVP* p = NoVP::getPai(n);
-    NoVP* g = NoVP::getAvo(n);
-
-
-    insereCorrecao(NoVP::getAvo(n));
-
-    if (n == p->getEsq())
-    {
-        //Contabiliza comparacao
-        this->qtdComparacoes++;
-        rotacao_direita(g);
-    }
-    else
-    {
-        //Contabiliza comparacao
-        this->qtdComparacoes++;
-        rotacao_esquerda(g);
+        if (n == p->getEsq()) {
+            //Contabiliza comparacao
+            this->qtdComparacoes_++;
+            rotacaoDireita(g);
+        } else {
+            //Contabiliza comparacao
+            this->qtdComparacoes_++;
+            rotacaoEsquerda(g);
+        }
+        g->setCor(VERMELHO);
     }
     p->setCor(PRETO);
-    g->setCor(VERMELHO);
 }
 
-void AVP::insereRecursivo(NoVP* r, NoVP* n)
-{
-    //Desce recursivamente na árvore ate que uma folha seja encontrada.
+void AVP::insereRecursivo(NoVP *r, NoVP *n) {
+    //Desce recursivamente na ï¿½rvore ate que uma folha seja encontrada.
 
     //se raiz nao eh nula
-    if (r != nullptr)
-    {
+    if (r != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
-        //se a info eh menor vai para esquerda
-        if (n->getInfo() < r->getInfo())
-        {
+        this->qtdComparacoes_++;
+        //se a info_ eh menor vai para esquerda
+        if (n->getInfo() < r->getInfo()) {
             //Contabiliza comparacao
-            this->qtdComparacoes++;
-            if (r->getEsq() != nullptr)
-            {
+            this->qtdComparacoes_++;
+            if (r->getEsq() != nullptr) {
                 //Contabiliza comparacao
-                this->qtdComparacoes++;
+                this->qtdComparacoes_++;
                 insereRecursivo(r->getEsq(), n);
                 return;
-            }
-            else
-            {
+            } else {
                 //Contabiliza comparacao
-                this->qtdComparacoes++;
+                this->qtdComparacoes_++;
                 r->setEsq(n);
             }
-        }
-        else     // se a info eh maior ou igual vai para direita
+        } else     // se a info_ eh maior ou igual vai para direita
         {
-            if (r->getDir() != nullptr)
-            {
+            if (r->getDir() != nullptr) {
                 //Contabiliza comparacao
-                this->qtdComparacoes++;
+                this->qtdComparacoes_++;
                 insereRecursivo(r->getDir(), n);
                 return;
-            }
-            else
-            {
+            } else {
                 //Contabiliza comparacao
-                this->qtdComparacoes++;
+                this->qtdComparacoes_++;
                 r->setDir(n);
             }
         }
     }
-
-
     //inser um novo noh n.
     n->setPai(r);
     n->setEsq(nullptr);
     n->setDir(nullptr);
     n->setCor(VERMELHO);
-
-
 }
 
 /*
@@ -802,102 +671,92 @@ Para correcao, existem varios casos de insercao da arvore vermelho-preto para li
 3) P eh vermelho (entao nao pode ser a raiz da arvore) e o tio de N (T) eh vermelho
 4) P eh vermelho e T eh preto
 */
-void AVP::insereCorrecao(NoVP* n)
-{
-    if (NoVP::getPai(n) == nullptr)
-    {
+void AVP::insereCorrecao(NoVP *n) {
+
+    if (n->getPai() == nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
         insereCaso1(n);
-    }
-    else if (NoVP::getPai(n)->getCor()== PRETO)
-    {
+    } else if (n->getPai()->getCor() == PRETO) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
         insereCaso2();
-    }
-    else if (NoVP::getTio(n) != nullptr && NoVP::getTio(n)->getCor() == VERMELHO)
-    {
+    } else if (n->getTio() != nullptr && n->getTio()->getCor() == VERMELHO) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
         insereCaso3(n);
-    }
-    else
-    {
+    } else {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
+        this->qtdComparacoes_++;
         insereCaso4(n);
     }
 }
 
-NoVP* AVP::auxinsere(NoVP* r, NoVP* n)
-{
-//Insere um novo noh na árvore atual.
+NoVP *AVP::auxinsere(NoVP *r, NoVP *n) {
+//Insere um novo noh na ï¿½rvore atual.
     insereRecursivo(r, n);
 
     //Repara a arvore no caso de qualquer uma das propriedades vermelho-preto ter sido violada.
     insereCorrecao(n);
 
-    //Encontre a nova raiz para retornar.
+    //Encontre a nova raiz_ para retornar.
     r = n;
 
     //Contabiliza troca
-    this->qtdTrocas++;
+    this->qtdTrocas_++;
 
-    while (NoVP::getPai(r) != nullptr)
-    {
+    while (r->getPai() != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes++;
-        r = NoVP::getPai(r);
+        this->qtdComparacoes_++;
+        r = r->getPai();
     }
 
     return r;
 }
 
-void AVP::insere(int val)
-{
-    NoVP* n = new NoVP();
+void AVP::insere(int val) {
+    NoVP *n = new NoVP();
     n->setCor(VERMELHO);
     n->setInfo(val);
     n->setEsq(nullptr);
     n->setDir(nullptr);
-    raiz = auxinsere(raiz, n);
+    raiz_ = auxinsere(raiz_, n);
 
 }
 
 /*
  * Imprime Arvore Vermelho-Preta
  */
-void AVP::imprime_aux(NoVP* n, int indent)
-{
+void AVP::imprimeAux(NoVP *n, int indent) {
     int i;
-    if (n == nullptr)
-    {
-        fputs("<Arvore vazia!>", stdout);
+    if (n == nullptr) {
+        fputs("<Arvore vazia_!>", stdout);
         return;
     }
-    if (n->dir != nullptr)
-    {
-        imprime_aux(n->dir, indent + INDENT_STEP);
+    if (n->getDir() != nullptr) {
+        imprimeAux(n->getDir(), indent + INDENT_STEP);
     }
-    for(i = 0; i < indent; i++)
+    for (i = 0; i < indent; i++)
         fputs(" ", stdout);
     if (n->getCor() == PRETO)
-        cout<<(int)n->info<<endl;
+        cout << (int) n->getInfo() << endl;
     else
         //noh vermelho aparece entre o simbolo "<>"
-        cout<<"<"<<(int)n->info<<">"<<endl;
-    if (n->esq != nullptr)
-    {
-        imprime_aux(n->esq, indent + INDENT_STEP);
+        cout << "<" << (int) n->getInfo() << ">" << endl;
+    if (n->getEsq() != nullptr) {
+        imprimeAux(n->getEsq(), indent + INDENT_STEP);
     }
 }
 
-void AVP::imprime_AVP()
-{
-    imprime_aux(raiz, 0);
+void AVP::imprimeAVP() {
+    imprimeAux(raiz_, 0);
     puts("");
 }
 
+int AVP::getQtdComparacoes() const {
+    return qtdComparacoes_;
+}
 
-
+int AVP::getQtdTrocas() const {
+    return qtdTrocas_;
+}

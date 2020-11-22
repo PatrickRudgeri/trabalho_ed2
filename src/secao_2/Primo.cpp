@@ -4,7 +4,7 @@
 
 using namespace std;
 
-bool *Primo::tabelaPrimos = NULL;
+bool *Primo::tabelaPrimos = nullptr;
 int Primo::tamanho = 0;
 
 //TODO: documentar os blocos funcionais e variáveis dentro do método
@@ -39,11 +39,11 @@ int Primo::proxPrimo(int num) {
     for (int i = num; i < tamanho; i++) {
         if (tabelaPrimos[i])
             return i;
-}
+    }
 
     for (int i = num; i > 0; i--) {
         if (tabelaPrimos[i])
             return i;
     }
-    return -1; // question: Essa função deve ter um retorno padrão, entãp defini -1 caso os laços acima sejam completados. VERIFICAR
+    return -1; // question: Essa função deve ter um retorno padrão, entãa defini -1 caso os laços acima sejam completados. VERIFICAR
 }

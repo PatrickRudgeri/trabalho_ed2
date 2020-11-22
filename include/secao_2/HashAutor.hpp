@@ -11,24 +11,24 @@
  *
  *  Atributos
  *  ----------------
- *  @attr tamanhoTabela <o que é esse atributo?>
+ *  @attr tamanhoTabela_ <o que é esse atributo?>
  *  @attr registro <o que é esse atributo?>
- *  @attr vazia <o que é esse atributo?>
- *  @attr *tabelaRegistros <o que é esse atributo?>
- *  @attr *tabelaAutores  <o que é esse atributo?>
+ *  @attr vazia_ <o que é esse atributo?>
+ *  @attr *tabelaRegistros_ <o que é esse atributo?>
+ *  @attr *tabelaAutores_  <o que é esse atributo?>
  *
  * */
 
 class HashAutor {
 
 private:
-    int tamanhoTabela;
-    bool vazia;
-    Autor *tabelaAutores;
+    int tamanhoTabela_;
+    bool vazia_;
+    Autor *tabelaAutores_;
 
     int funcaoHash(int ch, int i);
 
-    int calculaHash(int ch, int i);
+    int calcularHash(int ch, int i);
 
 public:
     // Construtor
@@ -42,7 +42,7 @@ public:
         *  @param nome <indica nome do Autor>
         *  @return <se tiver algum retorno descreva aqui>
         */
-    int calculaChave(std::string nome);
+    int calcularChave(std::string nome);
 
     /**  <Breve descri??o> Insere
     *  @param isbn <indica codigo unico do Livro>
@@ -50,14 +50,14 @@ public:
     *  @return <se tiver algum retorno descreva aqui>
     */
 
-    void insere(Autor *a);
+    void inserir(Autor *a);
 
     /**  <Breve descri??o> Busca
     *  @param isbn <indica codigo unico do Livro>
     *  @param nome <indica nome do Autor>
     *  @return <se tiver algum retorno descreva aqui>
     */
-    int busca(std::string nome);
+    int busca(const std::string& nome);
 };
 
 #endif // HASHAUTOR_H

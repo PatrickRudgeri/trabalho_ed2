@@ -19,7 +19,7 @@ DataFrameLivros::DataFrameLivros() {
     hashRegistros_ = nullptr;
     hashAutores_ = nullptr;
     numLinhas_ = 0;
-    hashTable_ = false;
+    armazInterno_ = ED::VETOR;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -42,7 +42,7 @@ void DataFrameLivros::setRegistros(Registro *registros) {
 }
 
 bool DataFrameLivros::isHashTable() const {
-    return hashTable_;
+    return armazInterno_;
 }
 
 // ------------------- Funções auxiliares -------------------- //
@@ -62,46 +62,63 @@ void copiarRegistros(Registro *vetorOriginal, Registro *vetorCopia, int n) {
 // --------------------- Métodos públicos -------------------- //
 
 void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio, unsigned int seed,
-                             bool hashTable) {
+                             ED armazInterno) {
     numLinhas_ = numLinhas;
     seed_ = seed;
-    hashTable_ = hashTable;
-    //se essa função (lerCsv) for chamada mais de uma vez, o espaço alocado anteriormente será desalocado
-    delete hashRegistros_;
-    delete [] registros_;
+    armazInterno_ = armazInterno;
 
     // se é hashTable então aloca a tabela hash
-    if (hashTable_) {
+    if (armazInterno_ == ED::HASH_TABLE) {
+
         hashRegistros_ = new HashRegistro(numLinhas_);
-    } else {
+
+    } else if (armazInterno_ == ED::VETOR) {
         // aloca um vetor de Registros de tamanho `numLinhas`
         registros_ = new Registro[numLinhas_];
+
+    } else if (armazInterno_ == ED::ARVORE) {
+        // TODO: Alocar Arvore aqui
     }
     //preenche o data frame com os valores lidos do csv
     csv::lerRegistros(this, nomeArquivo, numLinhas, aleatorio, seed);
 }
 
 bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
-    bool statusInsercao = false;
-    if(hashTable_){
-        // usar Hash Table aqui
-        // será true se registro é unico, caso contrário retorna false
+    bool statusInsercao;
+    if (armazInterno_ == ED::HASH_TABLE) {
         Registro reg;
         reg.setTodosAtributosStr(camposStrVet);
 
-         statusInsercao = hashRegistros_->buscar(reg.getId()) == -1; // se busca == -1, então registro não está duplicado
-         if(statusInsercao){
-             hashRegistros_->inserir(&reg);
-         }
-//        hashAutores_->inserir();
-        //TODO: para cada registro inserido, adicionar cada autor tbm para a tabela hash de autores
-        // e para cada autor repetido, incrementrar seu contador interno
-    }
-    else if (index >= 0 && index < numLinhas_) {
+        // será true se registro é unico, ou false se 'repetido
+        statusInsercao = hashRegistros_->buscar(reg.getId()) == -1;
+//        cout << "Livro único: " << (statusInsercao ? "SIM" : "NÃO") << endl; //fixme: debug
+
+        //se for livro único então inserir na tabela hash de registros, busca e os autores na tabela hash de autores
+        if (statusInsercao) {
+            hashRegistros_->inserir(&reg);
+            //TODO: para cada registro inserido, adicionar cada autor tbm para a tabela hash de autores
+            // e para cada autor repetido, incrementrar seu contador interno
+            //        hashAutores_->inserir(); //estou ajustando essas funções
+        }
+
+
+    } else if (armazInterno_ == ED::VETOR && index >= 0 && index < numLinhas_) {
+
         registros_[index].setTodosAtributosStr(camposStrVet);
         statusInsercao = true;
-    }else{
-        cout << "Erro de index na função DataFrameLivros::inserirRegistro()";
+
+    } else if (armazInterno_ == ED::ARVORE) {
+        // cria um novo registro
+        Registro reg;
+        reg.setTodosAtributosStr(camposStrVet); // preenche o obj Registro
+
+        //TODO: Inserir Nó na arvore aqui...
+        //arvoreVP->insere(reg);  // adiciona obj na árvore
+
+        statusInsercao = true; //se inserção na arvore deu tudo ok
+
+    } else {
+        cout << "Erro de index ou armazenamento não implementado na função DataFrameLivros::inserirRegistro()";
         exit(-1);
     }
     return statusInsercao; //se é hashTable, tenta inserir , se já existir retorna falso, caso contrario true;
@@ -123,7 +140,7 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSa
 
     // Faz a alocação dos vetores que serão ordenados (cópias de registros_)
     // Executa o método de ordenação escolhido em algoritmoOrd
-    if (algoritmoOrd == AlgOrdenacao::quicksort) {
+    if (algoritmoOrd == AlgOrdenacao::QUICKSORT) {
         registrosQuick_ = new Registro[numLinhas_];
         /**
          * para deixar o original intacto e armazenar cada ordenação em seu respectivo array, o vetor registros_ é copiado
@@ -139,7 +156,7 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSa
         outStream << "Q\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoesQuick_ << "\t" << contTrocasQuick_
                   << "\t";
     }
-    if (algoritmoOrd == AlgOrdenacao::heapsort) {
+    if (algoritmoOrd == AlgOrdenacao::HEAPSORT) {
         registrosHeap_ = new Registro[numLinhas_];
         /**
          * para deixar o original intacto e armazenar cada ordenação em seu respectivo array, o vetor registros_ é copiado
@@ -270,7 +287,7 @@ void DataFrameLivros::quickSort(int posIni, int posFim) {
 
 /**
  *  O método heapMax implementa um algoritmo Heap de Máximo. Construímos uma árvore binária completa
- *  de n nós tal que a chave de cada nó seja menor ou igual à chave de seu pai.
+ *  de n nós tal que a chave de cada nó seja menor ou igual à chave de seu pai_.
  *  Cada nó da arvore corresponde um elemento do array.
  *  O heap é acessado da seguinte maneira.
  *  Dado um elemento e na localização i:
@@ -288,18 +305,18 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
     int maior;
 
     /*
-     * Percorre a árvore para baixo começando na raiz, recupera quais são os nós filhos da esquerda e
+     * Percorre a árvore para baixo começando na raiz_, recupera quais são os nós filhos da esquerda e
      * da direita em chamadas recursivas até que se chegue no fim da árvore.
-     * Se o nó pai é maior ou igual que seus filhos então não é preciso fazer nada.
-     * Se não, troque o pai com o maior dos filhos e repita o processo para o filho envolvido na troca.
+     * Se o nó pai_ é maior ou igual que seus filhos então não é preciso fazer nada.
+     * Se não, troque o pai_ com o maior dos filhos e repita o processo para o filho envolvido na troca.
      *
      * */
     if ((filho_esq < n) and (registrosHeap[filho_esq].getTitulo() > registrosHeap[raiz].getTitulo())) {
         contComparacoesHeap_++;
-        //Se o filho esquerdo for maior que a raiz
+        //Se o filho esquerdo for maior que a raiz_
         maior = filho_esq;
     } else {
-        //Se não a raiz é maior que o filho esquerdo
+        //Se não a raiz_ é maior que o filho esquerdo
         maior = raiz;
     }
     if ((filho_dir < n) and (registrosHeap[filho_dir].getTitulo() > registrosHeap[maior].getTitulo())) {
@@ -309,7 +326,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
     }
     if (maior != raiz) {
         /*
-         * Se maior não é o pai, então troque o pai com o maior dos filhos
+         * Se maior não é o pai_, então troque o pai_ com o maior dos filhos
          * e repita o processo para o filho envolvido na troca
          *
          */
@@ -341,7 +358,7 @@ void DataFrameLivros::heapSort(Registro *registrosHeap, int n) {
     for (int i = n - 1; i >= 0; i--) {
         /*
          * A variável auxilar recebe o novo nó a ser inserido para realizar a troca
-         * Troca-se então o item na posição 1 do vetor (raiz do heap) com o item da posição i
+         * Troca-se então o item na posição 1 do vetor (raiz_ do heap) com o item da posição i
          * Use o procedimento Max-Heapify para reconstituir o heap
          * Os passos anteriores são repetidos até que reste apenas um elemento.
          *
@@ -350,7 +367,7 @@ void DataFrameLivros::heapSort(Registro *registrosHeap, int n) {
         Registro aux = registrosHeap[i];
         registrosHeap[i] = registrosHeap[0];
         registrosHeap[0] = aux;
-        //Chama Max Heapify com a raiz e o elemento inserido
+        //Chama Max Heapify com a raiz_ e o elemento inserido
         heapMax(registrosHeap, 0, i);
     }
 }

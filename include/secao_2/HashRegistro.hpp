@@ -11,17 +11,17 @@
  *
  *  Atributos
  *  ----------------
- *  @attr tamanhoTabela TODO: O que é esse atributo?
- *  @attr *tabelaRegistros TODO: O que é esse atributo?
- *  @attr vazia TODO: O que é esse atributo?
+ *  @attr tamanhoTabela_ TODO: O que é esse atributo?
+ *  @attr *tabelaRegistros_ TODO: O que é esse atributo?
+ *  @attr vazia_ TODO: O que é esse atributo?
  *
  * */
 class HashRegistro {
 private:
 
-    int tamanhoTabela;
-    Registro *tabelaRegistros;
-    bool vazia;
+    int tamanhoTabela_;
+    bool vazia_;
+    Registro *tabelaRegistros_;
 
     /**  TODO: breve descrição da classe
     *  @param ch : TODO: O que é esse parâmetro?

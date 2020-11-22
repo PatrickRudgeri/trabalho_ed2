@@ -6,22 +6,22 @@
 #include "../include/csvLivros.hpp"
 #include "../include/secao_2/HashRegistro.hpp"
 #include "../include/secao_2/Primo.hpp"
-#include "../include/secao_3/AVP.h"
+#include "../include/secao_3/AVP.hpp"
 
 #define ITER 5  // número de iterações por algoritmo de ordenação
 #define ORD_ALGS 2 // número de algoritmos de ordenação que serão testados
 
 using namespace std;
 
-void calcularMetricas(const int x, int *n, string pathSecao, string arquivo);
+void calcularMetricas(int x, int *n, const string& pathSecao, const string& arquivo);
 
 unsigned gerarRandomSeed();
 
-void secao1(string dataset);
+void secao1(const string& dataset);
 
-void secao2(string dataset);
+void secao2(const string& dataset);
 
-void secao3(string dataset);
+void secao3(const string& dataset);
 
 int main(int argc, char **argv, char **argp) {
     string dataset;
@@ -35,7 +35,7 @@ int main(int argc, char **argv, char **argp) {
     //TODO: Criar menu interativo aqui
 
 //    secao1(dataset);
- //   secao2(dataset);
+//       secao2(dataset);
     secao3(dataset);
 
     return 0;
@@ -43,7 +43,7 @@ int main(int argc, char **argv, char **argp) {
 
 // ------------------------- Etapa 1 ------------------------- //
 
-void secao1(string dataset) {
+void secao1(const string& dataset) {
     int x;  // Número de iterações (n)
     int *n = nullptr;  // vetor para armazenar os valores de n (qt. de registros) lidos de "entrada.txt"
     unsigned seed;  // semente de randomização
@@ -64,15 +64,15 @@ void secao1(string dataset) {
             seed = gerarRandomSeed();
 
             // lê o csv e salva n[i] registros aleatórios
-            dfLivros.lerCsv(dataset, n[i], true, seed, true);
+            dfLivros.lerCsv(dataset, n[i], true, seed, ED::VETOR);
             if (j == 0) cout << n[i] << " registros aleatorios carregados." << endl;
             // Faz as ordenações e imprime métricas
 
             //chama algoritmo de Ordenação Quicksort
-            dfLivros.ordenar(AlgOrdenacao::quicksort, PATH_SECAO + ARQ_SAIDA);
+            dfLivros.ordenar(AlgOrdenacao::QUICKSORT, PATH_SECAO + ARQ_SAIDA);
 
             //chama algoritmo de Ordenação HeapSort
-            dfLivros.ordenar(AlgOrdenacao::heapsort, PATH_SECAO + ARQ_SAIDA);
+            dfLivros.ordenar(AlgOrdenacao::HEAPSORT, PATH_SECAO + ARQ_SAIDA);
 
         }
     }
@@ -87,21 +87,26 @@ void secao1(string dataset) {
 
 // ------------------------- Etapa 2 ------------------------- //
 
-void secao2(string dataset) {
+void secao2(const string& dataset) {
     int N, M;
     DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
     const string PATH_SECAO = "../io/secao_2/";
     const string ARQ_SAIDA = "saida.txt";
+    const int tamArqAutores = 243700;
 
     //remove o arquivo de saida, se existir
     remove((PATH_SECAO + ARQ_SAIDA).c_str());
 
-    N = 50000;
-    M = 10;
-    Primo::criarTabela(N);
+    N = 10;  //deverá ser lido da entrada
+    M = 5;  //deverá ser lido da entrada
 
-    seed = gerarRandomSeed();
+    Primo::criarTabela(N);
+    HashAutor auxAutores(tamArqAutores);
+
+    seed = 3202200755;
+//    seed = gerarRandomSeed();
+    cout << "seed = " << seed << endl;
     /*
     Registro *r;
     r = new Registro[10];
@@ -114,53 +119,62 @@ void secao2(string dataset) {
     */
 
     // lê o csv e salva n[i] registros aleatórios e distintos
-    dfLivros.lerCsv(dataset, N, true, seed, true);
+//    dfLivros.lerCsv(dataset, N, true, seed, true);
 
-//    csv::lerAutores("../dataset/authors.csv");
+    csv::lerAutores("../dataset/authors.csv");
 
-//    cout << "Digite o valor de N: "; cin >> N;
-//    cout << "Digite o valor de M: "; cin >> M;
-
-//    Hash h(20);
-//    h.inserir(new Autor("Nome Teste", 234));
-//    h.buscar(234);
+//    auxAutores.inserir(new Autor("Nome Teste", 234));
+//    cout << h.busca("Nome Teste");
 }
 
 // ------------------------- Etapa 3 ------------------------- //
-void secao3(string dataset) {
+void secao3(const string& dataset) {
+    int N;
+    DataFrameLivros dfLivros;  //instancia de dfLivros
+    unsigned seed;  // semente de randomização
 
+    const string PATH_SECAO = "../io/secao_3/";
+    const string ARQ_SAIDA_BUSCA = "saidaBusca.txt";
+    const string ARQ_SAIDA_INSERCAO = "saidaInsercao.txt";
+    const string ARQ_ENTRADA = "entrada.txt";
 
+    //Copie e cole o código da seção 1 para calcular as métricas e gerar as 5 amostras aleatorias para cada N
+    seed = gerarRandomSeed();
+    dfLivros.lerCsv(dataset, N, true, seed, ED::ARVORE);
+
+    /* //Testes da VP
     int i;
-    AVP* arvoreVP = new AVP();
+    AVP *arvoreVP = new AVP();
 
-    for (i = 0; i < 12; i++)
-    {
+    for (i = 12; i >= 0; i--) {
+//    for (i = 0; i < 12; i++) {
         int x = rand() % 10;
-        //int x = i;
-        cout<<"Inserindo "<<x<<" -> "<<endl<<endl;
+//        int x = i;
+        cout << "Inserindo " << x << " -> " << endl << endl;
         arvoreVP->insere(x);
-        arvoreVP->imprime_AVP();
+        arvoreVP->imprimeAVP();
     }
 
     bool achou = arvoreVP->busca(2);
-    cout<< endl << endl;
+    cout << endl << endl;
     cout << "Achou? -> ";
     cout << achou << endl;
 
-    cout<< arvoreVP->qtdComparacoes << endl;
+    cout << "Qtd Comparacoes : " << arvoreVP->getQtdComparacoes() << endl;
 
-    cout<< arvoreVP->qtdTrocas  << endl;
+    cout << "Qtd Trocas" << arvoreVP->getQtdTrocas() << endl;
 
-
+    delete arvoreVP;
+    */
 }
 
 
 // ------------------- Funções auxiliares -------------------- //
-void calcularMetricas(const int x, int *n, string pathSecao, string arquivo) {
+void calcularMetricas(const int x, int *n, const string& pathSecao, const string& arquivo) {
     double somaQuick, somaHeap;
     auto *stats = new Stats[x * ITER * ORD_ALGS]; // x * 5 iter * 2 algs. ord.
     // lê o arquivo de saida e armazena em um vetor de Stats de tamanho x * ITER * ORD_ALGS
-    txt::lerSaida(stats, pathSecao+arquivo);
+    txt::lerSaida(stats, pathSecao + arquivo);
 
     // itera sobre as métricas armazenadas no enum metricas
     for (int m = Stats::metricas::_comp; m <= Stats::metricas::_tempo; m++) {

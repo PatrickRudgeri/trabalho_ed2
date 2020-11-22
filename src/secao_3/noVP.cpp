@@ -1,117 +1,88 @@
-//
-// Created by Larissa on 19/11/2020.
-//
+#include "../../include/secao_3/noVP.hpp"
 
-
-#include "../../include/secao_3/noVP.h"
-
-NoVP::NoVP()
-{
-    info = 0;
-    esq = nullptr;
-    dir = nullptr;
-    pai = nullptr;
-    tipocor = PRETO;
+NoVP::NoVP() {
+    info_ = 0;
+    esq_ = nullptr;
+    dir_ = nullptr;
+    pai_ = nullptr;
+    tipoCor_ = Cor::PRETO;
 }
 
-NoVP::~NoVP()
-= default;
+NoVP::~NoVP() = default;
 
 
-NoVP* NoVP::getPai(NoVP* n)
-{
+NoVP *NoVP::getPai() {
     //Pai definido como nulo para o noh raiz.
-    return n == nullptr ? nullptr : n->pai;
+    return pai_;
 }
 
-NoVP* NoVP::getAvo(NoVP* n)
-{
+NoVP *NoVP::getAvo() {
+    NoVP *p = getPai();
+    //se não tem pai, então não tem avô
+    if (p == nullptr) {
+        return nullptr;
+    }
     //retornar nullptr se for raiz ou filho da raiz
-    return getPai(getPai(n));
+    return p->getPai();
 }
 
-NoVP* NoVP::getIrmao(NoVP* n)
-{
-    NoVP* p = getPai(n);
+NoVP *NoVP::getIrmao() {
+    NoVP *p = getPai();
 
     //Nenhum Pai significa nenhum irmao.
-    if (p == nullptr)
-    {
+    if (p == nullptr) {
         return nullptr;
     }
 
-    if (n == p->esq)
-    {
-        return p->dir;
-    }
-    else
-    {
-        return p->esq;
+    if (this == p->esq_) {
+        return p->dir_;
+    } else {
+        return p->esq_;
     }
 }
 
-NoVP* NoVP::getTio(NoVP* n)
-{
-    NoVP* p = getPai(n);
+NoVP *NoVP::getTio() {
+    NoVP *p = getPai();
 
     //Irmao do pai eh o tio
-    return getIrmao(p);
+    return p->getIrmao();
 }
-
 
 
 //Sets
-void NoVP::setEsq(NoVP *p)
-{
-    esq = p;
+void NoVP::setEsq(NoVP *p) {
+    esq_ = p;
 }
-void NoVP::setInfo(int val)
-{
-    info = val;
+
+void NoVP::setInfo(int val) {
+    info_ = val;
 }
-void NoVP::setDir(NoVP *p)
-{
-    dir = p;
+
+void NoVP::setDir(NoVP *p) {
+    dir_ = p;
 }
-void NoVP::setPai(NoVP *p)
-{
-    pai = p;
+
+void NoVP::setPai(NoVP *p) {
+    pai_ = p;
 }
-void NoVP::setCor(cor c)
-{
-    tipocor = c;
+
+void NoVP::setCor(Cor c) {
+    tipoCor_ = c;
 }
 
 //Gets
-NoVP* NoVP::getEsq() const
-{
-    return esq;
-}
-int NoVP::getInfo() const
-{
-    return info;
-}
-NoVP* NoVP::getDir() const
-{
-    return dir;
+NoVP *NoVP::getEsq() const {
+    return esq_;
 }
 
-/*
- * Retorna a cor do no
- essa funcao especificamente verifica o caso no noh folha (NIL)
- */
-cor NoVP::noh_cor(NoVP* n)
-{
-    return n == nullptr ? PRETO : n->tipocor;
+int NoVP::getInfo() const {
+    return info_;
 }
 
-
-
-cor NoVP::getCor() const
-{
-    return tipocor;
+NoVP *NoVP::getDir() const {
+    return dir_;
 }
 
-
-
-
+Cor NoVP::getCor() const {
+    return tipoCor_;
+}

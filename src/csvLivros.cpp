@@ -153,20 +153,18 @@ namespace csv {
             inserido = processarLinhaRegistro(df, linhaTemp, numRegistro);
 
             //Se o registro foi inserido incrementa o contador, caso contrário busca um novo registro aleatório
-            if (inserido) {//TODO: quando inserção estiver ok, descomentar
-//
+            if (inserido) {
                 numRegistro++;
-            }else{
-                cout << linhaTemp << " " << numRegistro <<endl; // fixme: debug
+            } else {
+                cout << linhaTemp << " " << numRegistro << endl; // fixme: debug
                 randomNumeros[numRegistro] = gerarRandomNum(++seed, 0, tamArq - 1); //fixme: corrigir
             }
         }
         //fechando o arquivo
         arquivo.close();
-//        delete [] randomNumeros;
+        delete [] randomNumeros;
     }
 
-    //TODO question: processar authors.csv
     void lerAutores(const string &nomeArquivo) {
         string linha;  // armazenará a linha atual
 //        string linhaTemp;  // utilizado como auxiliar para tratar as quebras de linha do CSV
