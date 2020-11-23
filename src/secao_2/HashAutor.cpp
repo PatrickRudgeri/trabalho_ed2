@@ -1,6 +1,7 @@
 #include <cassert>
 #include "../../include/secao_2/HashAutor.hpp"
 #include "../../include/secao_2/Primo.hpp"
+#include "math.h"
 
 using namespace std;
 
@@ -10,9 +11,10 @@ using namespace std;
     * @param n Tamanho da tabela Hash a ser criada
     */
 HashAutor::HashAutor(int n) {
+
     //variável do tipo ...
     tamanhoTabela_ = (int) (n / 0.75);
-    tamanhoTabela_ = Primo::proxPrimo(tamanhoTabela_);
+    tamanhoTabela_ = Primo::proxPrimo(tamanhoTabela_); // não está lindo o tabelaPrimos[i] na funcao;
 
     //se == -1 então deu erro. Para o programa e lança um erro
     assert(tamanhoTabela_ != -1);
@@ -68,23 +70,6 @@ int HashAutor::funcaoHash(int ch, int i) {
 
 }
 
-//Larissa: Luci, calculachave com essa assinatura eh a fun��o hash Para autor? Como voc� fez esse c�lculo? Sim, pegando valor da tabela ASCII
-//TODO: documentar definição da função
-//TODO: documentar os blocos funcionais e variáveis dentro da função
-int HashAutor::calcularChave(string nome) {
-    int ch = 0;
-    int tamanhoString = nome.size();
-    for (int i = 1; i < tamanhoString; i++) {
-        if (nome[i] >= 'A' && nome[i] <= 'Z')
-            ch += (nome[i] - 'A');
-        else if (nome[i] >= 'a' && nome[i] <= 'z')
-            ch += (nome[i] - 'a');
-    }
-
-    return ch;
-
-}
-
 
 /**
     * Função inserir eh responsável por colocar um Autor na Tabela Hash de Autores
@@ -93,7 +78,7 @@ int HashAutor::calcularChave(string nome) {
 //TODO: documentar os blocos funcionais e variáveis dentro da função
 void HashAutor::inserir(Autor *a) {
     //ch recebe a chave
-    int ch = calcularChave(a->getNome());
+    int ch = a->getId();
     //pos recebe a posiçao para ser inserido o autor
     int pos = funcaoHash(ch, 0);
 
@@ -108,29 +93,28 @@ void HashAutor::inserir(Autor *a) {
 
 //TODO: documentar definição da função
 //TODO: documentar os blocos funcionais e variáveis dentro da função
-int HashAutor::busca(const string& nome) {
+int HashAutor::busca(int id) {
     int i;
-    int ch;
     int pos;
     if (vazia_) {
         cout << "Tabela vazia_" << endl;
         return -1;
     }
-    //variavel do tipo...
-    ch = calcularChave(nome);
 
     i = 0;
     while (true) {
         if (i == tamanhoTabela_) {
             break;
         }
-        pos = calcularHash(ch, i);
+        pos = calcularHash(id, i);
 
         assert(pos >= 0 && pos < tamanhoTabela_);
 
         Autor aux = tabelaAutores_[pos];
-        if (aux.getNome() == nome) {
+        if (aux.getId() == id) {
             return pos;
+            int freq = aux.getFrequencia();
+            aux.setfrequencia(freq + 1);
         }
         i++;
     }

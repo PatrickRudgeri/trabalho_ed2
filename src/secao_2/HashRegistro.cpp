@@ -27,7 +27,7 @@ HashRegistro::~HashRegistro() {
 //TODO: documentar definição da função
 //TODO: documentar os blocos funcionais e variáveis dentro da função
 int HashRegistro::calculaHash(int ch, int i) {
-    //variável do tipo long para calcular a melhor funcao quadratica
+    //variável do tipo  long para calcular a melhor funcao quadratica
     long valorQuadratica = pow(ch, 2) - 5 * ch + 7;
 
     //vari�vel do tipo ...

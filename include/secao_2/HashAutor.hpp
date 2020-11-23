@@ -37,12 +37,6 @@ public:
     // Destrutor da classe
     ~HashAutor();
 
-    /**  <Breve descrição> Calcula Chave
-    *  @param id <indica codigo unico do Livro>
-        *  @param nome <indica nome do Autor>
-        *  @return <se tiver algum retorno descreva aqui>
-        */
-    int calcularChave(std::string nome);
 
     /**  <Breve descri??o> Insere
     *  @param isbn <indica codigo unico do Livro>
@@ -57,7 +51,7 @@ public:
     *  @param nome <indica nome do Autor>
     *  @return <se tiver algum retorno descreva aqui>
     */
-    int busca(const std::string& nome);
+    int busca(int id);
 };
 
 #endif // HASHAUTOR_H
