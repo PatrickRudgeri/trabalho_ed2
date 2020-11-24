@@ -6,6 +6,7 @@
 #include "secao_2/HashRegistro.hpp"
 #include "secao_2/HashAutor.hpp"
 #include "txtLivros.hpp"
+#include "secao_3/AVP.hpp"
 
 /** Constantes que representam os algorítmos disponíveis para ordenação
  * */
@@ -100,6 +101,8 @@ private:
     HashRegistro *hashRegistros_; //TODO: documentar
     HashAutor *hashAutores_; //TODO: documentar
     ED armazInterno_; //TODO: documentar
+    AVP *arvoreVP_; //Ponteiro para Arvore Vermelho-Preta
+
 
     //métodos de ordenação
     //quicksort

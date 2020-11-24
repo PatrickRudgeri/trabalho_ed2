@@ -1,6 +1,7 @@
 #include "../include/DataFrameLivros.hpp"
 #include "../include/csvLivros.hpp"
 #include "../include/txtLivros.hpp"
+#include "../include/secao_3/AVP.hpp"
 #include <chrono>
 #include <iomanip>
 #include <fstream>
@@ -20,6 +21,8 @@ DataFrameLivros::DataFrameLivros() {
     hashAutores_ = nullptr;
     numLinhas_ = 0;
     armazInterno_ = ED::VETOR;
+    arvoreVP_ = nullptr;
+
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -29,6 +32,7 @@ DataFrameLivros::~DataFrameLivros() {
     delete[] registrosHeap_;
     delete hashRegistros_;
     delete hashAutores_;
+    delete arvoreVP_;
 }
 
 // ----------------------- Sets e Gets ----------------------- //
@@ -78,6 +82,8 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
 
     } else if (armazInterno_ == ED::ARVORE) {
         // TODO: Alocar Arvore aqui
+        arvoreVP_ = new AVP();
+
     }
     //preenche o data frame com os valores lidos do csv
     csv::lerRegistros(this, nomeArquivo, numLinhas, aleatorio, seed);
@@ -113,6 +119,9 @@ bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
         reg.setTodosAtributosStr(camposStrVet); // preenche o obj Registro
 
         //TODO: Inserir Nó na arvore aqui...
+        arvoreVP_->insere(&reg);
+
+
         //arvoreVP->insere(reg);  // adiciona obj na árvore
 
         statusInsercao = true; //se inserção na arvore deu tudo ok

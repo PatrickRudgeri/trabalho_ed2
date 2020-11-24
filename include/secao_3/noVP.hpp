@@ -1,4 +1,5 @@
 #include <iostream>
+#include "../Registro.hpp"
 
 #ifndef TRABALHO_ED2_NOVP_HPP
 #define TRABALHO_ED2_NOVP_HPP
@@ -8,6 +9,7 @@
  *  A classe noVp contem atributos de um noh de uma Arvore Vermelho-Preta
  *  ou seja, a informacao do noh, os ponteiros para esquerda e direita, para o pai_
  *  e a Cor do noh (Vermelho ou Preta)
+ *  Alem disso possui o ponteiro para o Registro(Livro) inserido
  *
  *  Atributos
  *  ----------------
@@ -37,13 +39,16 @@ public:
     //Sets
     void setEsq(NoVP *p);
 
-    void setInfo(int val);
+    void setInfo(long long val);
 
     void setDir(NoVP *p);
 
     void setPai(NoVP *p);
 
     void setCor(Cor c);
+
+    void setRegistro(Registro *p);
+
 
     //Gets
     NoVP *getEsq() const;
@@ -62,11 +67,14 @@ public:
 
     NoVP *getTio();
 
+    Registro* getRegistro(Registro *p);
+
 private:
-    int info_;
+    long long info_;  //id do Livro
     NoVP *esq_;
     NoVP *dir_;
     NoVP *pai_;
+    Registro *p; //ponteiro para registro
     Cor tipoCor_;
 };
 
