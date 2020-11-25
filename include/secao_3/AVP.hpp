@@ -2,6 +2,7 @@
 #define TRABALHO_ED2_AVP_HPP
 
 #include "noVP.hpp"
+#include "../Registro.hpp"
 
 
 /** Breve descrição da classe
@@ -28,7 +29,7 @@ public:
     *	Aloca um novo noh na memoria, coloca inicialmente como vermelho,
     *	e chama a funcao auxinsere para inserir valor na arvore
         */
-    void insere(int val);
+    void insere(Registro *p);
 
 
     //Impressao
@@ -45,7 +46,7 @@ public:
     * Faz chamada a funcao auxiliar auxBusca
 	*
         */
-    bool busca(int val);
+    bool busca(long long val);
 
     //Remocao
 
@@ -55,7 +56,7 @@ public:
     * @param n <indica noh raiz_ passado>
  	* Chama as funcoes auxiliares de remocao (casos 1,2,3,4,5,6)
  	*/
-    void deleta(int val);
+    void deleta(long long val);
 
     int getQtdComparacoes() const;
 
@@ -164,7 +165,7 @@ private:
     * AuxBusca percorre a arvore igualmente a uma ABB(arvore binaria de busca) a partir do noh
     e valor passado
         */
-    bool auxBusca(NoVP *n, int val);
+    bool auxBusca(NoVP *n, long long val);
 
 
     /**  <Breve descrição> busca
@@ -173,7 +174,7 @@ private:
    * @return Ponteiro de NoVP
    *
        */
-    NoVP *buscaNo(int val) const;
+    NoVP *buscaNo(long long val) const;
 
     /**  <Breve descrição> noMaximo
     * @param n <indica noh passado>

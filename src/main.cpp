@@ -28,6 +28,8 @@ int main(int argc, char **argv, char **argp) {
 
     dataset = "../dataset/dataset_simp_sem_descricao.csv"; //caminho padrão dataset
 
+    //dataset = "../dataset/std_dataset_simp_sem_descricao.csv"; //novo teste
+
     // se for passado o nome do dataset por parametro
     if (argc > 1)
         dataset = "../dataset/" + (string) argv[1];
@@ -136,17 +138,46 @@ void secao2(const string& dataset) {
 // ------------------------- Etapa 3 ------------------------- //
 void secao3(const string& dataset) {
     int N;
+    int x;  // Número de iterações (n)
+    int *n = nullptr;  // vetor para armazenar os valores de n (qt. de registros) lidos de "entrada.txt"
     DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
+
 
     const string PATH_SECAO = "../io/secao_3/";
     const string ARQ_SAIDA_BUSCA = "saidaBusca.txt";
     const string ARQ_SAIDA_INSERCAO = "saidaInsercao.txt";
     const string ARQ_ENTRADA = "entrada.txt";
 
+    // obtendo os parâmetros de entrada
+    txt::lerEntrada(&x, n, PATH_SECAO + ARQ_ENTRADA);
+
     //Copie e cole o código da seção 1 para calcular as métricas e gerar as 5 amostras aleatorias para cada N
     seed = gerarRandomSeed();
     dfLivros.lerCsv(dataset, N, true, seed, ED::ARVORE);
+
+    //dfLivros.inserirRegistro()
+
+
+    for (int i = 0; i < x; i++) {
+        for (int j = 0; j < ITER; j++) {
+            seed = gerarRandomSeed();
+
+            // lê o csv e salva n[i] registros aleatórios
+            dfLivros.lerCsv(dataset, n[i], true, seed, ED::ARVORE);
+            if (j == 0) cout << n[i] << " registros aleatorios carregados." << endl;
+            // Faz as ordenações e imprime métricas
+
+
+
+
+        }
+    }
+
+    delete[] n;
+
+    //TODO: so falta salvar as estatisticas, nao entendi muito bem sua funcao
+
 
     /* //Testes da VP
     int i;
@@ -211,6 +242,8 @@ void calcularMetricas(const int x, int *n, const string& pathSecao, const string
 
     delete[] stats;
 }
+
+
 
 unsigned gerarRandomSeed() {
     random_device myRandomDevice; //para gerar a semente de randomização

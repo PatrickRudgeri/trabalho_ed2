@@ -5,6 +5,7 @@
 #define INDENT_STEP  4
 
 #include "../../include/secao_3/AVP.hpp"
+#include "../../include/Registro.hpp"
 
 using namespace std;
 
@@ -135,7 +136,7 @@ void AVP::verificaPropriedades() {
 
 }*/
 
-NoVP *AVP::buscaNo(int val) const {
+NoVP *AVP::buscaNo(long long val) const {
     NoVP *p = this->raiz_;
     if (p == nullptr)
         return nullptr;
@@ -326,7 +327,7 @@ void AVP::substituiNo(NoVP *velho, NoVP *novo) {
 /*
  * Deleta noh da AVP
  */
-void AVP::deleta(int val) {
+void AVP::deleta(long long val) {
     NoVP *filho;
 
     NoVP *n = buscaNo(val);
@@ -353,27 +354,27 @@ void AVP::deleta(int val) {
 }
 
 //Busca
-bool AVP::busca(int val) {
-    return auxBusca(raiz_, val);
+bool AVP::busca(long long idLivro) {
+    return auxBusca(raiz_, idLivro);
 }
 
-bool AVP::auxBusca(NoVP *p, int val) {
+bool AVP::auxBusca(NoVP *p, long long idLivro) {
     if (p == nullptr) {
         //Contabiliza comparacao
         this->qtdComparacoes_++;
         return false;
-    } else if (p->getInfo() == val) {
+    } else if (p->getInfo() == idLivro) {
 
         //Contabiliza comparacao
         this->qtdComparacoes_++;
         return true;
-    } else if (val < p->getInfo()) {
+    } else if (idLivro < p->getInfo()) {
 
         //Contabiliza comparacao
         this->qtdComparacoes_++;
-        return auxBusca(p->getEsq(), val);
+        return auxBusca(p->getEsq(), idLivro);
     } else {
-        return auxBusca(p->getDir(), val);
+        return auxBusca(p->getDir(), idLivro);
     }
 
 }
@@ -714,12 +715,15 @@ NoVP *AVP::auxinsere(NoVP *r, NoVP *n) {
     return r;
 }
 
-void AVP::insere(int val) {
+void AVP::insere(Registro *p) {
+
+
     NoVP *n = new NoVP();
     n->setCor(VERMELHO);
-    n->setInfo(val);
+    n->setInfo(p->getId());
     n->setEsq(nullptr);
     n->setDir(nullptr);
+    n->setRegistro(p);
     raiz_ = auxinsere(raiz_, n);
 
 }
