@@ -36,9 +36,10 @@ int main(int argc, char **argv, char **argp) {
 
     //TODO: Criar menu interativo aqui
 
-//    secao1(dataset);
-//       secao2(dataset);
-    secao3(dataset);
+    Primo::criarTabela(1000000); // escolher o melhor tamanho
+//  secao1(dataset);
+    secao2(dataset);
+//  secao3(dataset);
 
     return 0;
 }
@@ -90,6 +91,7 @@ void secao1(const string& dataset) {
 // ------------------------- Etapa 2 ------------------------- //
 
 void secao2(const string& dataset) {
+    cout << "secao2" << endl;
     int N, M;
     DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
@@ -97,31 +99,35 @@ void secao2(const string& dataset) {
     const string ARQ_SAIDA = "saida.txt";
     const int tamArqAutores = 243700;
 
+
+
     //remove o arquivo de saida, se existir
     remove((PATH_SECAO + ARQ_SAIDA).c_str());
 
     N = 10;  //deverá ser lido da entrada
     M = 5;  //deverá ser lido da entrada
 
-    Primo::criarTabela(N);
     HashAutor auxAutores(tamArqAutores);
 
+
     seed = 3202200755;
-//    seed = gerarRandomSeed();
+    seed = gerarRandomSeed();
     cout << "seed = " << seed << endl;
-    /*
+
     Registro *r;
     r = new Registro[10];
+
     HashRegistro h(10);
     for (int i = 0; i < 14; i++) {
         r[i].setId(12345678912 + i * i);
         h.inserir(&r[i]);
     }
     cout << h.buscar(12345678913) << endl;
-    */
+
+
 
     // lê o csv e salva n[i] registros aleatórios e distintos
-//    dfLivros.lerCsv(dataset, N, true, seed, true);
+    // dfLivros.lerCsv(dataset, N, true, seed, true);
 
     csv::lerAutores("../dataset/authors.csv");
 
