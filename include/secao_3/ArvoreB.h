@@ -19,7 +19,6 @@ public:
     virtual ~ArvoreB();
 
     int getOrdem();
-    bool vazia(); // verifica se a árvore está vazia
 
     /**  <Breve descrição> busca
     *  @param val <indica valor a ser buscado>
@@ -45,9 +44,11 @@ private:
     int qtdComparacoes_;
     int qtdTrocas_;
 
-    bool auxBusca(NoB *p, int val);
+    //Metodos
+    bool auxBusca(NoB* pt,int val,int f,int g);
     NoB* auxInsere(NoB *p, int val);
-    void Cisao(NoB* p);
+    //void Cisao(NoB* p);
+    void InsereOrdenado(NoB* p, int val, int pos);
 
 };
 

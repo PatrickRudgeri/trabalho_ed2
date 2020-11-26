@@ -3,6 +3,9 @@
 
 NoB::NoB(int m)
 {
+    for(int j=0;j<m;j++){
+        chaves[j] = -1;
+    }
     for(int i; i<m;i++){
         vetFilhos[i] = nullptr;
     }
