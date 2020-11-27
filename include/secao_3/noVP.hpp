@@ -47,13 +47,13 @@ public:
 
     void setCor(Cor c);
 
-    void setRegistro(Registro *p);
+    void setRegistro(Registro p);
 
 
     //Gets
     NoVP *getEsq() const;
 
-    int getInfo() const;
+    long long int getInfo() const;
 
     NoVP *getDir() const;
 
@@ -67,15 +67,15 @@ public:
 
     NoVP *getTio();
 
-    Registro* getRegistro(Registro *p);
+    Registro getRegistro();
 
 private:
     long long info_;  //id do Livro
     NoVP *esq_;
     NoVP *dir_;
     NoVP *pai_;
-    Registro *p; //ponteiro para registro
     Cor tipoCor_;
+    Registro registro_; //registro
 };
 
 #endif //TRABALHO_ED2_NOVP_HPP

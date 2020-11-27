@@ -6,7 +6,6 @@ NoVP::NoVP() {
     dir_ = nullptr;
     pai_ = nullptr;
     tipoCor_ = Cor::PRETO;
-
 }
 
 NoVP::~NoVP() = default;
@@ -71,8 +70,8 @@ void NoVP::setCor(Cor c) {
     tipoCor_ = c;
 }
 
-void NoVP::setRegistro(Registro *p) {
-    this->p = p;
+void NoVP::setRegistro(Registro p) {
+    this->registro_ = p;
 }
 
 //Gets
@@ -80,7 +79,7 @@ NoVP *NoVP::getEsq() const {
     return esq_;
 }
 
-int NoVP::getInfo() const {
+long long int NoVP::getInfo() const {
     return info_;
 }
 
@@ -93,6 +92,6 @@ Cor NoVP::getCor() const {
 }
 
 //cada noh possui o ponteiro para o registro armazenado
-Registro* NoVP::getRegistro(Registro *p) {
-   return p;
+Registro NoVP::getRegistro() {
+   return registro_;
 }

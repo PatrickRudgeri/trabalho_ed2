@@ -3,15 +3,12 @@
 
 #include <iostream>
 
-/** Breve descrição da classe
- *
- *  Descrição detalhada da classe
- *
+/** Classe que armazena as informações de um autor e sua frequencia na tabela hash de registros únicos
  *  Atributos
  *  ----------------
- *  @attr nomeAutor_ <o que é esse atributo?>
- *  @attr frequencia_ <o que é esse atributo?>
- * 
+ *  @attr nomeAutor_ : nome do autor
+ *  @attr id_ : numero de identificação do autor, presente no registro do livro
+ *  @attr frequencia_ : frequencia do autor na tabela hash de registros únicos
  * */
 
 class Autor {
@@ -30,6 +27,7 @@ public:
     //Destrutor da classe
     ~Autor();
 
+    // ---------------------- Sets e Gets -------------------- //
     void setNome(std::string nome);
 
     void setfrequencia(int freq);

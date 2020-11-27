@@ -7,7 +7,7 @@
 
 using namespace std;
 
-//TODO: documentar os blocos funcionais e variáveis dentro da função
+
 template<class ClasseStream>
 int tamanhoArquivo(ClasseStream &arq) {
     arq.seekg(0, arq.end);
@@ -16,7 +16,6 @@ int tamanhoArquivo(ClasseStream &arq) {
     return tam;
 }
 
-//TODO: documentar definição da função
 bool processarLinhaRegistro(DataFrameLivros *df, const string &linha, int idx) {
     int index;
     stringstream ss(linha); // converte a string para o tipo stringstream e salva em ss
@@ -43,8 +42,6 @@ bool processarLinhaRegistro(DataFrameLivros *df, const string &linha, int idx) {
     return df->inserirRegistro(camposTemp, idx);
 }
 
-//TODO: documentar definição da função
-//TODO: documentar os blocos funcionais e variáveis dentro da função
 void processarLinhaAutores(const string &linha) {
     string id, autor;
     stringstream linhaStream(linha);
@@ -52,8 +49,6 @@ void processarLinhaAutores(const string &linha) {
     getline(linhaStream, autor);
     id = id.substr(1, id.length() - 2);
     autor = autor.substr(1, autor.length() - 3); // autor.length() - 3, pois tbm retira a quebra de linha
-
-    cout << stoi(id) << " <-> " << autor << endl;
 }
 
 int gerarRandomNum(unsigned int seed, int rangeMin, int rangeMax) {
@@ -98,7 +93,7 @@ namespace csv {
         numRegistro = 0;
 
         if (!arquivo.is_open()) {
-            cerr << "ERRO=> CsvLivros::lerRegistros\n";
+            cerr << "ERRO na leitura do dataset\n";
             exit(0);
         }
         while (true) {
@@ -122,7 +117,7 @@ namespace csv {
                  *se o if for falso a linha atual será ignorada
                 */
                 if (linha.length() < 2 || linha[linha.length() - 2] != '"') {
-                    randomNumeros[numRegistro] = gerarRandomNum(++seed, 0, tamArq - 1); //fixme: corrigir
+                    randomNumeros[numRegistro] = gerarRandomNum(++seed, 0, tamArq - 1);
                     continue;
                 }
             } else {
@@ -156,24 +151,21 @@ namespace csv {
             if (inserido) {
                 numRegistro++;
             } else {
-                cout << linhaTemp << " " << numRegistro << endl; // fixme: debug
-                randomNumeros[numRegistro] = gerarRandomNum(++seed, 0, tamArq - 1); //fixme: corrigir
+                randomNumeros[numRegistro] = gerarRandomNum(++seed, 0, tamArq - 1);
             }
         }
         //fechando o arquivo
         arquivo.close();
-        delete [] randomNumeros;
+        delete[] randomNumeros;
     }
-
-    void lerAutores(const string &nomeArquivo) {
+    //TODO: Para cada autor do csv, buscar em hashAutor, se estiver contido incrementa a frequencia (internamente)
+    // e seta o nome do autor
+    void lerAutores(const std::string &nomeArquivo, HashAutor *hashAutor) {
         string linha;  // armazenará a linha atual
-//        string linhaTemp;  // utilizado como auxiliar para tratar as quebras de linha do CSV
         int numLinhas;  // contador de linhas
-//        int tamArq;  // tamanho do arquivo
 
         ifstream arquivo(nomeArquivo);
 
-//        tamArq = tamanhoArquivo<ifstream>(arquivo);
         numLinhas = 0;
 
         if (!arquivo.is_open()) {
@@ -187,7 +179,6 @@ namespace csv {
             //processa a linha atual e salva na posição `numRegistro` do vetor de Registros
             processarLinhaAutores(linha);
         }
-        numLinhas++;
 
         //fechando o arquivo
         arquivo.close();

@@ -7,30 +7,40 @@
 #include "secao_2/HashAutor.hpp"
 #include "txtLivros.hpp"
 #include "secao_3/AVP.hpp"
+#include "secao_3/ArvoreB.h"
 
-/** Constantes que representam os algorítmos disponíveis para ordenação
- * */
+// Constantes que representam os algorítmos disponíveis para ordenação
 enum AlgOrdenacao {
     QUICKSORT,
     HEAPSORT
 };
-
+// Constantes que representam as estruturas de dados disponíveis para o armazenamento dos registros
 enum ED{
+    // armazenamento simples com um vetor. Utilizado para a ordenação na seçao 1
     VETOR,
+    // armazenamento em uma tabela hash para facilitar a inclusão de apenas registros únicos. Utilizado na seção 2
     HASH_TABLE,
+    // registros são armazenados em arvores. Utilizado na seção 3
     ARVORE
 };
 
-/** Classe que representa o dataset de Livros
+/** DataFrameLivros: Classe que representa o dataset de Livros
  *
- *  TODO: Descrição detalhada da classe
+ *  Essa estrutura foi inspirada na estrutura de dados `data.frame` disponivel na linguagem R e
+ *   também em Python, através da biblioteca Pandas.
+ *  O preenchimento do DataFrame é feito através da função `lerCsv`.
+ *  Internamente cada registro é armazenado em uma estrutura chamada Registro, e todos os registros são
+ *   armazenados na ED escolhida (ED::VETOR, ED::HASH_TABLE ou ED::ARVORE foram implementadas nesse trabalho)
+ *  É importante ressaltar que essa é uma estrutura especializada para o problema proposto no trabalho, porém
+ *   pode servir de base para uma generalização futura.
  *
  *  Atributos
  *  ----------------
  *  @attr numLinhas_ : indica a quantidade de Registros lidos
- *  @attr contTrocasQuick_ : contador de trocas no QuickSort
- *  @attr contTrocasHeap_ : contador de trocas no HeapSort
- *  @attr contComparacoesHeap_ : contador de Comparações no HeapSort
+ *  @attr contTrocas1_ : contador de trocas para o algoritmo 1
+ *  @attr contTrocas2_ : contador de trocas para o algoritmo 2
+ *  @attr contComparacoes1_ : contador de Comparações para o algoritmo 1
+ *  @attr contComparacoes2_ : contador de Comparações para o algoritmo 2
  *  @attr *registros_ : Vetor de Registros
  *  @attr *registrosQuick_ : Vetor de Registros para ordenação por Quicksort
  *  @attr *registrosHeap_ : Vetor de Registros para ordenação por Heapsort
@@ -91,17 +101,19 @@ public:
 private:
     unsigned seed_;
     int numLinhas_;
-    int contTrocasQuick_;
-    int contTrocasHeap_;
-    int contComparacoesHeap_;
-    int contComparacoesQuick_;
+    int contTrocas2_;
+    int contTrocas1_;
+    int contComparacoes1_;
+    int contComparacoes2_;
     Registro *registros_;
     Registro *registrosQuick_;
     Registro *registrosHeap_;
-    HashRegistro *hashRegistros_; //TODO: documentar
-    HashAutor *hashAutores_; //TODO: documentar
-    ED armazInterno_; //TODO: documentar
+    HashRegistro *hashRegistros_;
+    HashAutor *hashAutores_;
+    ED armazInterno_;
+    int countTotalAutores_;
     AVP *arvoreVP_; //Ponteiro para Arvore Vermelho-Preta
+    ArvoreB *arvoreB_;
 
 
     //métodos de ordenação
@@ -144,6 +156,8 @@ private:
      *  @param n : Número de nós da Heap
      * */
     void heapSort(Registro *registrosHeap, int n);
+
+
 };
 
 

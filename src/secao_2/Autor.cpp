@@ -4,6 +4,7 @@ using namespace std;
 
 Autor::Autor() {
     frequencia_ = 0;
+    id_ = -1;
 }
 
 Autor::Autor(string nomeAutor, int id) {

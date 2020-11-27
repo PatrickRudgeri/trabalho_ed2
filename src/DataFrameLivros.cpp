@@ -1,9 +1,6 @@
 #include "../include/DataFrameLivros.hpp"
 #include "../include/csvLivros.hpp"
-#include "../include/txtLivros.hpp"
-#include "../include/secao_3/AVP.hpp"
 #include <chrono>
-#include <iomanip>
 #include <fstream>
 #include <cassert>
 
@@ -21,7 +18,12 @@ DataFrameLivros::DataFrameLivros() {
     hashAutores_ = nullptr;
     numLinhas_ = 0;
     armazInterno_ = ED::VETOR;
+    countTotalAutores_ = 0;
     arvoreVP_ = nullptr;
+    contTrocas2_ = 0;
+    contTrocas1_ = 0;
+    contComparacoes1_ = 0;
+    contComparacoes2_ = 0;
 
 }
 
@@ -71,40 +73,81 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
     seed_ = seed;
     armazInterno_ = armazInterno;
 
-    // se é hashTable então aloca a tabela hash
+    // se a ED interna é hash table então aloca a tabela hash
     if (armazInterno_ == ED::HASH_TABLE) {
 
         hashRegistros_ = new HashRegistro(numLinhas_);
 
     } else if (armazInterno_ == ED::VETOR) {
-        // aloca um vetor de Registros de tamanho `numLinhas`
+        // se ED interna é vetor aloca um vetor de Registros de tamanho `numLinhas`
         registros_ = new Registro[numLinhas_];
 
     } else if (armazInterno_ == ED::ARVORE) {
-        // TODO: Alocar Arvore aqui
+        // se ED interna é arvore aloca um vetor de Registros de tamanho `numLinhas`
         arvoreVP_ = new AVP();
-
+        arvoreB_ = new ArvoreB();
     }
     //preenche o data frame com os valores lidos do csv
     csv::lerRegistros(this, nomeArquivo, numLinhas, aleatorio, seed);
+
+    if (armazInterno_ == ED::HASH_TABLE) {
+        //Com o dataframe, hashRegistros_ e a quantidade de autores preenchidos, podemos criar a hash de autores
+
+        hashAutores_ = new HashAutor(countTotalAutores_);
+//        int tamHashRegistros;
+//        Registro *registrosTable;
+//        int *autoresIds;
+//        int qtAutores;
+//
+//        tamHashRegistros = Primo::proxPrimo(numLinhas_);
+//        registrosTable = hashRegistros_->getTabelaRegistros();
+//
+//        for (int i = 0; i < tamHashRegistros; i++) {
+            // se é uma posição vazia, então passa para a proxima posição
+//            cout << registrosTable[i].getId() << endl;//fixme: debug
+//            if (registrosTable[i].getId() == -1) continue;
+//
+//            Registro reg = registrosTable[i];
+//            autoresIds = reg.getAutores();
+//            qtAutores = reg.getQtAutores();
+//            cout << reg.getQtAutores() << endl; //fixme: debug
+//            for (int j = 0; j < qtAutores; j++) {
+//                int autorId = autoresIds[j];
+//                if(autorId != -1) {
+//                    auto *autor = new Autor();
+//                    autor->setId(autorId);
+//                    cout << autor->getId() << endl; //fixme: debug
+////                    hashAutores_->inserir(autor);
+//                    delete autor;
+//                }
+//            }
+//        }
+        //TODO: Dentro dessa função, percorrer csv e adicionar nome dos autores da tabela hash
+//        csv::lerAutores("../dataset/authors.csv", hashAutores_);
+    }
+    else if (armazInterno_ == ED::ARVORE) {
+        //Obtendo as quantidades de comparações e trocas realizadas pelas arvores
+        contComparacoes1_ = arvoreVP_->getQtdComparacoes();
+        contTrocas1_ = arvoreVP_->getQtdTrocas();
+
+//        contComparacoes2_ = arvoreB_->getQtdComparacoes();
+//        contTrocas2_ = arvoreB_->getQtdTrocas();
+    }
 }
 
 bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
     bool statusInsercao;
     if (armazInterno_ == ED::HASH_TABLE) {
-        Registro reg;
-        reg.setTodosAtributosStr(camposStrVet);
+        auto *reg = new Registro();
+        reg->setTodosAtributosStr(camposStrVet);
 
         // será true se registro é unico, ou false se 'repetido
-        statusInsercao = hashRegistros_->buscar(reg.getId()) == -1;
-//        cout << "Livro único: " << (statusInsercao ? "SIM" : "NÃO") << endl; //fixme: debug
+        statusInsercao = hashRegistros_->buscar(reg->getId()) == -1;
 
         //se for livro único então inserir na tabela hash de registros, busca e os autores na tabela hash de autores
         if (statusInsercao) {
-            hashRegistros_->inserir(&reg);
-            //TODO: para cada registro inserido, adicionar cada autor tbm para a tabela hash de autores
-            // e para cada autor repetido, incrementrar seu contador interno
-            //        hashAutores_->inserir(); //estou ajustando essas funções
+            countTotalAutores_ += reg->getQtAutores();
+            hashRegistros_->inserir(reg);
         }
 
 
@@ -118,11 +161,7 @@ bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
         Registro reg;
         reg.setTodosAtributosStr(camposStrVet); // preenche o obj Registro
 
-        //TODO: Inserir Nó na arvore aqui...
         arvoreVP_->insere(&reg);
-
-
-        //arvoreVP->insere(reg);  // adiciona obj na árvore
 
         statusInsercao = true; //se inserção na arvore deu tudo ok
 
@@ -132,16 +171,15 @@ bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
     }
     return statusInsercao; //se é hashTable, tenta inserir , se já existir retorna falso, caso contrario true;
 }
-//Adicionar tbm função para buscar registro
 
 
 void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSaida) {
     high_resolution_clock::time_point inicio, fim;
     //zerando contadores
-    contTrocasQuick_ = 0;
-    contTrocasHeap_ = 0;
-    contComparacoesHeap_ = 0;
-    contComparacoesQuick_ = 0;
+    contTrocas2_ = 0;
+    contTrocas1_ = 0;
+    contComparacoes1_ = 0;
+    contComparacoes2_ = 0;
 
     // ofstream para concatenar as métricas no arquivo de saida
     ofstream outStream(nomeArqSaida, ios::app);
@@ -162,7 +200,7 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSa
         fim = high_resolution_clock::now();
 
         //concatenando métricas:
-        outStream << "Q\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoesQuick_ << "\t" << contTrocasQuick_
+        outStream << "Q\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoes2_ << "\t" << contTrocas2_
                   << "\t";
     }
     if (algoritmoOrd == AlgOrdenacao::HEAPSORT) {
@@ -178,7 +216,7 @@ void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSa
         fim = high_resolution_clock::now();
 
         //concatenando métricas:
-        outStream << "H\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoesHeap_ << "\t" << contTrocasHeap_
+        outStream << "H\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoes1_ << "\t" << contTrocas1_
                   << "\t";
     }
 
@@ -254,17 +292,17 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
      */
     while (esq < dir) {
         while (registrosQuick_[esq].getTitulo() < registrosQuick_[pivo].getTitulo()) {
-            contComparacoesQuick_++;
+            contComparacoes2_++;
             esq++;
         }
 
         while (registrosQuick_[dir].getTitulo() > registrosQuick_[pivo].getTitulo()) {
-            contComparacoesQuick_++;
+            contComparacoes2_++;
             dir--;
         }
         if (esq <= dir) {
             //Abaixo é realizado as trocas de dados entre duas posições no vetor
-            contTrocasQuick_ += 3;
+            contTrocas2_ += 3;
             Registro aux = registrosQuick_[dir];
             registrosQuick_[dir] = registrosQuick_[esq];
             registrosQuick_[esq] = aux;
@@ -321,7 +359,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
      *
      * */
     if ((filho_esq < n) and (registrosHeap[filho_esq].getTitulo() > registrosHeap[raiz].getTitulo())) {
-        contComparacoesHeap_++;
+        contComparacoes1_++;
         //Se o filho esquerdo for maior que a raiz_
         maior = filho_esq;
     } else {
@@ -330,7 +368,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
     }
     if ((filho_dir < n) and (registrosHeap[filho_dir].getTitulo() > registrosHeap[maior].getTitulo())) {
         //Se o filho direito for maior do que a maior até agora
-        contComparacoesHeap_++;
+        contComparacoes1_++;
         maior = filho_dir;
     }
     if (maior != raiz) {
@@ -339,7 +377,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
          * e repita o processo para o filho envolvido na troca
          *
          */
-        contTrocasHeap_ += 3;
+        contTrocas1_ += 3;
         Registro aux = registrosHeap[raiz];
         registrosHeap[raiz] = registrosHeap[maior];
         registrosHeap[maior] = aux;
@@ -372,7 +410,7 @@ void DataFrameLivros::heapSort(Registro *registrosHeap, int n) {
          * Os passos anteriores são repetidos até que reste apenas um elemento.
          *
          * */
-        contTrocasHeap_ += 3;
+        contTrocas1_ += 3;
         Registro aux = registrosHeap[i];
         registrosHeap[i] = registrosHeap[0];
         registrosHeap[0] = aux;

@@ -4,11 +4,16 @@
 #include <iostream>
 #include <chrono>
 
+#define ITER 5  // número de iterações por algoritmo de ordenação
+#define ORD_ALGS 2 // número de algoritmos de ordenação que serão testados
+#define ARV_ALGS 2 // número de arvores que serão testadas
+
+
 /* Struct para auxiliar o armazenamento das estatisticas das ordenações
  *
  *  Atributos
  *  ----------------
- * @attr alg : algoritmo de ordeção (Q ou H)
+ * @attr alg : algoritmo  (Q (quicksort), H (heapsort), V (arvore vermelho-preto) ou B (arvore B))
  * @attr n : quantidade de registros
  * @attr comp : mede a quantidade de comparações que foram feitas
  * @attr trocas : medida de trocas/cópias de posições
@@ -45,5 +50,15 @@ struct Stats {
         _tempo
     } metricas;
 };
+
+/**
+ * Método que fará a contabilização das estatisticas salvas em saida.txt para as seções 1 e 3
+ *
+ * @param x : Número de amostras (1º linha de entrada.txt)
+ * @param N : vetor de inteiros contendo o tamanho de cada uma das x amostras (demais linhas de entrada.txt)
+ * @param pathSecao : caminho para a seçao (ex: "../io/secao_1/")
+ * @param arquivo : nome do arquivo de saida
+ */
+void calcularMetricas(const int x, int *&N, const std::string &pathSecao, const std::string &arquivo);
 
 #endif //TRABALHO_ED2_METRICAS_HPP

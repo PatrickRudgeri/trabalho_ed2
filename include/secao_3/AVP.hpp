@@ -50,8 +50,6 @@ public:
 
     //Remocao
 
-    //OBS: ainda nao funcional
-
     /** <Breve descrição> deleta
     * @param n <indica noh raiz_ passado>
  	* Chama as funcoes auxiliares de remocao (casos 1,2,3,4,5,6)

@@ -23,30 +23,18 @@ private:
     bool vazia_;
     Registro *tabelaRegistros_;
 
-    /**  TODO: breve descrição da classe
-    *  @param ch : TODO: O que é esse parâmetro?
-    *  @param i : TODO: O que é esse parâmetro?
-    *  @return : TODO: se tiver algum retorno descreva aqui
-    */
     int calculaHash(int ch, int i);
 
-    /**  TODO: breve descrição da classe
-    *  @param ch : TODO: O que é esse parâmetro?
-    *  @param i : TODO: O que é esse parâmetro?
-    *  @return : TODO: se tiver algum retorno descreva aqui
-    */
     int funcaoHash(int ch, int i);
 
     /**  Calcular Chave
     *  @param id : indica codigo unico do Livro
-    *  @return : TODO: se tiver algum retorno descreva aqui
     */
     int calculaChave(long long id);
 
 public:
 
     /**  Construtor da classe com parâmetro
-    *  @param n : TODO: O que é esse parâmetro?
     */
     HashRegistro(int n);
 
@@ -60,9 +48,12 @@ public:
 
     /**  Buscar na tabela hash de registros
     *  @param id indica codigo unico do Livro
-    *  @return TODO: se tiver algum retorno descreva aqui
     */
     int buscar(long long id);
+
+    bool isVazia();
+
+    Registro *getTabelaRegistros();
 
 };
 

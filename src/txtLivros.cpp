@@ -8,16 +8,18 @@ using namespace std;
 namespace txt {
     void lerEntrada(int *x, int *&n, const string &pathArquivo) {
         string linha, temp;
+
         ifstream arq(pathArquivo);
-        int i = 0;
         assert(arq.is_open());
         assert(arq.good());
+
         getline(arq, linha);
 
         if (!linha.empty()) {
             *x = stoi(linha);
-
+            assert(*x > 0);
             n = new int[*x];
+            int i = 0;
 
             while (getline(arq, linha)) {
                 if (!linha.empty() && linha.length() > 1) {

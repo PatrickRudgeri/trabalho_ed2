@@ -1,20 +1,21 @@
-#include <assert.h>
+#include <cassert>
 #include "../../include/secao_2/HashRegistro.hpp"
 #include "../../include/secao_2/Primo.hpp"
 
 using namespace std;
 
-//Larissa: (TODO) Luci, justifique por favor porque você fez "n/0.75"
-//TODO: documentar definição da função
-//TODO: documentar os blocos funcionais e variáveis dentro da funçãoam n Tamanho da tabela Hash a ser criada
+/**
+    * Cria a tabela Hash com preenchimento m�ximo de 80% com base no n�mero de dados. Escolhesse o menor primo que atende esse requisito.
+    * @param n Tamanho da tabela Hash a ser criada
+    */
 HashRegistro::HashRegistro(int n) {
-    tamanhoTabela_ = (int) (n / 0.75);
+    tamanhoTabela_ = (int) (n / 0.8);
     tamanhoTabela_ = Primo::proxPrimo(tamanhoTabela_);
 
     //se == -1 então deu erro. Para o programa e lança um erro
     assert(tamanhoTabela_ != -1);
 
-    cout << "Tamanho da tabela hash de registros: " << tamanhoTabela_ << endl;
+    //cout << "Tamanho da tabela hash de registros: " << tamanhoTabela_ << endl; //fixme:debug
     tabelaRegistros_ = new Registro[tamanhoTabela_];
 }
 
@@ -24,54 +25,61 @@ HashRegistro::~HashRegistro() {
 
 // --------------------- Métodos privados -------------------- //
 
-//TODO: documentar definição da função
-//TODO: documentar os blocos funcionais e variáveis dentro da função
-int HashRegistro::calculaHash(int ch, int i) {
-    //variável do tipo  long para calcular a melhor funcao quadratica
+/**
+* Função calculaHash eh responsável por calcular o valor da hash com base na chave e no numero de colisoes ja ocorridas
+* @param ch chave referente ao Registro
+* @param numColisoes numero de colisoes ocorridas ate o momento
+* @return valor encontrado
+*/
+int HashRegistro::calculaHash(int ch, int numColisoes) {
+    //variável do tipo  long para calcular o valor obitido pela equação quadratica usada no segundo termo da equacao hash
     long valorQuadratica = pow(ch, 2) - 5 * ch + 7;
 
-    //vari�vel do tipo ...
-    int valorHash = (int) (((long) ch + (long) i * valorQuadratica) % tamanhoTabela_);
-    //question (Larissa): Porque essa verificacao?
-    //para ver se j� foi dada uma volta completa. Ela chegar no mesmo valor da chave original, implica em ela repetir o mesmo caminho depois.
+    //vari�vel do tipo inteira que recebe o valor calculado para a hash
+    int valorHash = (int) (((long) ch + (long) numColisoes * valorQuadratica) % tamanhoTabela_);
 
-//    if (valorHash == ch) return -1;
-    if (i == tamanhoTabela_) //question: Não é assim que representa a volta completa?
-        return -1;
+    //se o valor da equacao para o numero de colisoes fornecida for igual ao numero da chave, isso implica na consulta
+    //dos mesmos valores já testados logo retorna-se -1, que indica que não foi encontrada posicao
+    if (valorHash == ch) return -1;
+    //fixme: verificar
+    //if (numColisoes == tamanhoTabela_)
+    //    return -1;
     else
         return valorHash;
 }
 
 /**
-* question (Larissa): Luci, funcaoHash retorna um indice baseada se eh um Registro ou não?
-* TODO: Descrever o que esse método faz
+* Função recursiva funcaoHash eh responsável por encontrar uma posicao na Tabela Hash com base na chave referente ao Registro
+* @param ch chave referente ao Registro
+* @param numColisoes numero de colisoes ocorridas ate o momento
+* @return posicao encontrada
 */
-int HashRegistro::funcaoHash(int ch, int i) {
-    //variável do tipo ...
-    int indiceTabela = calculaHash(ch, i);
+int HashRegistro::funcaoHash(int ch, int numColisoes) {
+    //variável do tipo inteira que recebe a posicao calculada para os valores passados
+    int indiceTabela = calculaHash(ch, numColisoes);
 
-    //se não há registro ou autor no indice?
+    //se não há registro
     if (indiceTabela == -1)
         return -1;
 
-    //question (Larissa): Ponteiro auxiliar do tipo Registro
+    //variavel do tipo Registro que axilia a saber se a posicao já se encontra ocupada
     Registro *aux;
-    //question (Larissa): Aux aponta para a tabela no indice calculado?
     aux = &tabelaRegistros_[indiceTabela];
 
     if (aux->getId() == -1) { //Se essa posição está vazia_
-        cout << indiceTabela << endl;
         return indiceTabela;
 
     } else {
         //Senao calcula nova posiçãoo na tabela
-        return funcaoHash(ch, i + 1);
+        return funcaoHash(ch, numColisoes + 1);
     }
 }
 
-//Larissa: Luci, calculachave eh a fun��o hash de divis�o Para livro? N�o, ela s� retorna um n�mero para ser usado na hash
-//TODO: documentar definição da função
-//TODO: documentar os blocos funcionais e variáveis dentro da função
+/**
+* Função calculaChave eh responsável por calcular a chave utilizada na funcao hash
+ * @param id id do livro
+ * @return ch chave a ser utilizada na funcao hash
+*/
 int HashRegistro::calculaChave(long long id) {
     long long ch = 0;
     for (int i = 1; i <= 4; i++) {
@@ -85,20 +93,22 @@ int HashRegistro::calculaChave(long long id) {
 
 /**
 * Função inserir eh responsável por colocar um Registro na Tabela Hash de Livros
+ * @param p Registro a ser inserido
 */
-//TODO: documentar definição da função
-//TODO: documentar os blocos funcionais e variáveis dentro da função
 void HashRegistro::inserir(Registro *p) {
 
-    //Variavel do tipo inteira que recebe a chave a ser utilizada na hash
     if (p != nullptr) {
+        //Variavel do tipo inteira que recebe a chave a ser utilizada na hash
         int ch = calculaChave(p->getId());
 
+        //Variavel do tipo inteira que recebe a posição onde o registro p deve ser inserido
         int pos = funcaoHash(ch, 0);
 
+        //se pos recebe -1, inica que não foi encontrada posição na tabela
         if (pos == -1) {
-            cout << "Não foi possivel inserir o valor" << endl;
+            cout << "Não foi possivel inserir o Registro" << endl;
         } else {
+            //se a tabela estiver vazia, altera o valor da variavel de classe vazia_ para false
             if (vazia_) {
                 vazia_ = false;
             }
@@ -107,12 +117,15 @@ void HashRegistro::inserir(Registro *p) {
     }
 }
 
-//TODO: documentar definição da função
-//TODO: documentar os blocos funcionais e variáveis dentro da função
+/**
+* Função buscar eh responsável por procurar um Registro na Tabela Hash de Livros
+ * @param id id do livro
+ * @return posicao do registro na tabela Hash
+*/
 int HashRegistro::buscar(long long id) {
-    int pos; //variavel do tipo...
-    int ch; //variavel do tipo...
-    int i;
+    int pos; //variavel do tipo inteira que recebe a posição calculada pela funcao hash
+    int ch; //variavel do tipo inteira que recebe a chave chaculada para o registo
+    int numColisoes;
 
     if (vazia_) {
         cout << "Tabela vazia_" << endl;
@@ -120,12 +133,13 @@ int HashRegistro::buscar(long long id) {
     }
     ch = calculaChave(id);
 
-    i = 0;
+    //Enquanto encontra o registro e o número de colisões é diferente do tamanho da tabela, procura uma posição vazia na tabela, se encontado retorna a posição
+    numColisoes = 0;
     while (true) {
-        if (i == tamanhoTabela_) {
+        if (numColisoes == tamanhoTabela_) {
             break;
         }
-        pos = calculaHash(ch, i);
+        pos = calculaHash(ch, numColisoes);
 
         assert(pos >= 0 && pos < tamanhoTabela_);
 
@@ -133,10 +147,18 @@ int HashRegistro::buscar(long long id) {
         if (aux.getId() == id) {
             return pos;
         }
-        i++;
+        numColisoes++;
     }
     //não encontrou, retorna -1
     return -1;
 
+}
+
+Registro *HashRegistro::getTabelaRegistros() {
+    return tabelaRegistros_;
+}
+
+bool HashRegistro::isVazia() {
+    return vazia_;
 }
 

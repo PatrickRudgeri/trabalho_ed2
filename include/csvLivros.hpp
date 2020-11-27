@@ -11,7 +11,7 @@ namespace csv {
     void lerRegistros(DataFrameLivros *df, const std::string &nomeArquivo, int numLinhas, bool aleatorio = false,
                       unsigned int seed = 42);
 
-    void lerAutores(const std::string &nomeArquivo);
+    void lerAutores(const std::string &nomeArquivo, HashAutor *hashAutor);
 }
 
 #endif //TRABALHO_ED2_CSV_H

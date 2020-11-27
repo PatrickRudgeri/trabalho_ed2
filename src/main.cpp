@@ -8,45 +8,35 @@
 #include "../include/secao_2/Primo.hpp"
 #include "../include/secao_3/AVP.hpp"
 
-#define ITER 5  // número de iterações por algoritmo de ordenação
-#define ORD_ALGS 2 // número de algoritmos de ordenação que serão testados
-
 using namespace std;
-
-void calcularMetricas(int x, int *n, const string& pathSecao, const string& arquivo);
 
 unsigned gerarRandomSeed();
 
-void secao1(const string& dataset);
+void secao1(const string &dataset);
 
-void secao2(const string& dataset);
+void secao2(const string &dataset);
 
-void secao3(const string& dataset);
+void secao3(const string &dataset);
+
+void interfaceTerminal(const string &dataset);
 
 int main(int argc, char **argv, char **argp) {
     string dataset;
 
     dataset = "../dataset/dataset_simp_sem_descricao.csv"; //caminho padrão dataset
 
-    //dataset = "../dataset/std_dataset_simp_sem_descricao.csv"; //novo teste
-
     // se for passado o nome do dataset por parametro
     if (argc > 1)
         dataset = "../dataset/" + (string) argv[1];
 
-    //TODO: Criar menu interativo aqui
-
-    Primo::criarTabela(1000000); // escolher o melhor tamanho
-//  secao1(dataset);
-    secao2(dataset);
-//  secao3(dataset);
+    interfaceTerminal(dataset);
 
     return 0;
 }
 
 // ------------------------- Etapa 1 ------------------------- //
 
-void secao1(const string& dataset) {
+void secao1(const string &dataset) {
     int x;  // Número de iterações (n)
     int *n = nullptr;  // vetor para armazenar os valores de n (qt. de registros) lidos de "entrada.txt"
     unsigned seed;  // semente de randomização
@@ -58,10 +48,10 @@ void secao1(const string& dataset) {
 
     // obtendo os parâmetros de entrada
     txt::lerEntrada(&x, n, PATH_SECAO + ARQ_ENTRADA);
-
+    assert(n != nullptr);
     //remove o arquivo de saida, se existir
     remove((PATH_SECAO + ARQ_SAIDA).c_str());
-
+//
     for (int i = 0; i < x; i++) {
         for (int j = 0; j < ITER; j++) {
             seed = gerarRandomSeed();
@@ -90,8 +80,7 @@ void secao1(const string& dataset) {
 
 // ------------------------- Etapa 2 ------------------------- //
 
-void secao2(const string& dataset) {
-    cout << "secao2" << endl;
+void secao2(const string &dataset) {
     int N, M;
     DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
@@ -99,65 +88,60 @@ void secao2(const string& dataset) {
     const string ARQ_SAIDA = "saida.txt";
     const int tamArqAutores = 243700;
 
-
-
     //remove o arquivo de saida, se existir
     remove((PATH_SECAO + ARQ_SAIDA).c_str());
 
-    N = 10;  //deverá ser lido da entrada
-    M = 5;  //deverá ser lido da entrada
+    N = 10;
+    M = 5;
+//    cout << " Digite os valores de N e M: ";
+//    cin >> N >> M;
 
+    Primo::criarTabela(N);
     HashAutor auxAutores(tamArqAutores);
 
-
     seed = 3202200755;
-    seed = gerarRandomSeed();
+//    seed = gerarRandomSeed();
     cout << "seed = " << seed << endl;
 
-    Registro *r;
-    r = new Registro[10];
-
-    HashRegistro h(10);
-    for (int i = 0; i < 14; i++) {
-        r[i].setId(12345678912 + i * i);
-        h.inserir(&r[i]);
-    }
-    cout << h.buscar(12345678913) << endl;
-
+//    Registro *r;
+//    r = new Registro[10];
+//
+//    HashRegistro h(10);
+//    for (int i = 0; i < 10; i++) {
+//        r[i].setId(12345678912 + i * i);
+//        h.inserir(&r[i]);
+//    }
+//    cout << h.buscar(12345678913) << endl;
 
 
     // lê o csv e salva n[i] registros aleatórios e distintos
-    // dfLivros.lerCsv(dataset, N, true, seed, true);
-
-    csv::lerAutores("../dataset/authors.csv");
+    dfLivros.lerCsv(dataset, N, true, seed, ED::HASH_TABLE);
 
 //    auxAutores.inserir(new Autor("Nome Teste", 234));
 //    cout << h.busca("Nome Teste");
 }
 
 // ------------------------- Etapa 3 ------------------------- //
-void secao3(const string& dataset) {
-    int N;
+void secao3(const string &dataset) {
     int x;  // Número de iterações (n)
     int *n = nullptr;  // vetor para armazenar os valores de n (qt. de registros) lidos de "entrada.txt"
     DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
-
 
     const string PATH_SECAO = "../io/secao_3/";
     const string ARQ_SAIDA_BUSCA = "saidaBusca.txt";
     const string ARQ_SAIDA_INSERCAO = "saidaInsercao.txt";
     const string ARQ_ENTRADA = "entrada.txt";
 
+    //remove os arquivos de saida, se existirem
+    remove((PATH_SECAO + ARQ_SAIDA_BUSCA).c_str());
+    remove((PATH_SECAO + ARQ_SAIDA_INSERCAO).c_str());
+
     // obtendo os parâmetros de entrada
     txt::lerEntrada(&x, n, PATH_SECAO + ARQ_ENTRADA);
 
-    //Copie e cole o código da seção 1 para calcular as métricas e gerar as 5 amostras aleatorias para cada N
     seed = gerarRandomSeed();
-    dfLivros.lerCsv(dataset, N, true, seed, ED::ARVORE);
-
-    //dfLivros.inserirRegistro()
-
+//    dfLivros.lerCsv(dataset, n[0], true, seed, ED::ARVORE);
 
     for (int i = 0; i < x; i++) {
         for (int j = 0; j < ITER; j++) {
@@ -166,86 +150,50 @@ void secao3(const string& dataset) {
             // lê o csv e salva n[i] registros aleatórios
             dfLivros.lerCsv(dataset, n[i], true, seed, ED::ARVORE);
             if (j == 0) cout << n[i] << " registros aleatorios carregados." << endl;
-            // Faz as ordenações e imprime métricas
-
-
-
 
         }
     }
 
+    //calculando métricas
+//    calcularMetricas(x, n, PATH_SECAO, ARQ_SAIDA);
+
     delete[] n;
-
-    //TODO: so falta salvar as estatisticas, nao entendi muito bem sua funcao
-
-
-    /* //Testes da VP
-    int i;
-    AVP *arvoreVP = new AVP();
-
-    for (i = 12; i >= 0; i--) {
-//    for (i = 0; i < 12; i++) {
-        int x = rand() % 10;
-//        int x = i;
-        cout << "Inserindo " << x << " -> " << endl << endl;
-        arvoreVP->insere(x);
-        arvoreVP->imprimeAVP();
-    }
-
-    bool achou = arvoreVP->busca(2);
-    cout << endl << endl;
-    cout << "Achou? -> ";
-    cout << achou << endl;
-
-    cout << "Qtd Comparacoes : " << arvoreVP->getQtdComparacoes() << endl;
-
-    cout << "Qtd Trocas" << arvoreVP->getQtdTrocas() << endl;
-
-    delete arvoreVP;
-    */
 }
 
 
 // ------------------- Funções auxiliares -------------------- //
-void calcularMetricas(const int x, int *n, const string& pathSecao, const string& arquivo) {
-    double somaQuick, somaHeap;
-    auto *stats = new Stats[x * ITER * ORD_ALGS]; // x * 5 iter * 2 algs. ord.
-    // lê o arquivo de saida e armazena em um vetor de Stats de tamanho x * ITER * ORD_ALGS
-    txt::lerSaida(stats, pathSecao + arquivo);
-
-    // itera sobre as métricas armazenadas no enum metricas
-    for (int m = Stats::metricas::_comp; m <= Stats::metricas::_tempo; m++) {
-        string statsNome = m == 0 ? "comp" : (m == 2 ? "tempo" : "trocas");
-        ofstream arqStats(pathSecao + "stats/stats_" + statsNome + ".txt");
-
-        assert(arqStats.is_open() && arqStats.good());// teste do arquivo
-
-        somaQuick = 0;
-        somaHeap = 0;
-        for (int i = 0, j = 0; i < x * ITER * ORD_ALGS;) {
-            if (stats[i].alg == 'Q' && stats[i].n == n[j]) {
-                somaQuick += stats[i].getStats(m);
-            }
-            if (stats[i].alg == 'H' && stats[i].n == n[j]) {
-                somaHeap += stats[i].getStats(m);
-            }
-            i++;
-            if (i % (ITER * 2) == 0) {
-                arqStats << n[j] << "\t" << somaQuick / ITER << "\t" << somaHeap / ITER << "\t" << endl;
-                somaQuick = 0;
-                somaHeap = 0;
-                j++;
-            }
-        }
-        arqStats.close();
-    }
-
-    delete[] stats;
-}
-
-
 
 unsigned gerarRandomSeed() {
     random_device myRandomDevice; //para gerar a semente de randomização
     return myRandomDevice(); //retorna um seed aleatorio
+}
+
+void interfaceTerminal(const string &dataset) {
+    int opt;
+    while (true) {
+        cout << "Trabalho Estrutura De Dados II" << endl;
+        cout << "Seção *1*: Ordenação dos registros" << endl;
+        cout << "Seção *2*: Autores mais frequentes" << endl;
+        cout << "Seção *3*: Estruturas balanceadas" << endl;
+        cout << "---------------------------------" << endl;
+        cout << "Digite o número referente a seção desejada [1-3] ou 0 para sair : ";
+        cin >> opt;
+        cout << string(100, '\n');
+        if (opt == 1) {
+            secao1(dataset);
+        } else if (opt == 2) {
+            secao2(dataset);
+        } else if (opt == 3) {
+            secao3(dataset);
+        } else if (opt == 0) {
+            break;
+        } else {
+            cerr << "\n** " << opt << " não é um número de seção válido** ";
+        }
+        cout << endl << "Pressione ENTER para voltar ao menu principal" << endl;
+        cin.get();
+        cin.get();
+        cout << string(100, '\n');
+    }
+
 }

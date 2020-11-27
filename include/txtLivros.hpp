@@ -8,8 +8,8 @@
 namespace txt {
 /**  Função para ler os parametros X e N do arquivo de entrada
  *  @param x : Número de iterações
- *  @param n : vetor de inteiros de tamanho x que será preenchido
  *  @param nomeArqEntrada : nome do arquivo que contém os parametros de entrada
+ *  @return vetor de inteiros contendo o tamanho das amostras
  * */
     void lerEntrada(int *x, int *&n, const std::string &pathArquivo);
 

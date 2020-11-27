@@ -716,16 +716,13 @@ NoVP *AVP::auxinsere(NoVP *r, NoVP *n) {
 }
 
 void AVP::insere(Registro *p) {
-
-
     NoVP *n = new NoVP();
     n->setCor(VERMELHO);
     n->setInfo(p->getId());
     n->setEsq(nullptr);
     n->setDir(nullptr);
-    n->setRegistro(p);
+    n->setRegistro(*p);
     raiz_ = auxinsere(raiz_, n);
-
 }
 
 /*
@@ -743,10 +740,10 @@ void AVP::imprimeAux(NoVP *n, int indent) {
     for (i = 0; i < indent; i++)
         fputs(" ", stdout);
     if (n->getCor() == PRETO)
-        cout << (int) n->getInfo() << endl;
+        cout << n->getInfo() << endl;
     else
         //noh vermelho aparece entre o simbolo "<>"
-        cout << "<" << (int) n->getInfo() << ">" << endl;
+        cout << "<" << n->getInfo() << ">" << endl;
     if (n->getEsq() != nullptr) {
         imprimeAux(n->getEsq(), indent + INDENT_STEP);
     }
