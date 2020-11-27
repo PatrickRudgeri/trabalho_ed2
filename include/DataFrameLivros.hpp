@@ -9,6 +9,12 @@
 #include "secao_3/AVP.hpp"
 #include "secao_3/ArvoreB.h"
 
+// Constantes que representam os tipos de árvores disponíveis
+enum AlgArvores {
+    VP,
+    B
+};
+
 // Constantes que representam os algorítmos disponíveis para ordenação
 enum AlgOrdenacao {
     QUICKSORT,
@@ -26,31 +32,25 @@ enum ED{
 
 /** DataFrameLivros: Classe que representa o dataset de Livros
  *
- *  Essa estrutura foi inspirada na estrutura de dados `data.frame` disponivel na linguagem R e
- *   também em Python, através da biblioteca Pandas.
  *  O preenchimento do DataFrame é feito através da função `lerCsv`.
- *  Internamente cada registro é armazenado em uma estrutura chamada Registro, e todos os registros são
- *   armazenados na ED escolhida (ED::VETOR, ED::HASH_TABLE ou ED::ARVORE foram implementadas nesse trabalho)
- *  É importante ressaltar que essa é uma estrutura especializada para o problema proposto no trabalho, porém
- *   pode servir de base para uma generalização futura.
+ *  Internamente cada registro é armazenado em uma estrutura chamada Registro, e todos os registros em uma ED de Registros
  *
  *  Atributos
  *  ----------------
- *  @attr numLinhas_ : indica a quantidade de Registros lidos
- *  @attr contTrocas1_ : contador de trocas para o algoritmo 1
- *  @attr contTrocas2_ : contador de trocas para o algoritmo 2
- *  @attr contComparacoes1_ : contador de Comparações para o algoritmo 1
- *  @attr contComparacoes2_ : contador de Comparações para o algoritmo 2
+ *  @attr numRegistros_ : indica a quantidade de Registros lidos
  *  @attr *registros_ : Vetor de Registros
  *  @attr *registrosQuick_ : Vetor de Registros para ordenação por Quicksort
  *  @attr *registrosHeap_ : Vetor de Registros para ordenação por Heapsort
  * */
 class DataFrameLivros {
 public:
-    // Construtor sem parâmetros para inicialização dos atributos da classe
     DataFrameLivros();
 
-    // Destrutor da classe
+    DataFrameLivros(std::string pathSaida, ED armazInterno);
+
+    DataFrameLivros(std::string pathSaidaInsercao, std::string pathSaidaBusca, ED armazInterno);
+
+// Destrutor da classe
     ~DataFrameLivros();
 
     /** Método get do vetor registros_
@@ -67,14 +67,12 @@ public:
 
     /**  Utilizado para criar e preencher o vetor de Registros
      *
-     *  @param nomeArquivo : indica qual o nome do Arquivo
+     *  @param pathDataset : indica qual o nome do Arquivo
      *  @param numLinhas : indica a quantidade de Registros lidos
      *  @param aleatorio : indica se os Registros serão lidos de forma aleatória ou não
      *  @param seed : semente do gerador aleatório
-     *  @param armazInterno : indica se registros serão armazenados em uma tabela hash ou em um vetor de registros
      * */
-    void lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio = true, unsigned int seed = 42,
-                ED armazInterno = VETOR);
+    void lerCsv(const std::string &pathDataset, int numLinhas, bool aleatorio, unsigned int seed);
 
     /**  Insere um registro no dataframe
      *
@@ -87,34 +85,37 @@ public:
     /**  Ordenar o vetor interno de registros
      *
      *  @param algoritmoOrd : indica qual algoritmo de ordenação>
-     *  @param logMetricas : indica se irá imprimir metricas no terminal
      * */
-    void ordenar(AlgOrdenacao algoritmoOrd, const std::string &nomeArqSaida);
+    void ordenar(AlgOrdenacao algoritmoOrd);
 
-    /**  retorna o valor do atributo armazInterno_
-     *
-     *  @param algoritmoOrd : indica qual algoritmo de ordenação>
-     *  @return armazInterno_
-     * */
-    bool isHashTable() const;
+    void testeBuscasArv(AlgArvores arv);
+
+    void setPathSaida(std::string saidaInsercao, std::string saidaBusca);
+
+    void setPathSaida(std::string pathSaida);
+
+    void setArmazInterno(ED armazInterno);
 
 private:
     unsigned seed_;
-    int numLinhas_;
-    int contTrocas2_;
-    int contTrocas1_;
-    int contComparacoes1_;
-    int contComparacoes2_;
+    int numRegistros_;
+    int countTotalAutores_;
     Registro *registros_;
     Registro *registrosQuick_;
     Registro *registrosHeap_;
     HashRegistro *hashRegistros_;
     HashAutor *hashAutores_;
     ED armazInterno_;
-    int countTotalAutores_;
     AVP *arvoreVP_; //Ponteiro para Arvore Vermelho-Preta
     ArvoreB *arvoreB_;
+    std::string saidaInsercao_; // path de saida das estatisticas de inserção
+    std::string saidaBusca_; // path de saida das estatisticas de busca
+    std::string saidaOrdenacao_; // path de saida das estatisticas de ordenacao
+    Stats metricasOrdenacao_[2]; // um para cada algortmo de ordenacao implementado
+    Stats metricasArvInsercao_[2]; // para inserção de cada arvore implementada
+    Stats metricasArvBusca[2]; // para busca de cada arvore implementada
 
+    void inicializarAtributos();
 
     //métodos de ordenação
     //quicksort
@@ -156,8 +157,6 @@ private:
      *  @param n : Número de nós da Heap
      * */
     void heapSort(Registro *registrosHeap, int n);
-
-
 };
 
 

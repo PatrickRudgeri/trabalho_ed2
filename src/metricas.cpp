@@ -4,9 +4,8 @@
 #include <cassert>
 
 std::ostream &operator<<(std::ostream &os, const Stats &stats) {
-    os << "alg: " << stats.alg << " n: " << stats.n << " seed: " << stats.seed << " comp: " << stats.comp
-       << " trocas: " << stats.trocas
-       << " seed: " << stats.seed << " tempo: " << stats.tempo;
+    os << stats.alg << "\t" << stats.n << "\t" << stats.seed << "\t" << stats.comp
+       << "\t" << stats.trocas << "\t" << stats.tempo << std::endl;
     return os;
 }
 
@@ -28,6 +27,7 @@ void calcularMetricas(const int x, int *&N, const std::string &pathSecao, const 
     double somaQuick, somaHeap, somaVP, somaB;
     int secao = pathSecao == "../io/secao_1/" ? 1 : 3;
     int qtAlgs = secao == 1 ? ORD_ALGS : ARV_ALGS;
+    std::string tipoSaida = secao == 1 ? "" : (arquivo == "saidaInsercao.txt" ? "insercao/" : "busca/");
 
     auto *stats = new Stats[x * ITER * qtAlgs]; // x * 5 iter * 2 algs. ord.
     // lê o arquivo de saida e armazena em um vetor de Stats de tamanho x * ITER * ORD_ALGS
@@ -36,7 +36,7 @@ void calcularMetricas(const int x, int *&N, const std::string &pathSecao, const 
     // itera sobre as métricas armazenadas no enum metricas
     for (int m = Stats::metricas::_comp; m <= Stats::metricas::_tempo; m++) {
         std::string statsNome = m == 0 ? "comp" : (m == 2 ? "tempo" : "trocas");
-        std::ofstream arqStats(pathSecao + "stats/stats_" + statsNome + ".txt");
+        std::ofstream arqStats(pathSecao + "stats/"+tipoSaida+"stats_" + statsNome + ".txt");
 
         assert(arqStats.is_open() && arqStats.good());// teste do arquivo
         if (secao == 1) {
@@ -57,7 +57,7 @@ void calcularMetricas(const int x, int *&N, const std::string &pathSecao, const 
                     j++;
                 }
             }
-        }else {
+        } else {
             somaVP = 0;
             somaB = 0;
             for (int i = 0, j = 0; i < x * ITER * qtAlgs;) {

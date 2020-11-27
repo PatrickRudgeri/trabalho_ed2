@@ -10,21 +10,22 @@ using namespace std::chrono;
 // --------------- Construtores e Destrutores ---------------- //
 
 DataFrameLivros::DataFrameLivros() {
-    //Inicializando atributos
-    registros_ = nullptr;
-    registrosHeap_ = nullptr;
-    registrosQuick_ = nullptr;
-    hashRegistros_ = nullptr;
-    hashAutores_ = nullptr;
-    numLinhas_ = 0;
-    armazInterno_ = ED::VETOR;
-    countTotalAutores_ = 0;
-    arvoreVP_ = nullptr;
-    contTrocas2_ = 0;
-    contTrocas1_ = 0;
-    contComparacoes1_ = 0;
-    contComparacoes2_ = 0;
+    inicializarAtributos();
+}
 
+DataFrameLivros::DataFrameLivros(std::string pathSaida, ED armazInterno) {
+    //Inicializando atributos
+    inicializarAtributos();
+    armazInterno_ = armazInterno;
+    saidaOrdenacao_ = pathSaida;
+}
+
+DataFrameLivros::DataFrameLivros(std::string pathSaidaInsercao, std::string pathSaidaBusca, ED armazInterno) {
+    //Inicializando atributos
+    inicializarAtributos();
+    armazInterno_ = armazInterno;
+    saidaInsercao_ = pathSaidaInsercao;
+    saidaBusca_ = pathSaidaBusca;
 }
 
 DataFrameLivros::~DataFrameLivros() {
@@ -35,6 +36,7 @@ DataFrameLivros::~DataFrameLivros() {
     delete hashRegistros_;
     delete hashAutores_;
     delete arvoreVP_;
+    delete arvoreB_;
 }
 
 // ----------------------- Sets e Gets ----------------------- //
@@ -47,11 +49,33 @@ void DataFrameLivros::setRegistros(Registro *registros) {
     registros_ = registros;
 }
 
-bool DataFrameLivros::isHashTable() const {
-    return armazInterno_;
+void DataFrameLivros::setPathSaida(std::string saidaInsercao, std::string saidaBusca) {
+    saidaInsercao_ = saidaInsercao;
+    saidaBusca_ = saidaBusca;
+}
+
+void DataFrameLivros::setPathSaida(std::string pathSaida) {
+    saidaOrdenacao_ = pathSaida;
+}
+
+void DataFrameLivros::setArmazInterno(ED armazInterno) {
+    armazInterno_ = armazInterno;
 }
 
 // ------------------- Funções auxiliares -------------------- //
+
+void DataFrameLivros::inicializarAtributos() {
+    registros_ = nullptr;
+    registrosHeap_ = nullptr;
+    registrosQuick_ = nullptr;
+    hashRegistros_ = nullptr;
+    hashAutores_ = nullptr;
+    numRegistros_ = 0;
+    countTotalAutores_ = 0;
+    arvoreVP_ = nullptr;
+    arvoreB_ = nullptr;
+    armazInterno_ = ED::VETOR;
+}
 
 /**
  *  A função copiarRegistros copia o vetor original de Registros para um outro vetor
@@ -67,28 +91,34 @@ void copiarRegistros(Registro *vetorOriginal, Registro *vetorCopia, int n) {
 
 // --------------------- Métodos públicos -------------------- //
 
-void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool aleatorio, unsigned int seed,
-                             ED armazInterno) {
-    numLinhas_ = numLinhas;
+void DataFrameLivros::lerCsv(const std::string &pathDataset, int numLinhas, bool aleatorio, unsigned int seed) {
+    numRegistros_ = numLinhas;
     seed_ = seed;
-    armazInterno_ = armazInterno;
+
 
     // se a ED interna é hash table então aloca a tabela hash
     if (armazInterno_ == ED::HASH_TABLE) {
 
-        hashRegistros_ = new HashRegistro(numLinhas_);
+        hashRegistros_ = new HashRegistro(numRegistros_);
 
     } else if (armazInterno_ == ED::VETOR) {
+        metricasOrdenacao_[0].n = numRegistros_;
+        metricasOrdenacao_[0].seed = seed_;
+        metricasOrdenacao_[1].n = numRegistros_;
+        metricasOrdenacao_[1].seed = seed_;
         // se ED interna é vetor aloca um vetor de Registros de tamanho `numLinhas`
-        registros_ = new Registro[numLinhas_];
+        registros_ = new Registro[numRegistros_];
 
     } else if (armazInterno_ == ED::ARVORE) {
-        // se ED interna é arvore aloca um vetor de Registros de tamanho `numLinhas`
+        metricasArvInsercao_[0].n = numRegistros_;
+        metricasArvInsercao_[0].seed = seed_;
+        metricasArvInsercao_[0].tempo = 0.0;
+        metricasArvInsercao_[1].tempo = 0.0;
         arvoreVP_ = new AVP();
-        arvoreB_ = new ArvoreB();
+//        arvoreB_ = new ArvoreB();
     }
     //preenche o data frame com os valores lidos do csv
-    csv::lerRegistros(this, nomeArquivo, numLinhas, aleatorio, seed);
+    csv::lerRegistros(this, pathDataset, numLinhas, aleatorio, seed);
 
     if (armazInterno_ == ED::HASH_TABLE) {
         //Com o dataframe, hashRegistros_ e a quantidade de autores preenchidos, podemos criar a hash de autores
@@ -99,11 +129,11 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
 //        int *autoresIds;
 //        int qtAutores;
 //
-//        tamHashRegistros = Primo::proxPrimo(numLinhas_);
+//        tamHashRegistros = Primo::proxPrimo(numRegistros_);
 //        registrosTable = hashRegistros_->getTabelaRegistros();
 //
 //        for (int i = 0; i < tamHashRegistros; i++) {
-            // se é uma posição vazia, então passa para a proxima posição
+        // se é uma posição vazia, então passa para a proxima posição
 //            cout << registrosTable[i].getId() << endl;//fixme: debug
 //            if (registrosTable[i].getId() == -1) continue;
 //
@@ -124,18 +154,28 @@ void DataFrameLivros::lerCsv(const std::string &nomeArquivo, int numLinhas, bool
 //        }
         //TODO: Dentro dessa função, percorrer csv e adicionar nome dos autores da tabela hash
 //        csv::lerAutores("../dataset/authors.csv", hashAutores_);
-    }
-    else if (armazInterno_ == ED::ARVORE) {
+    } else if (armazInterno_ == ED::ARVORE) {
         //Obtendo as quantidades de comparações e trocas realizadas pelas arvores
-        contComparacoes1_ = arvoreVP_->getQtdComparacoes();
-        contTrocas1_ = arvoreVP_->getQtdTrocas();
+        metricasArvInsercao_[0].alg = 'V';
+        metricasArvInsercao_[0].comp = arvoreVP_->getCompInsercao();
+        metricasArvInsercao_[0].trocas = arvoreVP_->getTrocasInsercao();
 
-//        contComparacoes2_ = arvoreB_->getQtdComparacoes();
-//        contTrocas2_ = arvoreB_->getQtdTrocas();
+//        metricasArvInsercao_[1].alg = 'B';
+//        metricasArvInsercao_[1].comp  = arvoreB_->getCompInsercao();
+//        metricasArvInsercao_[1].trocas = arvoreB_->getTrocasInsercao();
+
+        // ofstreams para concatenar as métricas nos arquivos de saida
+        ofstream outInsercao(saidaInsercao_, ios::app);
+        assert(outInsercao.is_open());//se arquivo não estiver aberto interrompe a execução
+
+        outInsercao << metricasArvInsercao_[0];
+//        outInsercao << metricasArvInsercao_[1];
+        outInsercao.close();
     }
 }
 
 bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
+    high_resolution_clock::time_point inicioInsercao, fimInsercao;
     bool statusInsercao;
     if (armazInterno_ == ED::HASH_TABLE) {
         auto *reg = new Registro();
@@ -151,7 +191,7 @@ bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
         }
 
 
-    } else if (armazInterno_ == ED::VETOR && index >= 0 && index < numLinhas_) {
+    } else if (armazInterno_ == ED::VETOR && index >= 0 && index < numRegistros_) {
 
         registros_[index].setTodosAtributosStr(camposStrVet);
         statusInsercao = true;
@@ -161,10 +201,19 @@ bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
         Registro reg;
         reg.setTodosAtributosStr(camposStrVet); // preenche o obj Registro
 
+        //Inserindo na arvore VP e medindo tempo
+        inicioInsercao = high_resolution_clock::now();
         arvoreVP_->insere(&reg);
+        fimInsercao = high_resolution_clock::now();
+        metricasArvInsercao_[0].tempo += duration_cast<duration<double>>(fimInsercao - inicioInsercao).count();
+
+//        Inserindo na arvore B e medindo tempo
+//        inicioInsercao = high_resolution_clock::now();
+//        arvoreB_->insere(&reg);
+//        fimInsercao = high_resolution_clock::now();
+//        metricasArvInsercao_[1].tempo += duration_cast<duration<double>>(fimInsercao - inicioInsercao).count();
 
         statusInsercao = true; //se inserção na arvore deu tudo ok
-
     } else {
         cout << "Erro de index ou armazenamento não implementado na função DataFrameLivros::inserirRegistro()";
         exit(-1);
@@ -173,56 +222,58 @@ bool DataFrameLivros::inserirRegistro(std::string *camposStrVet, int index) {
 }
 
 
-void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd, const string &nomeArqSaida) {
+void DataFrameLivros::ordenar(AlgOrdenacao algoritmoOrd) {
     high_resolution_clock::time_point inicio, fim;
     //zerando contadores
-    contTrocas2_ = 0;
-    contTrocas1_ = 0;
-    contComparacoes1_ = 0;
-    contComparacoes2_ = 0;
+    metricasOrdenacao_[0].trocas = 0;
+    metricasOrdenacao_[0].comp = 0;
+    metricasOrdenacao_[1].trocas = 0;
+    metricasOrdenacao_[1].comp = 0;
 
     // ofstream para concatenar as métricas no arquivo de saida
-    ofstream outStream(nomeArqSaida, ios::app);
+    ofstream outStream(saidaOrdenacao_, ios::app);
     assert(outStream.is_open());//se arquivo não estiver aberto interrompe a execução
 
     // Faz a alocação dos vetores que serão ordenados (cópias de registros_)
     // Executa o método de ordenação escolhido em algoritmoOrd
     if (algoritmoOrd == AlgOrdenacao::QUICKSORT) {
-        registrosQuick_ = new Registro[numLinhas_];
+        registrosQuick_ = new Registro[numRegistros_];
         /**
          * para deixar o original intacto e armazenar cada ordenação em seu respectivo array, o vetor registros_ é copiado
          *   para registrosQuick_
          */
-        copiarRegistros(registros_, registrosQuick_, numLinhas_);
+        copiarRegistros(registros_, registrosQuick_, numRegistros_);
 
         inicio = high_resolution_clock::now();
-        quickSort(0, numLinhas_ - 1);
+        quickSort(0, numRegistros_ - 1);
         fim = high_resolution_clock::now();
 
-        //concatenando métricas:
-        outStream << "Q\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoes2_ << "\t" << contTrocas2_
-                  << "\t";
+        //métricas:
+        metricasOrdenacao_[0].alg = 'Q';
+        //salva no arquivo de saida o tempo de execução do algoritmo
+        metricasOrdenacao_[0].tempo = duration_cast<duration<double>>(fim - inicio).count();
+        outStream << metricasOrdenacao_[0];
     }
     if (algoritmoOrd == AlgOrdenacao::HEAPSORT) {
-        registrosHeap_ = new Registro[numLinhas_];
+        registrosHeap_ = new Registro[numRegistros_];
         /**
          * para deixar o original intacto e armazenar cada ordenação em seu respectivo array, o vetor registros_ é copiado
          *   para registrosHeap_
          */
-        copiarRegistros(registros_, registrosHeap_, numLinhas_);
+        copiarRegistros(registros_, registrosHeap_, numRegistros_);
 
         inicio = high_resolution_clock::now();
-        heapSort(registrosHeap_, numLinhas_);
+        heapSort(registrosHeap_, numRegistros_);
         fim = high_resolution_clock::now();
 
-        //concatenando métricas:
-        outStream << "H\t" << numLinhas_ << "\t" << seed_ << "\t" << contComparacoes1_ << "\t" << contTrocas1_
-                  << "\t";
+        //métricas:
+        metricasOrdenacao_[1].alg = 'H';
+        //salva no arquivo de saida o tempo de execução do algoritmo
+        metricasOrdenacao_[1].tempo = duration_cast<duration<double>>(fim - inicio).count();
+        outStream << metricasOrdenacao_[1];
     }
 
-    //logs de métricas:
-    //salva no arquivo de saida o tempo de execução do algoritmo
-    outStream << to_string(duration_cast<duration<double>>(fim - inicio).count()) << endl;
+
     outStream.close();
 }
 
@@ -283,7 +334,6 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
     int dir = posFim;
 
     //Variável auxiliar para armazenar as trocas de posições
-//    Registro aux; //question: qual o tipo correto dessa variavel?
 
     /**
      *  A primeira partição é percorrida da esquerda para direita enquanto o elemento no indice < pivô
@@ -292,17 +342,17 @@ int DataFrameLivros::particionamentoQuick(int posIni, int posFim) {
      */
     while (esq < dir) {
         while (registrosQuick_[esq].getTitulo() < registrosQuick_[pivo].getTitulo()) {
-            contComparacoes2_++;
+            metricasOrdenacao_[0].comp++;
             esq++;
         }
 
         while (registrosQuick_[dir].getTitulo() > registrosQuick_[pivo].getTitulo()) {
-            contComparacoes2_++;
+            metricasOrdenacao_[0].comp++;
             dir--;
         }
         if (esq <= dir) {
             //Abaixo é realizado as trocas de dados entre duas posições no vetor
-            contTrocas2_ += 3;
+            metricasOrdenacao_[0].trocas += 3;
             Registro aux = registrosQuick_[dir];
             registrosQuick_[dir] = registrosQuick_[esq];
             registrosQuick_[esq] = aux;
@@ -359,7 +409,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
      *
      * */
     if ((filho_esq < n) and (registrosHeap[filho_esq].getTitulo() > registrosHeap[raiz].getTitulo())) {
-        contComparacoes1_++;
+        metricasOrdenacao_[1].comp++;
         //Se o filho esquerdo for maior que a raiz_
         maior = filho_esq;
     } else {
@@ -368,7 +418,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
     }
     if ((filho_dir < n) and (registrosHeap[filho_dir].getTitulo() > registrosHeap[maior].getTitulo())) {
         //Se o filho direito for maior do que a maior até agora
-        contComparacoes1_++;
+        metricasOrdenacao_[1].comp++;
         maior = filho_dir;
     }
     if (maior != raiz) {
@@ -377,7 +427,7 @@ void DataFrameLivros::heapMax(Registro *registrosHeap, int raiz, int n) {
          * e repita o processo para o filho envolvido na troca
          *
          */
-        contTrocas1_ += 3;
+        metricasOrdenacao_[1].trocas += 3;
         Registro aux = registrosHeap[raiz];
         registrosHeap[raiz] = registrosHeap[maior];
         registrosHeap[maior] = aux;
@@ -410,11 +460,61 @@ void DataFrameLivros::heapSort(Registro *registrosHeap, int n) {
          * Os passos anteriores são repetidos até que reste apenas um elemento.
          *
          * */
-        contTrocas1_ += 3;
+        metricasOrdenacao_[1].trocas += 3;
         Registro aux = registrosHeap[i];
         registrosHeap[i] = registrosHeap[0];
         registrosHeap[0] = aux;
         //Chama Max Heapify com a raiz_ e o elemento inserido
         heapMax(registrosHeap, 0, i);
     }
+}
+
+// ------------------------- Árvores ------------------------- //
+
+void DataFrameLivros::testeBuscasArv(AlgArvores arv) {
+    srand(seed_);
+    high_resolution_clock::time_point inicioBusca, fimBusca;
+
+    ofstream outBusca(saidaBusca_, ios::app);
+    assert(outBusca.is_open());
+
+    if (arv == AlgArvores::VP) {
+
+        inicioBusca = high_resolution_clock::now();
+        for (int i = 0; i < numRegistros_; i++) {
+            long val = rand() % 9790000000000 + 9780000000001;
+            arvoreVP_->busca(val);
+        }
+        fimBusca = high_resolution_clock::now();
+
+        metricasArvBusca[0].alg = 'V';
+        metricasArvBusca[0].n = numRegistros_;
+        metricasArvBusca[0].seed = seed_;
+        metricasArvBusca[0].comp = arvoreVP_->getCompBusca();
+        metricasArvBusca[0].trocas = arvoreVP_->getTrocasBusca();
+        metricasArvBusca[0].tempo = duration_cast<duration<double>>(fimBusca - inicioBusca).count();
+        //salvando log de métricas de buscas na Arv VP:
+        outBusca << metricasArvBusca[1];
+    }
+
+    if (arv == AlgArvores::B) {
+        //Ativar esse código quando Arvore B estiver ok
+//        inicioBusca = high_resolution_clock::now();
+//        for (int i = 0; i < numRegistros_; i++) {
+//            long val = rand() % 9790000000000 + 9780000000001;
+//            arvoreB_->busca(val);
+//        }
+//        fimBusca = high_resolution_clock::now();
+//
+//        metricasArvBusca[1].alg = 'B';
+//        metricasArvBusca[1].n = numRegistros_;
+//        metricasArvBusca[1].seed = seed_;
+//        metricasArvBusca[1].comp = arvoreB_->getCompBusca(); //implementar
+//        metricasArvBusca[1].trocas = arvoreB_->getTrocasBusca(); // implementar
+//        metricasArvBusca[1].tempo = duration_cast<duration<double>>(fimBusca - inicioBusca).count();
+//        //salvando log de métricas de buscas na Arv B:
+//        outBusca << metricasArvBusca[1];
+    }
+
+    outBusca.close();
 }

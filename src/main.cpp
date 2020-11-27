@@ -40,7 +40,6 @@ void secao1(const string &dataset) {
     int x;  // Número de iterações (n)
     int *n = nullptr;  // vetor para armazenar os valores de n (qt. de registros) lidos de "entrada.txt"
     unsigned seed;  // semente de randomização
-    DataFrameLivros dfLivros;  //instancia de dfLivros
 
     const string PATH_SECAO = "../io/secao_1/";
     const string ARQ_ENTRADA = "entrada.txt";
@@ -49,23 +48,26 @@ void secao1(const string &dataset) {
     // obtendo os parâmetros de entrada
     txt::lerEntrada(&x, n, PATH_SECAO + ARQ_ENTRADA);
     assert(n != nullptr);
-    //remove o arquivo de saida, se existir
-    remove((PATH_SECAO + ARQ_SAIDA).c_str());
-//
+
+    string pathSaida = PATH_SECAO + ARQ_SAIDA;
+
+    //se arquivo de saida existir, então remove
+    remove(pathSaida.c_str());
+
     for (int i = 0; i < x; i++) {
         for (int j = 0; j < ITER; j++) {
+            DataFrameLivros dfLivros(pathSaida, ED::VETOR);
             seed = gerarRandomSeed();
-
             // lê o csv e salva n[i] registros aleatórios
-            dfLivros.lerCsv(dataset, n[i], true, seed, ED::VETOR);
-            if (j == 0) cout << n[i] << " registros aleatorios carregados." << endl;
+            dfLivros.lerCsv(dataset, n[i], true, seed);
+            if (j == 0) cout << n[i] << " registros aleatorios carregados. | seed = " << seed << endl;
             // Faz as ordenações e imprime métricas
 
             //chama algoritmo de Ordenação Quicksort
-            dfLivros.ordenar(AlgOrdenacao::QUICKSORT, PATH_SECAO + ARQ_SAIDA);
+            dfLivros.ordenar(AlgOrdenacao::QUICKSORT);
 
             //chama algoritmo de Ordenação HeapSort
-            dfLivros.ordenar(AlgOrdenacao::HEAPSORT, PATH_SECAO + ARQ_SAIDA);
+            dfLivros.ordenar(AlgOrdenacao::HEAPSORT);
 
         }
     }
@@ -82,7 +84,6 @@ void secao1(const string &dataset) {
 
 void secao2(const string &dataset) {
     int N, M;
-    DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
     const string PATH_SECAO = "../io/secao_2/";
     const string ARQ_SAIDA = "saida.txt";
@@ -102,7 +103,6 @@ void secao2(const string &dataset) {
     seed = 3202200755;
 //    seed = gerarRandomSeed();
     cout << "seed = " << seed << endl;
-
 //    Registro *r;
 //    r = new Registro[10];
 //
@@ -113,49 +113,53 @@ void secao2(const string &dataset) {
 //    }
 //    cout << h.buscar(12345678913) << endl;
 
+    DataFrameLivros dfLivros;
+    dfLivros.setArmazInterno(ED::VETOR);
 
-    // lê o csv e salva n[i] registros aleatórios e distintos
-    dfLivros.lerCsv(dataset, N, true, seed, ED::HASH_TABLE);
-
-//    auxAutores.inserir(new Autor("Nome Teste", 234));
-//    cout << h.busca("Nome Teste");
+    // lê o csv e salva N registros aleatórios e distintos
+    dfLivros.lerCsv(dataset, N, true, seed);
 }
 
 // ------------------------- Etapa 3 ------------------------- //
 void secao3(const string &dataset) {
     int x;  // Número de iterações (n)
     int *n = nullptr;  // vetor para armazenar os valores de n (qt. de registros) lidos de "entrada.txt"
-    DataFrameLivros dfLivros;  //instancia de dfLivros
     unsigned seed;  // semente de randomização
 
     const string PATH_SECAO = "../io/secao_3/";
-    const string ARQ_SAIDA_BUSCA = "saidaBusca.txt";
     const string ARQ_SAIDA_INSERCAO = "saidaInsercao.txt";
+    const string ARQ_SAIDA_BUSCA = "saidaBusca.txt";
     const string ARQ_ENTRADA = "entrada.txt";
 
     //remove os arquivos de saida, se existirem
-    remove((PATH_SECAO + ARQ_SAIDA_BUSCA).c_str());
-    remove((PATH_SECAO + ARQ_SAIDA_INSERCAO).c_str());
+    string saidaInsercao = PATH_SECAO + ARQ_SAIDA_INSERCAO;
+    string saidaBusca = PATH_SECAO + ARQ_SAIDA_BUSCA;
+
+    //se arquivos de saida existirem, então os remove
+    remove(saidaInsercao.c_str());
+    remove(saidaBusca.c_str());
 
     // obtendo os parâmetros de entrada
     txt::lerEntrada(&x, n, PATH_SECAO + ARQ_ENTRADA);
 
-    seed = gerarRandomSeed();
-//    dfLivros.lerCsv(dataset, n[0], true, seed, ED::ARVORE);
-
     for (int i = 0; i < x; i++) {
         for (int j = 0; j < ITER; j++) {
+            DataFrameLivros dfLivros(saidaInsercao, saidaBusca, ED::ARVORE);
             seed = gerarRandomSeed();
 
             // lê o csv e salva n[i] registros aleatórios
-            dfLivros.lerCsv(dataset, n[i], true, seed, ED::ARVORE);
-            if (j == 0) cout << n[i] << " registros aleatorios carregados." << endl;
+            dfLivros.lerCsv(dataset, n[i], true, seed);
+            if (j == 0) cout << n[i] << " registros aleatorios carregados. | seed = " << seed << endl;;
 
+            dfLivros.testeBuscasArv(AlgArvores::VP);
+
+//            dfLivros.testeBuscasArv(AlgArvores::B);
         }
     }
 
     //calculando métricas
-//    calcularMetricas(x, n, PATH_SECAO, ARQ_SAIDA);
+    calcularMetricas(x, n, PATH_SECAO, ARQ_SAIDA_INSERCAO);
+    calcularMetricas(x, n, PATH_SECAO, ARQ_SAIDA_BUSCA);
 
     delete[] n;
 }

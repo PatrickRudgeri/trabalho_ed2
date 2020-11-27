@@ -6,10 +6,10 @@
 
 #define ITER 5  // número de iterações por algoritmo de ordenação
 #define ORD_ALGS 2 // número de algoritmos de ordenação que serão testados
-#define ARV_ALGS 2 // número de arvores que serão testadas
+#define ARV_ALGS 1 // número de arvores que serão testadas FIXME: quando adicionar Arv B, ARV_ALGS = 2
 
 
-/* Struct para auxiliar o armazenamento das estatisticas das ordenações
+/* Struct para auxiliar o armazenamento das estatisticas
  *
  *  Atributos
  *  ----------------

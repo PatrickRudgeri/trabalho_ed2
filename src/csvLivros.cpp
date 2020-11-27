@@ -158,8 +158,7 @@ namespace csv {
         arquivo.close();
         delete[] randomNumeros;
     }
-    //TODO: Para cada autor do csv, buscar em hashAutor, se estiver contido incrementa a frequencia (internamente)
-    // e seta o nome do autor
+
     void lerAutores(const std::string &nomeArquivo, HashAutor *hashAutor) {
         string linha;  // armazenará a linha atual
         int numLinhas;  // contador de linhas

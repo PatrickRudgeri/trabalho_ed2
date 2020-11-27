@@ -11,8 +11,10 @@ using namespace std;
 
 AVP::AVP() {
     raiz_ = nullptr;
-    qtdComparacoes_ = 0;
-    qtdTrocas_ = 0;
+    qtdCompInsercao_ = 0;
+    qtdTrocasInsercao_ = 0;
+    qtdTrocasBusca_ = 0;
+    qtdCompBusca_ = 0;
 }
 
 AVP::~AVP() {
@@ -361,17 +363,17 @@ bool AVP::busca(long long idLivro) {
 bool AVP::auxBusca(NoVP *p, long long idLivro) {
     if (p == nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompBusca_++;
         return false;
     } else if (p->getInfo() == idLivro) {
 
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompBusca_++;
         return true;
     } else if (idLivro < p->getInfo()) {
 
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompBusca_++;
         return auxBusca(p->getEsq(), idLivro);
     } else {
         return auxBusca(p->getDir(), idLivro);
@@ -385,13 +387,13 @@ void AVP::rotacaoEsquerda(NoVP *n) {
     NoVP *nnovo = n->getDir();
 
     //Contabiliza troca
-    this->qtdTrocas_++;
+    this->qtdTrocasInsercao_++;
 
     //p eh noh pai_ do no passado
     NoVP *p = n->getPai();
 
     //Contabiliza troca
-    this->qtdTrocas_++;
+    this->qtdTrocasInsercao_++;
 
     //A fun��o assert() testa se uma express�o � true (verdadeira). Sa express�o for falsa (false),
     //o assert interrompe a execucao do programa.
@@ -405,40 +407,40 @@ void AVP::rotacaoEsquerda(NoVP *n) {
     n->setPai(nnovo);
 
     //Contabiliza troca
-    this->qtdTrocas_ = this->qtdTrocas_ + 3;
+    this->qtdTrocasInsercao_ = this->qtdTrocasInsercao_ + 3;
 
     // Lidar com outros ponteiros filho/pai_.
 
     if (n->getDir() != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
 
         n->getDir()->setPai(n);
 
         //Contabiliza troca
-        this->qtdTrocas_++;
+        this->qtdTrocasInsercao_++;
     }
 
     //Inicialmente n poderia ser a raiz_.
     if (p != nullptr) {
         if (n == p->getEsq()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
 
             p->setEsq(nnovo);
 
         } else if (n == p->getDir()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
 
             p->setDir(nnovo);
 
             //Contabiliza troca
-            this->qtdTrocas_++;
+            this->qtdTrocasInsercao_++;
         }
     }
     //Contabiliza troca
-    this->qtdTrocas_++;
+    this->qtdTrocasInsercao_++;
 
     nnovo->setPai(p);
 }
@@ -449,13 +451,13 @@ void AVP::rotacaoDireita(NoVP *n) {
     NoVP *nnovo = n->getEsq();
 
     //Contabiliza troca
-    this->qtdTrocas_++;
+    this->qtdTrocasInsercao_++;
 
     //p eh noh pai_ do no passado
     NoVP *p = n->getPai();
 
     //Contabiliza troca
-    this->qtdTrocas_++;
+    this->qtdTrocasInsercao_++;
 
     assert(nnovo != nullptr); //Como as folhas de uma arvore vermelho-preto estao vazias,
     //elas nao podem se tornar nos internos.
@@ -466,43 +468,43 @@ void AVP::rotacaoDireita(NoVP *n) {
     n->setPai(nnovo);
 
     //Contabiliza troca
-    this->qtdTrocas_ = this->qtdTrocas_ + 3;
+    this->qtdTrocasInsercao_ = this->qtdTrocasInsercao_ + 3;
 
     //Lidar com outros ponteiros filho/pai_.
     if (n->getEsq() != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
 
         n->getEsq()->setPai(n);
 
         //Contabiliza troca
-        this->qtdTrocas_++;
+        this->qtdTrocasInsercao_++;
     }
 
     //Inicialmente n poderia ser a raiz_.
     if (p != nullptr) {
         if (n == p->getEsq()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
 
             p->setEsq(nnovo);
 
             //Contabiliza troca
-            this->qtdTrocas_++;
+            this->qtdTrocasInsercao_++;
         } else if (n == p->getDir()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
 
             p->setDir(nnovo);
 
             //Contabiliza troca
-            this->qtdTrocas_++;
+            this->qtdTrocasInsercao_++;
         }
     }
     nnovo->setPai(p);
 
     //Contabiliza troca
-    this->qtdTrocas_++;
+    this->qtdTrocasInsercao_++;
 }
 
 //Insercao
@@ -581,13 +583,13 @@ void AVP::insereCaso4(NoVP *n) {
 
         if (n == p->getDir() && p == g->getEsq()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
 
             rotacaoEsquerda(p);
             n = n->getEsq();
         } else if (n == p->getEsq() && p == g->getDir()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
 
             rotacaoDireita(p);
             n = n->getDir();
@@ -610,11 +612,11 @@ void AVP::insereCaso4etapa2(NoVP *n) {
 
         if (n == p->getEsq()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
             rotacaoDireita(g);
         } else {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
             rotacaoEsquerda(g);
         }
         g->setCor(VERMELHO);
@@ -628,31 +630,31 @@ void AVP::insereRecursivo(NoVP *r, NoVP *n) {
     //se raiz nao eh nula
     if (r != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
         //se a info_ eh menor vai para esquerda
         if (n->getInfo() < r->getInfo()) {
             //Contabiliza comparacao
-            this->qtdComparacoes_++;
+            this->qtdCompInsercao_++;
             if (r->getEsq() != nullptr) {
                 //Contabiliza comparacao
-                this->qtdComparacoes_++;
+                this->qtdCompInsercao_++;
                 insereRecursivo(r->getEsq(), n);
                 return;
             } else {
                 //Contabiliza comparacao
-                this->qtdComparacoes_++;
+                this->qtdCompInsercao_++;
                 r->setEsq(n);
             }
         } else     // se a info_ eh maior ou igual vai para direita
         {
             if (r->getDir() != nullptr) {
                 //Contabiliza comparacao
-                this->qtdComparacoes_++;
+                this->qtdCompInsercao_++;
                 insereRecursivo(r->getDir(), n);
                 return;
             } else {
                 //Contabiliza comparacao
-                this->qtdComparacoes_++;
+                this->qtdCompInsercao_++;
                 r->setDir(n);
             }
         }
@@ -676,19 +678,19 @@ void AVP::insereCorrecao(NoVP *n) {
 
     if (n->getPai() == nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
         insereCaso1(n);
     } else if (n->getPai()->getCor() == PRETO) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
         insereCaso2();
     } else if (n->getTio() != nullptr && n->getTio()->getCor() == VERMELHO) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
         insereCaso3(n);
     } else {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
         insereCaso4(n);
     }
 }
@@ -704,11 +706,11 @@ NoVP *AVP::auxinsere(NoVP *r, NoVP *n) {
     r = n;
 
     //Contabiliza troca
-    this->qtdTrocas_++;
+    this->qtdTrocasInsercao_++;
 
     while (r->getPai() != nullptr) {
         //Contabiliza comparacao
-        this->qtdComparacoes_++;
+        this->qtdCompInsercao_++;
         r = r->getPai();
     }
 
@@ -754,10 +756,18 @@ void AVP::imprimeAVP() {
     puts("");
 }
 
-int AVP::getQtdComparacoes() const {
-    return qtdComparacoes_;
+int AVP::getCompInsercao() const {
+    return qtdCompInsercao_;
 }
 
-int AVP::getQtdTrocas() const {
-    return qtdTrocas_;
+int AVP::getTrocasInsercao() const {
+    return qtdTrocasInsercao_;
+}
+
+int AVP::getCompBusca() {
+    return qtdCompBusca_;
+}
+
+int AVP::getTrocasBusca() {
+    return qtdTrocasBusca_;
 }

@@ -56,16 +56,22 @@ public:
  	*/
     void deleta(long long val);
 
-    int getQtdComparacoes() const;
+    int getCompInsercao() const;
 
-    int getQtdTrocas() const;
+    int getTrocasInsercao() const;
+
+    int getCompBusca();
+
+    int getTrocasBusca();
 
 private:
     //Ponteiro para raiz_
     NoVP *raiz_;
     //contadores das metricas
-    int qtdComparacoes_;
-    int qtdTrocas_;
+    int qtdCompInsercao_;
+    int qtdTrocasInsercao_;
+    int qtdCompBusca_;
+    int qtdTrocasBusca_;
 
     //Rotacoes
 
@@ -307,7 +313,6 @@ private:
 		getCorNo verifica a Cor do noh, se for NIL retorna PRETO
     */
     Cor getCorNo(NoVP *n);
-
 };
 
 #endif //TRABALHO_ED2_AVP_HPP
