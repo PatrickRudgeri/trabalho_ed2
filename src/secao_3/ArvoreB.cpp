@@ -75,6 +75,7 @@ NoB* ArvoreB::auxInsere(NoB *p, int val){
     }
 }
 
+/*
 void ArvoreB::Cisao(NoB* p){
     int meio = (ordem_/2);
     int aux = p->getChaves(meio);
@@ -116,6 +117,7 @@ void ArvoreB::Cisao(NoB* p){
 
         q->setPai(p->getPai());
     }
+*/
 
 void ArvoreB::InsereOrdenado(NoB* p, int val, int pos){
     int aux = p->getn();
