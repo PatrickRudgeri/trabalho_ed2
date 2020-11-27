@@ -75,35 +75,47 @@ NoB* ArvoreB::auxInsere(NoB *p, int val){
     }
 }
 
-/*
 void ArvoreB::Cisao(NoB* p){
     int meio = (ordem_/2);
+    int aux = p->getChaves(meio);
 
     //se pai de p é igual a null, cria novo nó pai e add o do meio de p na pos 0
     if (p->getPai()== nullptr){
         NoB* NovoPai = new NoB();
-        NovoPai->setChaves(p->getChaves(meio),0);
-    }
+        NovoPai->setChaves(p->getChaves(aux),0);
+    } else {
+        //se não insere
+        NoB* q = p->getPai();
+        for (int i=0;i<q->getn();i++){
+            if (q->getChaves(i) > aux){
+                int pos = i;
+            } else if(q->getn() == i+1){
+                pos = i+1;
+                else { i++; }
+            }
+            InsereOrdenado(pt,aux,pos);
+        }
 
-    NoB* q = new NoB();
-    int i = 0;
-    x=meio+1;
-    //insere os valores dps do meio em outro vetor e seta o valor de n
-    while(x<ordem_){
-        q->setChaves(p->getChaves(x),i);
-        x++;
-        i++;
-    }
-    q->setn(i+1);
+        NoB* q = new NoB();
+        int x = meio+1;
+        j=0;
+        //insere os valores dps do meio em outro vetor e seta o valor de n
+        while(x<p->getn()){
+            q->setChaves(p->getChaves(x),j);
+            x++;
+            j++;
+        }
+        q->setn(j+1);
+        int cont = 0;
+        //seta os valores de p do meio pra frente como -1
+        for(int j=meio;j<p->getn;j++){
+            p->setChaves(-1,j);
+            cont++;
+        }
+        p->setn(cont);
 
-    //seta os valores de p do meio pra frente como -1
-    for(int j=meio;j<ordem_;j++){
-        p->setChaves(-1,j);
+        q->setPai(p->getPai());
     }
-
-    q->setPai(p->getPai());
-}
-*/
 
 void ArvoreB::InsereOrdenado(NoB* p, int val, int pos){
     int aux = p->getn();
