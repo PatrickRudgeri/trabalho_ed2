@@ -40,12 +40,16 @@ bool ArvoreB::auxBusca(NoB* pt,int val,int f,int g){
     NoB* d = raiz_; pt = nullptr; f=0;
     int i = g = 0; pt = d;
     while(d!= nullptr){
+        qtdComparacoes_++;
         int i = g = 0; pt = d;
         int x = d->getn();
         while (i<x){
+            qtdComparacoes_++;
             if(val > d->getChaves(i)){
+                qtdComparacoes_++;
                 i=g=i+1;
             } else if(val == d->getChaves(i)){
+                qtdComparacoes_++;
                 f=1;
                 d=nullptr;
                 return true;
@@ -55,6 +59,7 @@ bool ArvoreB::auxBusca(NoB* pt,int val,int f,int g){
             }
         }
         if (i==x+1){
+            qtdComparacoes_++;
             d = d->getVetFilhos(x+1);
         }
     }
@@ -64,9 +69,11 @@ bool ArvoreB::auxBusca(NoB* pt,int val,int f,int g){
 NoB* ArvoreB::auxInsere(NoB *p, int val){
     bool b = auxBusca(pt, val, f, g);
     if (f == 1){
+        qtdComparacoes_++;
         // std::cout << "Valor Já inserido";
     } else {
         if (raiz_ == nullptr){
+            qtdComparacoes_++;
             raiz_ = new NoB(3);
             pt = raiz_;
         }
@@ -122,9 +129,12 @@ void ArvoreB::Cisao(NoB* p){
 void ArvoreB::InsereOrdenado(NoB* p, int val, int pos){
     int aux = p->getn();
     while (aux > pos){
+        qtdComparacoes_++;
         p->setChaves(p->getChaves(aux),(aux+1));
+        qtdTrocas_++;
         aux--;
     }
+    qtdTrocas_++;
     p->setChaves(val, pos);
     // std::cout << "Valor inserido!";
 }

@@ -47,7 +47,7 @@ private:
     //Metodos
     bool auxBusca(NoB* pt,int val,int f,int g);
     NoB* auxInsere(NoB *p, int val);
-    //void Cisao(NoB* p);
+    //void Cisao(NoB* p, int pos);
     void InsereOrdenado(NoB* p, int val, int pos);
 
 };
